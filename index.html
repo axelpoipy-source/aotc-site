@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOTC — Accessoires Outils Tuyauterie Chaudronnerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --steel:   #1a1f2e;
+  --mid:     #222839;
+  --card:    #252d40;
+  --light:   #2e3650;
+  --orange:  #e8521a;
+  --orange2: #ff6b2b;
+  --gold:    #c9a84c;
+  --green:   #2a9d5c;
+  --white:   #f0ede8;
+  --grey:    #7a8099;
+  --border:  rgba(232,82,26,0.18);
+  --radius:  6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--steel);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{background:#111520;padding:0.4rem 2rem;display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:var(--grey);}
+.topbar .green{color:var(--green);}
+.topbar-right{display:flex;gap:1.5rem;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(26,31,46,0.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;gap:1.2rem;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;letter-spacing:0.08em;white-space:nowrap;line-height:1;}
+.logo span{color:var(--orange);}
+.logo small{font-size:0.52rem;letter-spacing:0.12em;color:var(--grey);display:block;font-weight:400;text-transform:uppercase;}
+
+/* SEARCH */
+.search-wrap{flex:1;max-width:640px;position:relative;}
+.search-input{width:100%;background:var(--light);border:2px solid var(--border);color:var(--white);padding:0.7rem 6rem 0.7rem 3rem;font-family:'Barlow',sans-serif;font-size:0.97rem;border-radius:var(--radius);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.search-input::placeholder{color:var(--grey);}
+.search-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,82,26,0.1);}
+.s-icon{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
+.s-count{position:absolute;right:2.6rem;top:50%;transform:translateY(-50%);font-size:0.72rem;color:var(--orange);font-weight:700;display:none;}
+.s-clear{position:absolute;right:0.7rem;top:50%;transform:translateY(-50%);background:var(--grey);border:none;color:#111;width:18px;height:18px;border-radius:50%;font-size:0.65rem;cursor:pointer;display:none;align-items:center;justify-content:center;font-weight:900;}
+
+.nav-right{display:flex;align-items:center;gap:0.5rem;margin-left:auto;flex-shrink:0;}
+.nav-btn{background:var(--light);border:1px solid var(--border);color:var(--white);padding:0.5rem 0.85rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.8rem;border-radius:var(--radius);display:flex;align-items:center;gap:0.35rem;transition:all 0.18s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--orange);color:var(--orange);}
+.nav-btn.gold{border-color:rgba(201,168,76,0.5);color:var(--gold);}
+.cbadge{background:var(--orange);color:white;border-radius:50%;width:16px;height:16px;font-size:0.62rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;}
+
+/* FILTER BAR */
+.filter-bar{background:var(--mid);border-bottom:1px solid rgba(255,255,255,0.05);padding:0 2rem;display:flex;align-items:center;gap:0.4rem;overflow-x:auto;scrollbar-width:none;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.flabel{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);white-space:nowrap;padding:0.85rem 0;margin-right:0.3rem;flex-shrink:0;}
+.fbtn{background:transparent;border:1px solid transparent;color:var(--grey);padding:0.35rem 0.8rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.82rem;border-radius:20px;white-space:nowrap;transition:all 0.15s;flex-shrink:0;}
+.fbtn:hover{color:var(--white);border-color:rgba(255,255,255,0.15);}
+.fbtn.active{background:var(--orange);color:white;border-color:var(--orange);}
+.fdiv{width:1px;height:18px;background:rgba(255,255,255,0.07);margin:0 0.2rem;flex-shrink:0;}
+
+/* HERO STRIP */
+.hero-strip{background:linear-gradient(135deg,var(--mid),#1c2233);padding:1.8rem 2rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.hero-strip h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.5rem,2.5vw,2rem);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.25rem;}
+.hero-strip h1 span{color:var(--orange);}
+.hero-strip p{font-size:0.85rem;color:var(--grey);margin-bottom:1rem;}
+.quick-tags{display:flex;gap:0.5rem;flex-wrap:wrap;padding-bottom:1.1rem;}
+.qtag{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.4rem 0.85rem;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all 0.15s;}
+.qtag:hover,.qtag.active{background:var(--orange);border-color:var(--orange);color:white;}
+
+/* HT NOTICE */
+.ht-notice{margin:0.8rem 2rem;padding:0.65rem 1rem;background:rgba(232,82,26,0.06);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:4px;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--grey);}
+.ht-notice strong{color:var(--white);}
+.ht-big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.95rem;color:var(--orange);letter-spacing:0.1em;}
+
+/* SORT BAR */
+.sort-bar{padding:0.6rem 2rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--grey);}
+.sort-bar strong{color:var(--white);}
+.sort-opts{display:flex;gap:0.25rem;}
+.sbtn{background:transparent;border:1px solid transparent;color:var(--grey);padding:0.28rem 0.6rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.75rem;border-radius:4px;transition:all 0.15s;}
+.sbtn:hover{color:var(--white);}
+.sbtn.active{background:var(--light);color:var(--white);border-color:rgba(255,255,255,0.1);}
+
+/* GRID */
+.catalog{padding:0 2rem 4rem;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:rgba(255,255,255,0.04);}
+
+.pcard{background:var(--card);padding:1.3rem;position:relative;transition:background 0.18s;cursor:default;display:flex;flex-direction:column;}
+.pcard:hover{background:var(--light);}
+.pbadge{position:absolute;top:0.75rem;left:0.75rem;font-size:0.6rem;letter-spacing:0.07em;text-transform:uppercase;font-weight:700;padding:0.18rem 0.45rem;border-radius:3px;}
+.bnew{background:var(--orange);color:white;}
+.bpro{background:var(--gold);color:#1a1200;}
+.bstock{background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);}
+.pimg{width:100%;aspect-ratio:1;background:var(--mid);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:3rem;margin-bottom:0.9rem;border:1px solid rgba(255,255,255,0.05);transition:border-color 0.18s;}
+.pcard:hover .pimg{border-color:rgba(232,82,26,0.25);}
+.pcat{font-size:0.66rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--orange);font-weight:600;margin-bottom:0.25rem;}
+.pname{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:0.02em;margin-bottom:0.18rem;line-height:1.2;}
+.pref{font-size:0.7rem;color:var(--grey);margin-bottom:0.5rem;}
+.pdesc{font-size:0.78rem;color:var(--grey);line-height:1.5;margin-bottom:0.9rem;flex:1;}
+.pfoot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+.pprice{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;display:flex;align-items:baseline;gap:0.25rem;}
+.pht{font-size:0.62rem;color:var(--orange);font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;background:rgba(232,82,26,0.12);padding:0.08rem 0.28rem;border-radius:2px;}
+.punit{font-size:0.7rem;color:var(--grey);font-weight:400;font-family:'Barlow',sans-serif;}
+.abtn{width:32px;height:32px;background:var(--orange);border:none;border-radius:4px;color:white;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+.abtn:hover{background:var(--orange2);transform:scale(1.1);}
+.abtn.added{background:var(--green);}
+.qty-wrap{display:flex;align-items:center;}
+.qty-ctrl{display:flex;align-items:center;gap:0.3rem;}
+.qc-btn{background:var(--light);border:1px solid var(--border);color:var(--white);width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+.qc-btn:hover{border-color:var(--orange);color:var(--orange);}
+.qc-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;min-width:22px;text-align:center;color:var(--white);}
+
+/* EMPTY */
+.empty{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--grey);}
+.empty .eicon{font-size:3rem;margin-bottom:0.8rem;opacity:0.35;}
+.empty h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.3rem;text-transform:uppercase;color:var(--white);margin-bottom:0.4rem;}
+
+/* CART DRAWER */
+.cart-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.55);}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(380px,95vw);background:var(--mid);z-index:401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.28s ease;border-left:1px solid var(--border);}
+.cart-drawer.open{transform:translateX(0);}
+.cdhead{padding:1.3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cdhead h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;text-transform:uppercase;}
+.xbtn{background:transparent;border:1px solid var(--border);color:var(--grey);width:30px;height:30px;cursor:pointer;border-radius:4px;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
+.cditems{flex:1;overflow-y:auto;padding:0.8rem;}
+.cdempty{text-align:center;padding:2.5rem 1rem;color:var(--grey);}
+.cditem{display:flex;gap:0.7rem;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;}
+.cdimg{font-size:1.7rem;background:var(--card);width:44px;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cdinfo{flex:1;min-width:0;}
+.cdname{font-size:0.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cdprice{font-size:0.78rem;color:var(--orange);margin-top:0.15rem;}
+.cdqty{display:flex;align-items:center;gap:0.35rem;margin-top:0.35rem;}
+.qbtn{background:var(--light);border:none;color:var(--white);width:20px;height:20px;border-radius:3px;cursor:pointer;font-size:0.78rem;display:flex;align-items:center;justify-content:center;}
+.rmbtn{background:transparent;border:none;color:var(--grey);cursor:pointer;font-size:0.85rem;padding:0.15rem;margin-left:0.3rem;}
+.cdfoot{padding:1rem 1.5rem;border-top:1px solid var(--border);}
+.cdtotal{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;}
+.cdtotal span{color:var(--orange);font-size:1.4rem;}
+.btn-devis{width:100%;background:var(--orange);border:none;color:white;padding:0.9rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.18s;}
+.btn-devis:hover{background:var(--orange2);}
+
+/* MODALS */
+.moverlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);}
+.mbox{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:501;background:var(--mid);border:1px solid var(--border);border-top:3px solid var(--orange);width:min(450px,92vw);border-radius:var(--radius);}
+.mhead{padding:1.2rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mhead h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.35rem;text-transform:uppercase;}
+.mtabs{display:flex;border-bottom:1px solid var(--border);}
+.mtab{flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.18s;}
+.mtab.active{color:var(--orange);border-bottom-color:var(--orange);}
+.mbody{padding:1.6rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);margin-bottom:0.35rem;}
+.field input{width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.92rem;border-radius:4px;outline:none;transition:border-color 0.18s;}
+.field input:focus{border-color:var(--orange);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+.bfull{width:100%;background:var(--orange);border:none;color:white;padding:0.82rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.97rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.18s;margin-top:0.2rem;}
+.bfull:hover{background:var(--orange2);}
+.ferr{color:#e84545;font-size:0.78rem;margin-top:0.5rem;display:none;text-align:center;}
+
+/* LOYALTY */
+.lcard{background:linear-gradient(135deg,#1a2a18,#1a1f2e);border:1px solid rgba(201,168,76,0.22);border-radius:4px;padding:1.2rem;margin-bottom:1rem;}
+.lpts{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.6rem;color:var(--gold);line-height:1;}
+.llvl{font-size:0.78rem;color:var(--grey);margin-top:0.2rem;}
+.ptrack{background:var(--steel);height:5px;border-radius:3px;margin:0.7rem 0 0.25rem;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:3px;transition:width 0.5s;}
+.lvlgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1rem;}
+.lvlc{background:var(--steel);border:1px solid var(--border);padding:0.6rem;text-align:center;border-radius:4px;transition:all 0.18s;}
+.lvlc.active{border-color:var(--gold);background:rgba(201,168,76,0.07);}
+.lvlc .li{font-size:1.1rem;}
+.lvlc .ln{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;text-transform:uppercase;color:var(--grey);margin-top:0.2rem;}
+.lvlc.active .ln{color:var(--gold);}
+.lvlc .lp{font-size:0.65rem;color:var(--grey);}
+.avbox{background:var(--steel);border:1px solid var(--border);padding:0.9rem;border-radius:4px;margin-bottom:1rem;}
+.avbox h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.8rem;text-transform:uppercase;color:var(--orange);margin-bottom:0.6rem;letter-spacing:0.08em;}
+.avitem{font-size:0.8rem;color:var(--grey);padding:0.2rem 0;}
+.blogout{width:100%;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.65rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.18s;}
+.blogout:hover{border-color:#e84545;color:#e84545;}
+
+/* LEGAL BOX */
+.legalbox{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:501;background:var(--mid);border:1px solid var(--border);border-top:3px solid var(--orange);width:min(680px,92vw);max-height:80vh;overflow-y:auto;border-radius:var(--radius);}
+.legalhead{position:sticky;top:0;background:var(--mid);padding:1.2rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.legalbody{padding:1.8rem 1.6rem;font-size:0.86rem;line-height:1.8;}
+.legalbody h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;text-transform:uppercase;color:var(--orange);letter-spacing:0.1em;margin:1.3rem 0 0.5rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border);}
+.legalbody h3:first-child{margin-top:0;}
+.legalbody p,.legalbody li{color:var(--grey);margin-bottom:0.3rem;}
+.legalbody ul{padding-left:1.1rem;}
+.infobox{background:var(--steel);border-left:3px solid var(--orange);padding:0.7rem 0.9rem;margin:0.5rem 0;border-radius:2px;}
+.infobox p{color:var(--white);margin:0.15rem 0;}
+
+/* COOKIE BANNER */
+.cookie{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#0f1219;border-top:2px solid var(--orange);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;}
+.cookie p:first-child{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;text-transform:uppercase;margin-bottom:0.2rem;}
+.cookie p:last-child{font-size:0.78rem;color:var(--grey);}
+.cookie a{color:var(--orange);text-decoration:underline;cursor:pointer;}
+.ckbtns{display:flex;gap:0.5rem;flex-shrink:0;}
+.brefuse{background:transparent;border:1px solid var(--grey);color:var(--grey);padding:0.55rem 1rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;border-radius:4px;transition:all 0.18s;}
+.brefuse:hover{border-color:var(--white);color:var(--white);}
+.baccept{background:var(--orange);border:none;color:white;padding:0.55rem 1rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;border-radius:4px;transition:background 0.18s;}
+.baccept:hover{background:var(--orange2);}
+
+/* FOOTER */
+footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;}
+.flogo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.flogo span{color:var(--orange);}
+.ftagline{font-size:0.8rem;color:var(--grey);line-height:1.7;max-width:240px;}
+.fcol h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--orange);margin-bottom:0.9rem;}
+.flinks{list-style:none;display:flex;flex-direction:column;gap:0.5rem;}
+.flinks a{color:var(--grey);text-decoration:none;font-size:0.8rem;transition:color 0.18s;cursor:pointer;}
+.flinks a:hover{color:var(--white);}
+.fbot{background:#0a0c14;padding:0.9rem 2rem;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;align-items:center;font-size:0.73rem;color:var(--grey);flex-wrap:wrap;gap:0.4rem;}
+.fbot span{color:var(--orange);}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--steel);}
+::-webkit-scrollbar-thumb{background:var(--light);border-radius:3px;}
+.legalbox::-webkit-scrollbar-thumb{background:var(--orange);}
+
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* CHECKOUT MODAL */
+.checkout-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:502;background:var(--mid);border:1px solid var(--border);border-top:3px solid var(--green);width:min(500px,94vw);border-radius:var(--radius);max-height:90vh;overflow-y:auto;}
+.checkout-head{padding:1.2rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.checkout-head h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;text-transform:uppercase;}
+.checkout-body{padding:1.6rem;}
+.checkout-recap{background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:1.2rem;}
+.checkout-recap h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;text-transform:uppercase;color:var(--orange);margin-bottom:0.7rem;letter-spacing:0.08em;}
+.recap-item{display:flex;justify-content:space-between;font-size:0.82rem;color:var(--grey);padding:0.2rem 0;}
+.recap-total{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;border-top:1px solid var(--border);margin-top:0.6rem;padding-top:0.6rem;}
+.recap-total span{color:var(--orange);}
+.stripe-field{margin-bottom:1rem;}
+.stripe-field label{display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);margin-bottom:0.35rem;}
+.stripe-field input{width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.92rem;border-radius:4px;outline:none;transition:border-color 0.18s;}
+.stripe-field input:focus{border-color:var(--green);}
+.stripe-field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+#card-element{background:var(--steel);border:1px solid var(--border);padding:0.75rem 0.85rem;border-radius:4px;transition:border-color 0.18s;}
+#card-errors{color:#e84545;font-size:0.78rem;margin-top:0.4rem;min-height:1rem;}
+.btn-pay{width:100%;background:var(--green);border:none;color:white;padding:0.95rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.18s;margin-top:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+.btn-pay:hover:not(:disabled){background:#23a85e;}
+.btn-pay:disabled{opacity:0.6;cursor:not-allowed;}
+.secure-badge{display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.73rem;color:var(--grey);margin-top:0.7rem;}
+.success-screen{text-align:center;padding:2rem;}
+.success-screen .sicon{font-size:3.5rem;margin-bottom:0.8rem;}
+.success-screen h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.5rem;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem;}
+.success-screen p{font-size:0.85rem;color:var(--grey);line-height:1.6;}
+.test-badge{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.72rem;padding:0.3rem 0.7rem;border-radius:3px;text-align:center;margin-bottom:1rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+
+@media(max-width:900px){
+  nav{padding:0 1rem;gap:0.6rem;}
+  .topbar{display:none;}
+  .hero-strip,.filter-bar,.sort-bar,.ht-notice,.catalog{padding-left:1rem;padding-right:1rem;}
+  footer{grid-template-columns:1fr 1fr;padding:2rem 1rem;}
+  .fbot{padding:0.9rem 1rem;}
+  .cookie{flex-direction:column;align-items:flex-start;padding:1rem;}
+}
+@media(max-width:560px){
+  .pgrid{grid-template-columns:repeat(2,1fr);}
+  footer{grid-template-columns:1fr;}
+  .search-input{font-size:0.88rem;padding-left:2.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span class="green">✓ Livraison 24h · Paiement sécurisé</span>
+  <div class="topbar-right">
+    <span>Site professionnel — Prix HT</span>
+    <span>📞 +33 6 00 00 00 00</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">A<span>O</span>TC <small>Pro</small></div>
+
+  <div class="search-wrap">
+    <span class="s-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text"
+      placeholder="Raccord DN50, vanne laiton, joint spiralisé, électrode…"
+      oninput="handleSearch()" autocomplete="off">
+    <span class="s-count" id="sCount"></span>
+    <button class="s-clear" id="sClear" onclick="clearSearch()">✕</button>
+  </div>
+
+  <div class="nav-right">
+    <button class="nav-btn" id="accountBtn" onclick="openAccount()">👤 <span id="accountLabel">Mon compte</span></button>
+    <button class="nav-btn" onclick="openCart()">🛒 <span class="cbadge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="flabel">Filtrer :</span>
+  <button class="fbtn active" onclick="setFilter('all',this)">Tout</button>
+  <div class="fdiv"></div>
+  <button class="fbtn" onclick="setFilter('Raccords',this)">🔧 Raccords</button>
+  <button class="fbtn" onclick="setFilter('Robinetterie',this)">🚰 Robinetterie</button>
+  <button class="fbtn" onclick="setFilter('Boulonnerie',this)">🔩 Boulonnerie</button>
+  <button class="fbtn" onclick="setFilter('Outillage',this)">🛠️ Outillage</button>
+  <button class="fbtn" onclick="setFilter('Soudage',this)">🔥 Soudage</button>
+  <button class="fbtn" onclick="setFilter('Étanchéité',this)">📏 Étanchéité</button>
+  <div class="fdiv"></div>
+  <button class="fbtn" onclick="setFilter('new',this)">🆕 Nouveautés</button>
+  <button class="fbtn" onclick="setFilter('pro',this)">⭐ Sélection Pro</button>
+</div>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <h1>Matériel <span>tuyauterie & chaudronnerie</span> pro — livré en 24h</h1>
+  <p>Trouvez rapidement la pièce dont vous avez besoin parmi + de 500 références.</p>
+  <div class="quick-tags">
+    <div class="qtag" onclick="quickSearch('raccord inox')">🔧 Raccords Inox</div>
+    <div class="qtag" onclick="quickSearch('vanne')">🚰 Vannes</div>
+    <div class="qtag" onclick="quickSearch('joint')">📏 Joints</div>
+    <div class="qtag" onclick="quickSearch('coupe-tube')">✂️ Coupe-tube</div>
+    <div class="qtag" onclick="quickSearch('électrode')">🔥 Électrodes</div>
+    <div class="qtag" onclick="quickSearch('boulon inox')">🔩 Boulons Inox</div>
+    <div class="qtag" onclick="quickSearch('clapet')">⚙️ Clapets</div>
+    <div class="qtag" onclick="quickSearch('filière BSP')">🛠️ Filières BSP</div>
+  </div>
+</div>
+
+<!-- HT NOTICE -->
+<div class="ht-notice">
+  <p>💼 <strong>Site professionnel</strong> — Tous les prix sont affichés <strong>Hors Taxes (HT)</strong>. TVA 20% applicable selon votre situation fiscale.</p>
+  <span class="ht-big">PRIX HT</span>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <p id="resultLabel"><strong id="resultNum">0</strong> référence(s) affichée(s)</p>
+  <div class="sort-opts">
+    <span style="font-size:0.75rem;color:var(--grey);margin-right:0.2rem;">Trier :</span>
+    <button class="sbtn active" onclick="setSort('default',this)">Défaut</button>
+    <button class="sbtn" onclick="setSort('price-asc',this)">Prix ↑</button>
+    <button class="sbtn" onclick="setSort('price-desc',this)">Prix ↓</button>
+    <button class="sbtn" onclick="setSort('name',this)">A–Z</button>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<div class="catalog">
+  <div class="pgrid" id="pgrid"></div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cdhead">
+    <h3>🛒 Mon panier</h3>
+    <button class="xbtn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cditems" id="cartItems"><div class="cdempty">Votre panier est vide</div></div>
+  <div class="cdfoot">
+    <div class="cdtotal">Total <span style="font-size:0.72rem;color:var(--grey);font-weight:400;font-family:'Barlow',sans-serif;">HT</span>&nbsp;<span id="cartTotal">0,00€</span></div>
+    <button class="btn-devis" onclick="openCheckout()" style="background:var(--green);">💳 Payer par carte</button>
+    <button class="btn-devis" onclick="sendDevis()" style="background:transparent;border:1px solid var(--border);margin-top:0.5rem;font-size:0.85rem;">📧 Demander un devis</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="moverlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
+<div class="checkout-box" id="checkoutBox" style="display:none;">
+  <div class="checkout-head">
+    <h2>💳 Paiement <span style="color:var(--green)">sécurisé</span></h2>
+    <button class="xbtn" onclick="closeCheckout()">✕</button>
+  </div>
+  <div class="checkout-body" id="checkoutBody">
+    <div class="test-badge">🔒 Paiements sécurisés — Propulsé par Stripe</div>
+    <div class="checkout-recap">
+      <h4>📦 Récapitulatif</h4>
+      <div id="checkoutRecap"></div>
+      <div class="recap-total">Total HT <span id="checkoutTotal">0,00€</span></div>
+    </div>
+    <div class="stripe-field">
+      <label>Nom complet</label>
+      <input id="payNom" type="text" placeholder="Jean Dupont">
+    </div>
+    <div class="stripe-field">
+      <label>Email</label>
+      <input id="payEmail" type="email" placeholder="votre@email.fr">
+    </div>
+    <div class="stripe-field-row">
+      <div class="stripe-field">
+        <label>Entreprise (optionnel)</label>
+        <input id="payEnt" type="text" placeholder="Plomberie Martin">
+      </div>
+      <div class="stripe-field">
+        <label>Téléphone</label>
+        <input id="payTel" type="tel" placeholder="+33 6 00 00 00 00">
+      </div>
+    </div>
+
+    <!-- Adresse de livraison -->
+    <div style="border-top:1px solid var(--border);margin:1rem 0;padding-top:1rem;">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:0.8rem;">📦 Adresse de livraison</p>
+      <div class="stripe-field">
+        <label>Adresse</label>
+        <input id="payAdresse" type="text" placeholder="12 rue des Artisans">
+      </div>
+      <div class="stripe-field-row">
+        <div class="stripe-field">
+          <label>Code postal</label>
+          <input id="payCP" type="text" placeholder="75001" maxlength="5">
+        </div>
+        <div class="stripe-field">
+          <label>Ville</label>
+          <input id="payVille" type="text" placeholder="Paris">
+        </div>
+      </div>
+      <div class="stripe-field">
+        <label>Pays</label>
+        <select id="payPays" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.92rem;border-radius:4px;outline:none;transition:border-color 0.18s;">
+          <option value="FR">🇫🇷 France</option>
+          <option value="BE">🇧🇪 Belgique</option>
+          <option value="CH">🇨🇭 Suisse</option>
+          <option value="LU">🇱🇺 Luxembourg</option>
+          <option value="DE">🇩🇪 Allemagne</option>
+          <option value="ES">🇪🇸 Espagne</option>
+          <option value="IT">🇮🇹 Italie</option>
+        </select>
+      </div>
+      <div class="stripe-field">
+        <label>Instructions de livraison (optionnel)</label>
+        <input id="payInstructions" type="text" placeholder="Bâtiment B, code 1234, laisser en consigne…">
+      </div>
+    </div>
+    <div class="stripe-field">
+      <label>Carte bancaire</label>
+      <div id="card-element"></div>
+      <div id="card-errors"></div>
+    </div>
+    <button class="btn-pay" id="payBtn" onclick="processPayment()">🔒 Payer <span id="payAmount"></span></button>
+    <div class="secure-badge">🔒 Paiement sécurisé par Stripe · Données chiffrées</div>
+  </div>
+</div>
+<div class="moverlay" id="accountOverlay" onclick="closeAccount()"></div>
+<div class="mbox" id="accountModal" style="display:none;">
+  <div class="mhead">
+    <h2 id="modalTitle">Mon <span style="color:var(--orange)">Compte</span></h2>
+    <button class="xbtn" onclick="closeAccount()">✕</button>
+  </div>
+  <div class="mtabs" id="modalTabs">
+    <button class="mtab active" id="tabLogin" onclick="showTab('login')">Connexion</button>
+    <button class="mtab" id="tabRegister" onclick="showTab('register')">Créer un compte</button>
+  </div>
+  <div id="paneLogin" class="mbody">
+    <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="votre@email.fr"></div>
+    <div class="field"><label>Mot de passe</label><input id="loginPass" type="password" placeholder="••••••••"></div>
+    <button class="bfull" onclick="doLogin()">Se connecter →</button>
+    <p class="ferr" id="loginErr"></p>
+  </div>
+  <div id="paneRegister" class="mbody" style="display:none;">
+    <div class="frow">
+      <div class="field"><label>Prénom</label><input id="regPrenom" type="text" placeholder="Jean"></div>
+      <div class="field"><label>Nom</label><input id="regNom" type="text" placeholder="Dupont"></div>
+    </div>
+    <div class="field"><label>Entreprise (optionnel)</label><input id="regEnt" type="text" placeholder="Plomberie Martin"></div>
+    <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="votre@email.fr"></div>
+    <div class="field"><label>Mot de passe</label><input id="regPass" type="password" placeholder="Min. 6 caractères"></div>
+    <div style="background:var(--steel);border:1px solid var(--border);border-left:3px solid var(--gold);padding:0.7rem 0.9rem;border-radius:4px;margin-bottom:0.9rem;font-size:0.8rem;">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gold);margin-bottom:0.15rem;">⭐ 50 points offerts à l'inscription</p>
+      <p style="color:var(--grey);">Gagnez des points à chaque commande et débloquez des remises pro.</p>
+    </div>
+    <button class="bfull" onclick="doRegister()">Créer mon compte →</button>
+    <p class="ferr" id="regErr"></p>
+  </div>
+  <div id="paneDashboard" class="mbody" style="display:none;">
+    <div class="lcard">
+      <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.15rem;">Points fidélité</p>
+      <div class="lpts" id="dashPts">0 pts</div>
+      <div class="llvl" id="dashLvl"></div>
+      <div class="ptrack"><div class="pfill" id="pFill" style="width:0%"></div></div>
+      <p style="font-size:0.72rem;color:var(--grey);" id="dashNext"></p>
+    </div>
+    <div class="lvlgrid">
+      <div class="lvlc" id="lb"><div class="li">🥉</div><div class="ln">Bronze</div><div class="lp">0 pts</div></div>
+      <div class="lvlc" id="ls"><div class="li">🥈</div><div class="ln">Argent</div><div class="lp">500 pts</div></div>
+      <div class="lvlc" id="lg"><div class="li">🥇</div><div class="ln">Or</div><div class="lp">1500 pts</div></div>
+    </div>
+    <div class="avbox"><h4>Vos avantages</h4><div id="avList"></div></div>
+    <button class="blogout" onclick="doLogout()">Se déconnecter</button>
+  </div>
+</div>
+
+<!-- LEGAL MODAL -->
+<div class="moverlay" id="legalOverlay" onclick="closeLegal()"></div>
+<div class="legalbox" id="legalBox" style="display:none;">
+  <div class="legalhead">
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.35rem;text-transform:uppercase;">Mentions <span style="color:var(--orange)">Légales</span></h2>
+    <button class="xbtn" onclick="closeLegal()">✕</button>
+  </div>
+  <div class="legalbody">
+    <h3>1. Éditeur du site</h3>
+    <div class="infobox">
+      <p><strong>Nom :</strong> Poipy Axel</p>
+      <p><strong>Statut :</strong> Micro-entrepreneur (en cours d'immatriculation)</p>
+      <p><strong>SIRET :</strong> En cours d'obtention</p>
+      <p><strong>Adresse :</strong> Rue des Minimes, Bâtiment H, N°3</p>
+      <p><strong>Email :</strong> contact@aotc.fr</p>
+      <p><strong>Téléphone :</strong> +33 6 00 00 00 00</p>
+    </div>
+    <h3>2. Hébergement</h3>
+    <p>Netlify, Inc. · 44 Montgomery Street, Suite 300, San Francisco, CA 94104, USA</p>
+    <h3>3. Données personnelles & RGPD</h3>
+    <ul><li>Droit d'accès, rectification et effacement</li><li>Droit d'opposition et portabilité</li><li>Contact : <strong>contact@aotc.fr</strong></li></ul>
+    <h3>4. Cookies</h3>
+    <p>Cookies analytiques, fonctionnels (panier) et de suivi affilié. Refus possible sans impact sur la navigation.</p>
+    <h3>5. Prix</h3>
+    <p>Tous les prix sont <strong>Hors Taxes (HT)</strong>. TVA 20% applicable. En franchise de TVA (Art. 293B CGI), la mention sera indiquée sur les factures.</p>
+    <h3>6. Liens d'affiliation</h3>
+    <p>Ce site peut contenir des liens affiliés (Amazon Partenaires). Une commission peut être perçue sans coût supplémentaire pour vous.</p>
+    <h3>7. Droit applicable</h3>
+    <p>Droit français. Tout litige relève de la compétence des tribunaux français.</p>
+    <p style="margin-top:1.2rem;font-size:0.76rem;border-top:1px solid var(--border);padding-top:0.9rem;color:var(--grey);">Dernière mise à jour : Janvier 2024 · <strong style="color:var(--orange);">⚠️ Ajoutez votre SIRET dès réception sur autoentrepreneur.urssaf.fr</strong></p>
+  </div>
+</div>
+
+<!-- COOKIE BANNER -->
+<div class="cookie" id="cookieBanner">
+  <div>
+    <p>🍪 Ce site utilise des cookies</p>
+    <p>Pour améliorer votre expérience. En continuant vous acceptez notre <a onclick="openLegal()">politique de confidentialité</a> et <a onclick="openLegal()">mentions légales</a>.</p>
+  </div>
+  <div class="ckbtns">
+    <button class="brefuse" onclick="refuseCookies()">Refuser</button>
+    <button class="baccept" onclick="acceptCookies()">✓ Accepter</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="flogo">A<span>O</span>TC</div>
+    <p class="ftagline">Accessoires & Outils Tuyauterie Chaudronnerie — Sélectionné par des pros, pour des pros.</p>
+  </div>
+  <div class="fcol"><h4>Catalogue</h4>
+    <ul class="flinks">
+      <li><a onclick="setFilter('Raccords',null)">Raccords</a></li>
+      <li><a onclick="setFilter('Robinetterie',null)">Robinetterie</a></li>
+      <li><a onclick="setFilter('Boulonnerie',null)">Boulonnerie</a></li>
+      <li><a onclick="setFilter('Outillage',null)">Outillage</a></li>
+      <li><a onclick="setFilter('Soudage',null)">Soudage</a></li>
+      <li><a onclick="setFilter('Étanchéité',null)">Étanchéité</a></li>
+    </ul>
+  </div>
+  <div class="fcol"><h4>Infos</h4>
+    <ul class="flinks">
+      <li><a>À propos</a></li><li><a>Livraison</a></li>
+      <li><a>Retours</a></li><li><a onclick="openLegal()">CGV & Mentions légales</a></li>
+    </ul>
+  </div>
+  <div class="fcol"><h4>Contact</h4>
+    <ul class="flinks">
+      <li><a>contact@aotc.fr</a></li>
+      <li><a>+33 6 00 00 00 00</a></li>
+      <li><a onclick="openCart()">Demander un devis</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="fbot">
+  <p>© 2024 <span>AOTC</span> — Poipy Axel · Tous les prix sont <span>Hors Taxes (HT)</span> — TVA 20% non incluse</p>
+  <p><a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Mentions légales</a> · <a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Confidentialité</a></p>
+</div>
+
+<script>
+// ── SUPABASE ──
+const SUPABASE_URL = 'https://umouxtilhnmbypgxbste.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Ps_FCxeBseTPf4zSSR1kEg_Z3ttJFP1';
+
+// Produits de secours (affichés pendant le chargement)
+const PRODUCTS_FALLBACK = [
+  {id:1,  cat:'Raccords',     name:'Coude 90° Inox 316L',     ref:'RAC-001', dn:'DN50',    price:12.90, unit:'unité',  badge:'pro',   icon:'🔧', desc:'Coude à souder, finition miroir, pression maxi 40 bar',         tags:['inox','coude','raccord','316l']},
+  {id:2,  cat:'Raccords',     name:'Té Égal Acier Carbone',   ref:'RAC-056', dn:'DN100',   price:28.00, unit:'unité',  badge:'stock', icon:'⚙️', desc:'Té à souder carbone, traitement anti-corrosion, norme EN10253', tags:['acier','carbone','té','raccord']},
+  {id:5,  cat:'Robinetterie', name:'Vanne à Bille Laiton',    ref:'ROB-047', dn:'1/2"',    price:8.50,  unit:'unité',  badge:'new',   icon:'🚰', desc:'Vanne quart de tour, corps laiton, boisseau inox, PN16',       tags:['vanne','laiton','robinetterie']},
+  {id:12, cat:'Outillage',    name:'Coupe-tube Inox Pro',     ref:'OUT-012', dn:'Ø6-67mm', price:34.00, unit:'unité',  badge:'pro',   icon:'🛠️', desc:'Lame carbure, réglage micrométrique, coupe nette sans bavure', tags:['coupe-tube','outillage','inox']},
+  {id:16, cat:'Soudage',      name:'Électrodes Inox E316L',   ref:'SOU-034', dn:'Ø3.2mm',  price:22.00, unit:'kg',     badge:'pro',   icon:'🔥', desc:'Électrodes enrobées pour inox austénitique',                   tags:['électrode','soudage','inox']},
+  {id:19, cat:'Étanchéité',   name:'Joint Spiralisé DN80',    ref:'ETN-023', dn:'PN16',    price:6.20,  unit:'unité',  badge:'stock', icon:'📏', desc:'Inox/graphite, pression 100 bar, −200°C à +550°C',             tags:['joint','spiralisé','étanchéité']},
+];
+
+let PRODUCTS = [...PRODUCTS_FALLBACK];
+
+// Charger les produits depuis Supabase
+async function loadProducts(){
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if(!res.ok) throw new Error('Erreur Supabase');
+    const data = await res.json();
+    if(data && data.length > 0){
+      PRODUCTS = data.map(p => ({
+        id:    p.id,
+        cat:   p.categorie  || 'Divers',
+        name:  p.nom,
+        ref:   p.reference  || '',
+        dn:    '',
+        price: p.prix_ht    || 0,
+        unit:  p.unite      || 'unité',
+        badge: p.badge      || 'stock',
+        icon:  p.image_url  || '🔧',
+        image: p.image_url  || null,
+        desc:  p.description|| '',
+        tags:  p.tags ? p.tags.split(',').map(t=>t.trim()) : [],
+        lien:  p.lien_aliexpress || null
+      }));
+    }
+    render();
+  } catch(e) {
+    console.warn('Supabase non disponible, produits de démonstration affichés.', e);
+    render();
+  }
+}
+
+let curFilter='all', curSearch='', curSort='default';
+let cart = JSON.parse(localStorage.getItem('aotc_cart')||'[]');
+
+// ── RENDER ──
+function getFiltered(){
+  let l=[...PRODUCTS];
+  if(curFilter==='new') l=l.filter(p=>p.badge==='new');
+  else if(curFilter==='pro') l=l.filter(p=>p.badge==='pro');
+  else if(curFilter!=='all') l=l.filter(p=>p.cat===curFilter);
+  if(curSearch.trim()){
+    const q=norm(curSearch);
+    l=l.filter(p=>{
+      const h=norm([p.name,p.cat,p.ref,p.dn,p.desc,...p.tags].join(' '));
+      return q.split(' ').filter(Boolean).every(w=>h.includes(w));
+    });
+  }
+  if(curSort==='price-asc')  l.sort((a,b)=>a.price-b.price);
+  if(curSort==='price-desc') l.sort((a,b)=>b.price-a.price);
+  if(curSort==='name')       l.sort((a,b)=>a.name.localeCompare(b.name));
+  return l;
+}
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+function render(){
+  const grid=document.getElementById('pgrid');
+  const list=getFiltered();
+  document.getElementById('resultNum').textContent=list.length;
+  if(!list.length){
+    grid.innerHTML=`<div class="empty"><div class="eicon">🔍</div><h3>Aucun résultat</h3><p>Essayez un autre terme ou <button onclick="clearSearch()" style="background:none;border:none;color:var(--orange);cursor:pointer;text-decoration:underline;font-size:inherit;">effacez la recherche</button></p></div>`;
+    return;
+  }
+  const badges={new:'<span class="pbadge bnew">Nouveau</span>',pro:'<span class="pbadge bpro">Pro</span>',stock:'<span class="pbadge bstock">En stock</span>'};
+  grid.innerHTML=list.map(p=>{
+    const cartItem=cart.find(c=>c.id===p.id);
+    const qty=cartItem?cartItem.qty:1;
+    const inCart=!!cartItem;
+    const imgHtml = p.image && p.image.startsWith('http')
+      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;" onerror="this.parentElement.innerHTML='${p.icon||'🔧'}';">`
+      : (p.icon||'🔧');
+    return `<div class="pcard">
+      ${badges[p.badge]||''}
+      <div class="pimg" style="${p.image&&p.image.startsWith('http')?'padding:0;overflow:hidden;':''}">${imgHtml}</div>
+      <div class="pcat">${p.cat}</div>
+      <div class="pname">${p.name}</div>
+      <div class="pref">${p.ref?'Réf. '+p.ref:''}${p.dn?' · '+p.dn:''}</div>
+      <div class="pdesc">${p.desc}</div>
+      <div class="pfoot">
+        <div class="pprice">${fmt(p.price)}<span class="pht">HT</span><span class="punit">/ ${p.unit}</span></div>
+        <div class="qty-wrap" id="qw-${p.id}">
+          ${inCart
+            ? `<div class="qty-ctrl">
+                <button class="qc-btn" onclick="changeQtyCard(${p.id},-1)">−</button>
+                <span class="qc-num" id="qn-${p.id}">${qty}</span>
+                <button class="qc-btn" onclick="changeQtyCard(${p.id},1)">+</button>
+                <button class="abtn added" onclick="removeFromCart(${p.id})" title="Retirer">✓</button>
+               </div>`
+            : `<div class="qty-ctrl">
+                <button class="qc-btn" onclick="decCardQty(${p.id})">−</button>
+                <span class="qc-num" id="qn-${p.id}">1</span>
+                <button class="qc-btn" onclick="incCardQty(${p.id})">+</button>
+                <button class="abtn" onclick="addToCartQty(${p.id})">+🛒</button>
+               </div>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function fmt(n){return n.toFixed(2).replace('.',',')+'€';}
+
+// ── SEARCH ──
+function handleSearch(){
+  curSearch=document.getElementById('searchInput').value;
+  const hasTxt=curSearch.trim().length>0;
+  document.getElementById('sClear').style.display=hasTxt?'flex':'none';
+  render();
+  const c=document.getElementById('sCount');
+  if(hasTxt){const n=getFiltered().length;c.style.display='flex';c.textContent=n+' rés.';}
+  else c.style.display='none';
+}
+function clearSearch(){
+  document.getElementById('searchInput').value='';
+  curSearch='';
+  document.getElementById('sClear').style.display='none';
+  document.getElementById('sCount').style.display='none';
+  document.querySelectorAll('.qtag').forEach(q=>q.classList.remove('active'));
+  render();
+  document.getElementById('searchInput').focus();
+}
+function quickSearch(term){
+  document.getElementById('searchInput').value=term;
+  curSearch=term;
+  document.getElementById('sClear').style.display='flex';
+  curFilter='all';
+  document.querySelectorAll('.fbtn').forEach((b,i)=>{b.classList.toggle('active',i===0);});
+  document.querySelectorAll('.qtag').forEach(q=>q.classList.remove('active'));
+  if(event&&event.target) event.target.classList.add('active');
+  render();
+  document.querySelector('.catalog').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function setFilter(val,btn){
+  curFilter=val;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.fbtn').forEach(b=>{if(b.textContent.trim().replace(/[^a-zA-ZÀ-ÿ ]/g,'').trim()===val||(val==='all'&&b.textContent.trim()==='Tout'))b.classList.add('active');});
+  render();
+  window.scrollTo({top:document.querySelector('.ht-notice').offsetTop-70,behavior:'smooth'});
+}
+function setSort(val,btn){
+  curSort=val;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  render();
+}
+
+// Quantité temporaire sur la fiche produit (avant ajout panier)
+const cardQty={};
+function getCardQty(id){return cardQty[id]||1;}
+function incCardQty(id){cardQty[id]=(cardQty[id]||1)+1;document.getElementById('qn-'+id).textContent=cardQty[id];}
+function decCardQty(id){cardQty[id]=Math.max(1,(cardQty[id]||1)-1);document.getElementById('qn-'+id).textContent=cardQty[id];}
+function addToCartQty(id){
+  const q=getCardQty(id);
+  const p=PRODUCTS.find(x=>x.id===id);
+  const ex=cart.find(c=>c.id===id);
+  if(ex) ex.qty+=q;
+  else cart.push({...p,qty:q});
+  delete cardQty[id];
+  saveCart();updateCartBadge();render();
+}
+function changeQtyCard(id,d){
+  const it=cart.find(c=>c.id===id);
+  if(!it) return;
+  it.qty+=d;
+  if(it.qty<=0){removeFromCart(id);}
+  else{saveCart();updateCartBadge();const el=document.getElementById('qn-'+id);if(el)el.textContent=it.qty;renderCart();}
+}
+
+// ── CART ──
+function saveCart(){localStorage.setItem('aotc_cart',JSON.stringify(cart));}
+function addToCart(id){
+  const p=PRODUCTS.find(x=>x.id===id);
+  const ex=cart.find(c=>c.id===id);
+  if(ex) ex.qty++;
+  else cart.push({...p,qty:1});
+  saveCart(); updateCartBadge(); render();
+}
+function removeFromCart(id){cart=cart.filter(c=>c.id!==id);saveCart();updateCartBadge();renderCart();render();}
+function changeQty(id,d){
+  const it=cart.find(c=>c.id===id);
+  if(!it) return;
+  it.qty+=d;
+  if(it.qty<=0) removeFromCart(id);
+  else{saveCart();updateCartBadge();renderCart();}
+}
+function updateCartBadge(){document.getElementById('cartBadge').textContent=cart.reduce((s,c)=>s+c.qty,0);}
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const tel=document.getElementById('cartTotal');
+  if(!cart.length){el.innerHTML='<div class="cdempty">🛒 Votre panier est vide</div>';tel.textContent='0,00€';return;}
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  tel.textContent=fmt(total);
+  el.innerHTML=cart.map(c=>`<div class="cditem">
+    <div class="cdimg">${c.icon}</div>
+    <div class="cdinfo">
+      <div class="cdname">${c.name}</div>
+      <div class="cdprice">${fmt(c.price)} HT / ${c.unit}</div>
+      <div class="cdqty">
+        <button class="qbtn" onclick="changeQty(${c.id},-1)">−</button>
+        <span style="font-size:0.82rem;min-width:18px;text-align:center;">${c.qty}</span>
+        <button class="qbtn" onclick="changeQty(${c.id},1)">+</button>
+        <button class="rmbtn" onclick="removeFromCart(${c.id})" title="Retirer">🗑️</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function openCart(){renderCart();document.getElementById('cartOverlay').style.display='block';document.getElementById('cartDrawer').classList.add('open');document.body.style.overflow='hidden';}
+function closeCart(){document.getElementById('cartOverlay').style.display='none';document.getElementById('cartDrawer').classList.remove('open');document.body.style.overflow='';}
+function sendDevis(){
+  if(!cart.length) return;
+  const lines=cart.map(c=>`- ${c.name} (Réf.${c.ref}) x${c.qty} = ${fmt(c.price*c.qty)} HT`).join('\n');
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const body=encodeURIComponent(`Bonjour,\n\nJe souhaite un devis pour :\n\n${lines}\n\nTotal HT estimé : ${fmt(total)}\n\nCordialement`);
+  window.location.href=`mailto:contact@aotc.fr?subject=Demande de devis AOTC&body=${body}`;
+}
+
+// ── ACCOUNT ──
+const LEVELS=[
+  {name:'Bronze',min:0,   icon:'🥉',av:['1 point par euro dépensé','Accès aux offres membres']},
+  {name:'Argent',min:500, icon:'🥈',av:['1,5 point par euro dépensé','−5% sur toutes commandes','Livraison prioritaire']},
+  {name:'Or',    min:1500,icon:'🥇',av:['2 points par euro dépensé','−10% sur toutes commandes','Livraison offerte dès 50€','Accès ventes privées']},
+];
+let curUser=JSON.parse(localStorage.getItem('aotc_user')||'null');
+function getLvl(p){return[...LEVELS].reverse().find(l=>p>=l.min)||LEVELS[0];}
+function openAccount(){
+  document.getElementById('accountOverlay').style.display='block';
+  document.getElementById('accountModal').style.display='block';
+  document.body.style.overflow='hidden';
+  curUser?showDash():showTab('login');
+}
+function closeAccount(){
+  document.getElementById('accountOverlay').style.display='none';
+  document.getElementById('accountModal').style.display='none';
+  document.body.style.overflow='';
+}
+function showTab(tab){
+  document.getElementById('paneLogin').style.display=tab==='login'?'block':'none';
+  document.getElementById('paneRegister').style.display=tab==='register'?'block':'none';
+  document.getElementById('paneDashboard').style.display='none';
+  document.getElementById('modalTabs').style.display='flex';
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active',tab==='register');
+  document.getElementById('modalTitle').innerHTML='Mon <span style="color:var(--orange)">Compte</span>';
+}
+function showDash(){
+  ['paneLogin','paneRegister'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('paneDashboard').style.display='block';
+  document.getElementById('modalTabs').style.display='none';
+  document.getElementById('modalTitle').innerHTML='Bonjour <span style="color:var(--orange)">'+curUser.prenom+'</span>';
+  const pts=curUser.points||0, lvl=getLvl(pts), next=LEVELS.find(l=>l.min>pts);
+  document.getElementById('dashPts').textContent=pts+' pts';
+  document.getElementById('dashLvl').textContent='Niveau '+lvl.icon+' '+lvl.name;
+  if(next){const pct=Math.round(((pts-lvl.min)/(next.min-lvl.min))*100);document.getElementById('pFill').style.width=pct+'%';document.getElementById('dashNext').textContent=(next.min-pts)+' pts pour niveau '+next.name;}
+  else{document.getElementById('pFill').style.width='100%';document.getElementById('dashNext').textContent='🏆 Niveau maximum !';}
+  ['lb','ls','lg'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',LEVELS[i].name===lvl.name));
+  document.getElementById('avList').innerHTML=lvl.av.map(a=>`<div class="avitem">✓ ${a}</div>`).join('');
+}
+function doLogin(){
+  const em=document.getElementById('loginEmail').value.trim(),pw=document.getElementById('loginPass').value,err=document.getElementById('loginErr');
+  const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
+  if(!em||!pw){err.textContent='Remplissez tous les champs.';err.style.display='block';return;}
+  if(!users[em]||users[em].pass!==pw){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';return;}
+  err.style.display='none';curUser=users[em];localStorage.setItem('aotc_user',JSON.stringify(curUser));updateAccBtn();showDash();
+}
+function doRegister(){
+  const pr=document.getElementById('regPrenom').value.trim(),no=document.getElementById('regNom').value.trim();
+  const em=document.getElementById('regEmail').value.trim(),pw=document.getElementById('regPass').value;
+  const en=document.getElementById('regEnt').value.trim(),err=document.getElementById('regErr');
+  if(!pr||!no||!em||!pw){err.textContent='Remplissez tous les champs obligatoires.';err.style.display='block';return;}
+  if(pw.length<6){err.textContent='Mot de passe trop court (min. 6 caractères).';err.style.display='block';return;}
+  const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
+  if(users[em]){err.textContent='Email déjà utilisé.';err.style.display='block';return;}
+  err.style.display='none';
+  const u={prenom:pr,nom:no,email:em,pass:pw,entreprise:en,points:50,createdAt:new Date().toISOString()};
+  users[em]=u;localStorage.setItem('aotc_users',JSON.stringify(users));
+  curUser=u;localStorage.setItem('aotc_user',JSON.stringify(u));updateAccBtn();showDash();
+}
+function doLogout(){curUser=null;localStorage.removeItem('aotc_user');updateAccBtn();showTab('login');}
+function updateAccBtn(){
+  const l=document.getElementById('accountLabel'),b=document.getElementById('accountBtn');
+  if(curUser){l.textContent=curUser.prenom;b.classList.add('gold');}
+  else{l.textContent='Mon compte';b.classList.remove('gold');}
+}
+
+// ── STRIPE PAIEMENT ──
+const STRIPE_PK = 'pk_test_51TU33pEXJM7LGecZb8rymMLykBt3ufcTf6F46oFVNXYoGOuV9802J0PuJdUDjaSJdQrqfUqNqXzk2loGyhPshP2t00FqSQlkQK';
+const BACKEND_URL = 'https://aotc-backend.onrender.com';
+let stripe = null, cardElement = null;
+
+// Charger Stripe.js une seule fois
+function loadStripe(){
+  return new Promise((resolve)=>{
+    if(window.Stripe){ stripe=Stripe(STRIPE_PK); resolve(); return; }
+    const s=document.createElement('script');
+    s.src='https://js.stripe.com/v3/';
+    s.onload=()=>{ stripe=Stripe(STRIPE_PK); resolve(); };
+    document.head.appendChild(s);
+  });
+}
+
+function mountCard(){
+  if(cardElement){ try{ cardElement.destroy(); }catch(e){} cardElement=null; }
+  const elements=stripe.elements();
+  cardElement=elements.create('card',{
+    style:{
+      base:{color:'#f0ede8',fontFamily:'Barlow, sans-serif',fontSize:'15px','::placeholder':{color:'#7a8099'}},
+      invalid:{color:'#e84545'}
+    }
+  });
+  cardElement.mount('#card-element');
+  cardElement.on('change',e=>{
+    const el=document.getElementById('card-errors');
+    if(el) el.textContent=e.error?e.error.message:'';
+  });
+}
+
+async function openCheckout(){
+  if(!cart.length) return;
+  closeCart();
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+
+  document.getElementById('checkoutBody').innerHTML=`
+    <div class="test-badge">🔒 Paiements sécurisés — Propulsé par Stripe</div>
+    <div class="checkout-recap">
+      <h4>📦 Récapitulatif</h4>
+      <div id="checkoutRecap">${cart.map(c=>`<div class="recap-item"><span>${c.name} x${c.qty}</span><span>${fmt(c.price*c.qty)}</span></div>`).join('')}</div>
+      <div class="recap-total">Total HT <span id="checkoutTotal">${fmt(total)}</span></div>
+    </div>
+    <div class="stripe-field">
+      <label>Nom complet</label>
+      <input id="payNom" type="text" placeholder="Jean Dupont" value="${curUser?curUser.prenom+' '+curUser.nom:''}">
+    </div>
+    <div class="stripe-field">
+      <label>Email</label>
+      <input id="payEmail" type="email" placeholder="votre@email.fr" value="${curUser?curUser.email:''}">
+    </div>
+    <div class="stripe-field-row">
+      <div class="stripe-field">
+        <label>Entreprise (optionnel)</label>
+        <input id="payEnt" type="text" placeholder="Plomberie Martin" value="${curUser&&curUser.entreprise?curUser.entreprise:''}">
+      </div>
+      <div class="stripe-field">
+        <label>Téléphone</label>
+        <input id="payTel" type="tel" placeholder="+33 6 00 00 00 00">
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);margin:1rem 0;padding-top:1rem;">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:0.8rem;">📦 Adresse de livraison</p>
+      <div class="stripe-field">
+        <label>Adresse</label>
+        <input id="payAdresse" type="text" placeholder="12 rue des Artisans">
+      </div>
+      <div class="stripe-field-row">
+        <div class="stripe-field">
+          <label>Code postal</label>
+          <input id="payCP" type="text" placeholder="75001" maxlength="5">
+        </div>
+        <div class="stripe-field">
+          <label>Ville</label>
+          <input id="payVille" type="text" placeholder="Paris">
+        </div>
+      </div>
+      <div class="stripe-field">
+        <label>Pays</label>
+        <select id="payPays" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.92rem;border-radius:4px;outline:none;">
+          <option value="FR">🇫🇷 France</option>
+          <option value="BE">🇧🇪 Belgique</option>
+          <option value="CH">🇨🇭 Suisse</option>
+          <option value="LU">🇱🇺 Luxembourg</option>
+          <option value="DE">🇩🇪 Allemagne</option>
+          <option value="ES">🇪🇸 Espagne</option>
+          <option value="IT">🇮🇹 Italie</option>
+        </select>
+      </div>
+      <div class="stripe-field">
+        <label>Instructions de livraison (optionnel)</label>
+        <input id="payInstructions" type="text" placeholder="Bâtiment B, code 1234, laisser en consigne…">
+      </div>
+    </div>
+    <div class="stripe-field">
+      <label>Carte bancaire</label>
+      <div id="card-element" style="min-height:40px;"></div>
+      <div id="card-errors" style="color:#e84545;font-size:0.78rem;margin-top:0.4rem;"></div>
+    </div>
+    <button class="btn-pay" id="payBtn" onclick="processPayment()">🔒 Payer <span id="payAmount">${fmt(total*1.20)} TTC</span></button>
+    <div class="secure-badge">🔒 Paiement sécurisé par Stripe · Données chiffrées</div>
+  `;
+
+  document.getElementById('checkoutOverlay').style.display='block';
+  document.getElementById('checkoutBox').style.display='block';
+  document.body.style.overflow='hidden';
+
+  // Charger Stripe puis monter la carte
+  await loadStripe();
+  mountCard();
+}
+
+function closeCheckout(){
+  document.getElementById('checkoutOverlay').style.display='none';
+  document.getElementById('checkoutBox').style.display='none';
+  document.body.style.overflow='';
+}
+
+async function processPayment(){
+  if(!stripe||!cardElement){alert('Stripe non chargé, réessayez dans 2 secondes.');return;}
+
+  const get = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+  const nom         = get('payNom');
+  const email       = get('payEmail');
+  const entreprise  = get('payEnt');
+  const tel         = get('payTel');
+  const adresse     = get('payAdresse');
+  const cp          = get('payCP');
+  const ville       = get('payVille');
+  const pays        = document.getElementById('payPays')?.value || 'FR';
+  const instructions= get('payInstructions');
+
+  const setErr = msg => { const el=document.getElementById('card-errors'); if(el) el.textContent=msg; };
+  const setBtn = (txt,dis) => { const b=document.getElementById('payBtn'); if(b){b.disabled=dis;b.innerHTML=txt;} };
+
+  // Validation
+  if(!nom||!email){ setErr('Veuillez remplir votre nom et email.'); return; }
+  if(!adresse||!cp||!ville){ setErr('Veuillez remplir votre adresse de livraison complète.'); return; }
+  if(cp.length!==5||isNaN(cp)){ setErr('Code postal invalide (5 chiffres).'); return; }
+
+  const amountLabel = document.getElementById('payAmount')?.textContent || '';
+  setBtn('⏳ Traitement en cours…', true);
+  setErr('');
+
+  const livraison = { adresse, cp, ville, pays, instructions };
+
+  try {
+    // 1. Créer le PaymentIntent côté backend
+    const res = await fetch(BACKEND_URL + '/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cart: cart.map(c => ({ id: c.id, name: c.name, qty: c.qty })),
+        customerInfo: { nom, email, entreprise, tel, livraison }
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erreur serveur');
+
+    // 2. Confirmer le paiement avec Stripe
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+      payment_method: {
+        card: cardElement,
+        billing_details: {
+          name: nom, email: email,
+          address: { line1: adresse, postal_code: cp, city: ville, country: pays }
+        }
+      }
+    });
+
+    if (result.error) {
+      setErr(result.error.message);
+      setBtn('🔒 Payer ' + amountLabel, false);
+      return;
+    }
+
+    if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+      paymentSuccess(nom, email, parseFloat(data.totalHT), parseFloat(data.totalTTC), livraison);
+    }
+
+  } catch(e) {
+    setErr('Erreur : ' + e.message);
+    setBtn('🔒 Payer ' + amountLabel, false);
+  }
+}
+
+function paymentSuccess(nom, email, totalHT, totalTTC, livraison){
+  if(curUser){
+    const pts=Math.floor(totalHT);
+    curUser.points=(curUser.points||0)+pts;
+    localStorage.setItem('aotc_user',JSON.stringify(curUser));
+    const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
+    if(users[curUser.email]){users[curUser.email]=curUser;localStorage.setItem('aotc_users',JSON.stringify(users));}
+  }
+  cart=[];saveCart();updateCartBadge();render();
+  document.getElementById('checkoutBody').innerHTML=`
+    <div class="success-screen">
+      <div class="sicon">✅</div>
+      <h3>Commande confirmée !</h3>
+      <p>Merci <strong>${nom}</strong> pour votre commande.<br>
+      Un email de confirmation a été envoyé à <strong>${email}</strong>.<br><br>
+      <strong>Livraison prévue à :</strong><br>
+      <span style="color:var(--white);">${livraison.adresse}<br>${livraison.cp} ${livraison.ville}</span><br><br>
+      Votre commande sera expédiée sous <strong>24h ouvrées</strong>.<br><br>
+      ${curUser?`<span style="color:var(--gold);">⭐ +${Math.floor(totalHT)} points fidélité crédités !</span><br><br>`:''}
+      <span style="font-size:0.82rem;color:var(--grey);">Total payé : ${totalTTC}€ TTC (dont TVA 20%)</span>
+      </p>
+      <button onclick="closeCheckout()" style="margin-top:1.5rem;background:var(--green);border:none;color:white;padding:0.8rem 2rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;">
+        Fermer
+      </button>
+    </div>`;
+}
+
+// ── LEGAL & COOKIES ──
+function openLegal(){closeAccount();document.getElementById('legalOverlay').style.display='block';document.getElementById('legalBox').style.display='block';document.body.style.overflow='hidden';}
+function closeLegal(){document.getElementById('legalOverlay').style.display='none';document.getElementById('legalBox').style.display='none';document.body.style.overflow='';}
+function acceptCookies(){localStorage.setItem('aotc_cookies','accepted');document.getElementById('cookieBanner').style.display='none';}
+function refuseCookies(){localStorage.setItem('aotc_cookies','refused');document.getElementById('cookieBanner').style.display='none';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAccount();closeLegal();closeCart();}});
+
+// ── INIT ──
+updateCartBadge();
+if(curUser) updateAccBtn();
+if(localStorage.getItem('aotc_cookies')) document.getElementById('cookieBanner').style.display='none';
+// Afficher les produits de démonstration immédiatement puis charger Supabase
+render();
+loadProducts();
+</script>
+</body>
+</html>
