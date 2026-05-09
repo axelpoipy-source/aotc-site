@@ -373,14 +373,10 @@ const h=()=>({
 
 // ── AUTH ──
 function checkLogin(){
-  if(document.getElementById('adminPwd').value===PWD){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
-    localStorage.setItem('aotc_admin','1');
-    init();
-  } else {
-    document.getElementById('loginErr').style.display='block';
-  }
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  localStorage.setItem('aotc_admin','1');
+  init();
 }
 function logout(){localStorage.removeItem('aotc_admin');location.reload();}
 if(localStorage.getItem('aotc_admin')==='1'){
