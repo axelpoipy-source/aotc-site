@@ -593,7 +593,6 @@ async function runBot(){
   const kw    = document.getElementById('botKeyword').value.trim();
   const qty   = parseInt(document.getElementById('botQty').value)||5;
   const marge = parseFloat(document.getElementById('botMarge').value)||3;
-  const src   = SOURCES[currentSource];
   if(!kw){toast('Entrez un mot-clé.',true);return;}
 
   isRunning=true;botProducts=[];
@@ -610,28 +609,21 @@ async function runBot(){
 
     let raw = [];
     try {
-      // SerpAPI Google Shopping — vrais produits avec vraies photos
-      const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${enc(kw)}&gl=fr&hl=fr&num=${qty}&api_key=${SERP_KEY}`;
-      const res = await fetch(serpUrl);
+      // Appel via le backend pour éviter les erreurs CORS
+      const res = await fetch('https://aotc-backend.onrender.com/search-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keyword: kw, qty })
+      });
       const data = await res.json();
-
-      if(data.shopping_results && data.shopping_results.length > 0){
-        raw = data.shopping_results.slice(0, qty).map(item => ({
-          title:   item.title  || 'Produit',
-          price:   parseFloat((item.price||'10').replace(/[^0-9,.]/g,'').replace(',','.')) || 10,
-          image:   item.thumbnail || '',
-          sales:   item.source || 'Google Shopping',
-          itemId:  item.product_id || item.position || Math.random().toString(36).substr(2,6),
-          url:     item.link || '#',
-          source:  item.source || 'Google Shopping'
-        }));
-        log(`✅ ${raw.length} vrais produits trouvés sur Google Shopping !`,'ok');
+      if(data.products && data.products.length > 0){
+        raw = data.products;
+        log(`✅ ${raw.length} vrais produits trouvés !`,'ok');
       } else {
-        log(`⚠️ Aucun résultat Google Shopping — essai sur ${src.name}…`,'warn');
-        throw new Error('Pas de résultats');
+        throw new Error('Aucun produit');
       }
     } catch(e) {
-      log(`⚠️ Google Shopping indisponible — produits de démonstration`,'warn');
+      log(`⚠️ Recherche indisponible — produits de démonstration`,'warn');
       raw = demoProd(kw, qty, currentSource);
     }
 
@@ -643,7 +635,7 @@ async function runBot(){
       setProgress(40+Math.round((i/raw.length)*55));
       log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
       try {
-        enriched.push(await enrichGPT(raw[i], marge, kw, raw[i].source||src.name));
+        enriched.push(await enrichGPT(raw[i], marge, kw, raw[i].source||'Google Shopping'));
         log(`  ✅ ${enriched[enriched.length-1].nom} — ${enriched[enriched.length-1].prix_ht.toFixed(2)}€ HT`,'ok');
       } catch(e){
         enriched.push(basicEnrich(raw[i], marge, kw));
