@@ -609,21 +609,28 @@ async function runBot(){
 
     let raw = [];
     try {
-      // Appel via le backend pour éviter les erreurs CORS
+      log(`📡 Appel backend : aotc-backend.onrender.com/search-products`,'info');
       const res = await fetch('https://aotc-backend.onrender.com/search-products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keyword: kw, qty })
       });
+      log(`📡 Réponse HTTP : ${res.status} ${res.statusText}`,'info');
       const data = await res.json();
+      log(`📡 Données reçues : ${JSON.stringify(data).substring(0,100)}`,'info');
       if(data.products && data.products.length > 0){
         raw = data.products;
         log(`✅ ${raw.length} vrais produits trouvés !`,'ok');
+      } else if(data.error){
+        log(`❌ Erreur backend : ${data.error}`,'err');
+        throw new Error(data.error);
       } else {
+        log(`⚠️ Réponse vide ou inattendue : ${JSON.stringify(data).substring(0,200)}`,'warn');
         throw new Error('Aucun produit');
       }
     } catch(e) {
-      log(`⚠️ Recherche indisponible — produits de démonstration`,'warn');
+      log(`❌ Exception : ${e.message}`,'err');
+      log(`⚠️ Passage aux produits de démonstration`,'warn');
       raw = demoProd(kw, qty, currentSource);
     }
 
