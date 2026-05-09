@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOTC — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--steel:#1a1f2e;--mid:#222839;--card:#252d40;--light:#2e3650;--orange:#e8521a;--orange2:#ff6b2b;--gold:#c9a84c;--green:#2a9d5c;--red:#e84545;--white:#f0ede8;--grey:#7a8099;--border:rgba(232,82,26,0.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--steel);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;}
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.login-box{background:var(--mid);border:1px solid var(--border);border-top:3px solid var(--orange);padding:2.5rem;border-radius:8px;width:min(400px,100%);}
+.login-box h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;text-transform:uppercase;margin-bottom:0.3rem;}
+.login-box h1 span{color:var(--orange);}
+.login-box p{color:var(--grey);font-size:0.85rem;margin-bottom:2rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);margin-bottom:0.4rem;}
+.field input{width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.7rem 0.9rem;font-family:'Barlow',sans-serif;font-size:0.95rem;border-radius:4px;outline:none;transition:border-color 0.2s;}
+.field input:focus{border-color:var(--orange);}
+.btn-main{background:var(--orange);border:none;color:white;padding:0.9rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.2s;}
+.btn-main:hover{background:var(--orange2);}
+.btn-main:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-green{background:var(--green);border:none;color:white;padding:0.75rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.2s;}
+.btn-green:hover{background:#23a85e;}
+.btn-light{background:var(--light);border:1px solid var(--border);color:var(--white);padding:0.6rem 1.2rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.2s;}
+.btn-light:hover{border-color:var(--orange);color:var(--orange);}
+.err-txt{color:var(--red);font-size:0.8rem;margin-top:0.5rem;display:none;text-align:center;}
+.admin{display:none;}
+.topbar{background:#111520;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.5rem;letter-spacing:0.08em;}
+.logo span{color:var(--orange);}
+.badge-admin{font-size:0.7rem;background:rgba(232,82,26,0.15);color:var(--orange);padding:0.2rem 0.6rem;border-radius:3px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;margin-left:0.8rem;}
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.35rem 0.8rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.75rem;border-radius:4px;transition:all 0.18s;}
+.btn-sm:hover{border-color:var(--red);color:var(--red);}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px);}
+.sidebar{background:var(--mid);border-right:1px solid var(--border);padding:1rem 0;}
+.nav-item{width:100%;background:transparent;border:none;color:var(--grey);padding:0.7rem 1.2rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.85rem;text-align:left;display:flex;align-items:center;gap:0.6rem;transition:all 0.18s;border-left:3px solid transparent;}
+.nav-item:hover{background:var(--card);color:var(--white);}
+.nav-item.active{background:var(--card);color:var(--orange);border-left-color:var(--orange);}
+.nav-sep{height:1px;background:rgba(255,255,255,0.06);margin:0.5rem 0;}
+.nav-label{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--grey);padding:0.8rem 1.2rem 0.3rem;}
+.main{padding:1.5rem;overflow-y:auto;}
+.page{display:none;}
+.page.active{display:block;}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;}
+.ph h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.7rem;text-transform:uppercase;}
+.ph h2 span{color:var(--orange);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-bottom:1.5rem;}
+.scard{background:var(--card);border:1px solid var(--border);padding:1.1rem;border-radius:6px;}
+.scard .n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;color:var(--orange);line-height:1;}
+.scard .l{font-size:0.72rem;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.25rem;}
+.box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1.3rem;margin-bottom:1.2rem;}
+.box h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;}
+.box p{font-size:0.82rem;color:var(--grey);margin-bottom:0.9rem;}
+.irow{display:flex;gap:0.6rem;}
+.iinput{flex:1;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.9rem;border-radius:4px;outline:none;transition:border-color 0.2s;}
+.iinput:focus{border-color:var(--orange);}
+.prev{background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:1.2rem;margin-top:1rem;display:none;}
+.prev h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;text-transform:uppercase;color:var(--green);margin-bottom:0.9rem;}
+.prev-grid{display:grid;grid-template-columns:110px 1fr;gap:1rem;align-items:start;}
+.prev-img{width:110px;height:110px;object-fit:cover;border-radius:4px;border:1px solid var(--border);}
+.prev-ph{width:110px;height:110px;background:var(--card);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;border:1px solid var(--border);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.ff{margin-bottom:0.6rem;}
+.ff label{display:block;font-size:0.67rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.25rem;}
+.ff input,.ff select,.ff textarea{width:100%;background:var(--mid);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.75rem;font-family:'Barlow',sans-serif;font-size:0.83rem;border-radius:4px;outline:none;transition:border-color 0.2s;resize:vertical;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--orange);}
+.ff-full{grid-column:1/-1;}
+.twrap{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.thead2{padding:0.8rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:0.8rem;}
+.tsearch{background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.45rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.82rem;border-radius:4px;outline:none;flex:1;max-width:240px;}
+.tsearch:focus{border-color:var(--orange);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--steel);padding:0.6rem 0.9rem;text-align:left;font-size:0.67rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);font-weight:600;border-bottom:1px solid var(--border);}
+td{padding:0.65rem 0.9rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem;vertical-align:middle;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.timg{width:40px;height:40px;object-fit:cover;border-radius:3px;}
+.tph{width:40px;height:40px;background:var(--steel);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.pill{font-size:0.62rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:3px;text-transform:uppercase;}
+.p-new{background:var(--orange);color:white;}
+.p-pro{background:var(--gold);color:#111;}
+.p-stock{background:rgba(42,157,92,0.15);color:var(--green);}
+.tog{background:transparent;border:1px solid;padding:0.22rem 0.55rem;cursor:pointer;font-size:0.7rem;border-radius:3px;transition:all 0.18s;}
+.tog.on{border-color:var(--green);color:var(--green);}
+.tog.off{border-color:var(--red);color:var(--red);}
+.icon-btn{background:transparent;border:none;color:var(--grey);cursor:pointer;font-size:0.88rem;padding:0.18rem 0.35rem;transition:color 0.18s;}
+.icon-btn:hover{color:var(--red);}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--green);color:white;padding:0.75rem 1.3rem;border-radius:6px;font-size:0.85rem;font-weight:600;z-index:999;display:none;animation:fadeUp 0.25s ease;}
+.toast.err{background:var(--red);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BOT STYLES */
+.bot-header{background:linear-gradient(135deg,#1a2a1e,var(--mid));border:1px solid rgba(42,157,92,0.3);border-radius:8px;padding:1.5rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;}
+.bot-avatar{width:56px;height:56px;background:linear-gradient(135deg,var(--green),#1a5c36);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 0 20px rgba(42,157,92,0.3);}
+.bot-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;text-transform:uppercase;color:var(--white);}
+.bot-title span{color:var(--green);}
+.bot-sub{font-size:0.8rem;color:var(--grey);margin-top:0.2rem;}
+.bot-status{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--green);background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.25);padding:0.2rem 0.6rem;border-radius:10px;margin-left:auto;}
+.bot-status::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.bot-input-zone{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.3rem;margin-bottom:1rem;}
+.bot-input-zone h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.3rem;}
+.bot-input-zone p{font-size:0.8rem;color:var(--grey);margin-bottom:0.9rem;}
+.bot-row{display:grid;grid-template-columns:1fr auto auto;gap:0.6rem;align-items:end;}
+.bot-qty{background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.75rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;width:90px;}
+.bot-marge{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--grey);background:var(--steel);border:1px solid var(--border);padding:0.5rem 0.8rem;border-radius:4px;}
+.bot-marge input{background:transparent;border:none;color:var(--orange);font-weight:700;font-size:0.9rem;width:36px;outline:none;font-family:'Barlow',sans-serif;}
+.bot-log{background:#0a0f1a;border:1px solid var(--border);border-radius:6px;padding:1rem;margin-top:1rem;min-height:160px;max-height:300px;overflow-y:auto;font-family:'Courier New',monospace;font-size:0.78rem;display:none;}
+.log-line{padding:0.18rem 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+.log-line.ok{color:#4ade80;}
+.log-line.err{color:#f87171;}
+.log-line.info{color:#60a5fa;}
+.log-line.warn{color:#fbbf24;}
+.bot-results{margin-top:1rem;display:none;}
+.bot-results h4{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;text-transform:uppercase;color:var(--green);margin-bottom:0.8rem;letter-spacing:0.06em;}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.8rem;}
+.rcard{background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:0.9rem;position:relative;transition:border-color 0.18s;}
+.rcard.selected{border-color:var(--green);}
+.rcard .rc-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;margin-bottom:0.6rem;background:var(--card);}
+.rcard .rc-ph{width:100%;aspect-ratio:1;background:var(--card);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:0.6rem;}
+.rcard .rc-name{font-size:0.8rem;font-weight:600;line-height:1.3;margin-bottom:0.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.rcard .rc-price{color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;}
+.rcard .rc-vente{font-size:0.7rem;color:var(--grey);}
+.rcard .rc-check{position:absolute;top:0.5rem;right:0.5rem;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.18s;background:var(--mid);}
+.rcard.selected .rc-check{background:var(--green);border-color:var(--green);}
+.bot-actions{display:flex;gap:0.7rem;margin-top:1rem;flex-wrap:wrap;}
+.progress-bar{background:var(--steel);border-radius:4px;height:8px;margin-top:0.8rem;overflow:hidden;display:none;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;transition:width 0.3s;width:0%;}
+.cat-chips{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+.chip{background:var(--light);border:1px solid var(--border);color:var(--grey);padding:0.28rem 0.7rem;border-radius:12px;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
+.chip.active{background:var(--orange);border-color:var(--orange);color:white;}
+@media(max-width:700px){
+  .layout{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .sidebar{display:flex;overflow-x:auto;padding:0.4rem;border-right:none;border-bottom:1px solid var(--border);}
+  .nav-label,.nav-sep{display:none;}
+  .nav-item{white-space:nowrap;border-left:none;border-bottom:3px solid transparent;padding:0.45rem 0.8rem;font-size:0.8rem;}
+  .nav-item.active{border-bottom-color:var(--orange);}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .fg{grid-template-columns:1fr;}
+  .prev-grid{grid-template-columns:1fr;}
+  .irow{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>A<span>O</span>TC <span style="color:var(--grey);font-size:0.9rem;font-weight:400;">Admin</span></h1>
+    <p>Panneau d'administration — accès restreint</p>
+    <div class="field"><label>Mot de passe</label><input type="password" id="adminPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkLogin()"></div>
+    <button class="btn-main" style="width:100%;" onclick="checkLogin()">Accéder →</button>
+    <p class="err-txt" id="loginErr">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<div class="admin" id="adminPanel">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;">
+      <div class="logo">A<span>O</span>TC</div>
+      <span class="badge-admin">⚙️ Admin</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span style="font-size:0.75rem;color:var(--grey);">Poipy Axel</span>
+      <button class="btn-sm" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="nav-label">Menu</div>
+      <button class="nav-item active" onclick="nav('dashboard')">📊 Tableau de bord</button>
+      <button class="nav-item" onclick="nav('import')">🔗 Importer AliExpress</button>
+      <button class="nav-item" onclick="nav('produits')">📦 Produits <span id="nbProd" style="margin-left:auto;background:var(--light);color:var(--grey);font-size:0.68rem;padding:0.08rem 0.4rem;border-radius:8px;"></span></button>
+      <button class="nav-item" onclick="nav('manuel')">➕ Ajout manuel</button>
+      <button class="nav-item" onclick="nav('bot')" style="color:var(--green);">🤖 Bot IA</button>
+      <div class="nav-sep"></div>
+      <div class="nav-label">Liens</div>
+      <button class="nav-item" onclick="window.open('https://aotcfr.netlify.app')">🌐 Voir le site</button>
+      <button class="nav-item" onclick="window.open('https://dashboard.stripe.com')">💳 Stripe</button>
+      <button class="nav-item" onclick="window.open('https://supabase.com/dashboard/project/umouxtilhnmbypgxbste')">🗄️ Supabase</button>
+    </div>
+
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="ph"><h2>Tableau de <span>bord</span></h2></div>
+        <div class="stats">
+          <div class="scard"><div class="n" id="s1">—</div><div class="l">Produits total</div></div>
+          <div class="scard"><div class="n" id="s2">—</div><div class="l">Actifs</div></div>
+          <div class="scard"><div class="n" id="s3">—</div><div class="l">Catégories</div></div>
+          <div class="scard"><div class="n" id="s4">—</div><div class="l">Nouveautés</div></div>
+        </div>
+        <div class="box">
+          <h3>🚀 Actions rapides</h3>
+          <p>Ajoutez des produits depuis AliExpress ou manuellement.</p>
+          <div style="display:flex;gap:0.7rem;flex-wrap:wrap;">
+            <button class="btn-main" onclick="nav('import')">🔗 Importer AliExpress</button>
+            <button class="btn-light" onclick="nav('manuel')">➕ Ajout manuel</button>
+            <button class="btn-light" onclick="nav('produits')">📦 Voir les produits</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPORT ALIEXPRESS -->
+      <div class="page" id="page-import">
+        <div class="ph"><h2>Importer <span>AliExpress</span></h2></div>
+        <div class="box">
+          <h3>🔗 Coller le lien AliExpress</h3>
+          <p>Collez l'URL d'un produit AliExpress. Les informations sont pré-remplies, complétez le prix et sauvegardez.</p>
+          <div class="irow">
+            <input class="iinput" id="aliUrl" type="url" placeholder="https://fr.aliexpress.com/item/1234567890.html">
+            <button class="btn-main" id="importBtn" onclick="doImport()">⚡ Analyser</button>
+          </div>
+          <p style="font-size:0.74rem;color:var(--grey);margin-top:0.5rem;">💡 Cherchez sur AliExpress : "stainless steel pipe fitting", "brass ball valve", "pipe clamp"…</p>
+        </div>
+
+        <div class="prev" id="prevBox">
+          <h4>✅ Produit prêt — Complétez et sauvegardez</h4>
+          <div class="prev-grid">
+            <div id="prevImgWrap"><div class="prev-ph">🔧</div></div>
+            <div>
+              <div class="fg">
+                <div class="ff"><label>Nom *</label><input id="pNom" type="text"></div>
+                <div class="ff"><label>Catégorie</label>
+                  <select id="pCat"><option>Raccords</option><option>Robinetterie</option><option>Boulonnerie</option><option>Outillage</option><option>Soudage</option><option>Étanchéité</option><option>Divers</option></select>
+                </div>
+                <div class="ff"><label>Prix HT (€) *</label><input id="pPrix" type="number" step="0.01" min="0" placeholder="0.00"></div>
+                <div class="ff"><label>Unité</label>
+                  <select id="pUnite"><option>unité</option><option>lot</option><option>kg</option><option>mètre</option><option>rouleau</option><option>boîte</option></select>
+                </div>
+                <div class="ff"><label>Référence</label><input id="pRef" type="text"></div>
+                <div class="ff"><label>Badge</label>
+                  <select id="pBadge"><option value="new">Nouveau</option><option value="pro">Pro</option><option value="stock">En stock</option></select>
+                </div>
+                <div class="ff ff-full"><label>Description</label><textarea id="pDesc" rows="2"></textarea></div>
+                <div class="ff ff-full"><label>Tags (séparés par virgule)</label><input id="pTags" type="text" placeholder="inox, raccord, DN50"></div>
+                <div class="ff ff-full"><label>URL image (copiez depuis AliExpress)</label><input id="pImg" type="url" oninput="updatePrevImg()"></div>
+              </div>
+              <button class="btn-green" onclick="saveProd()">💾 Ajouter au catalogue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUITS -->
+      <div class="page" id="page-produits">
+        <div class="ph">
+          <h2>Mes <span>produits</span></h2>
+          <button class="btn-light" onclick="loadProduits()">🔄 Actualiser</button>
+        </div>
+        <div class="twrap">
+          <div class="thead2">
+            <input class="tsearch" id="tsearch" type="text" placeholder="Rechercher…" oninput="filterTable()">
+            <span style="font-size:0.75rem;color:var(--grey);" id="tcount"></span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Photo</th><th>Nom</th><th>Catégorie</th><th>Prix HT</th><th>Badge</th><th>Statut</th><th>Actions</th></tr></thead>
+              <tbody id="tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--grey);">Chargement…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AJOUT MANUEL -->
+      <div class="page" id="page-manuel">
+        <div class="ph"><h2>Ajout <span>manuel</span></h2></div>
+        <div class="box">
+          <div class="fg">
+            <div class="ff"><label>Nom *</label><input id="mNom" type="text" placeholder="Vanne à bille laiton 3/4&quot;"></div>
+            <div class="ff"><label>Catégorie</label>
+              <select id="mCat"><option>Raccords</option><option>Robinetterie</option><option>Boulonnerie</option><option>Outillage</option><option>Soudage</option><option>Étanchéité</option><option>Divers</option></select>
+            </div>
+            <div class="ff"><label>Prix HT (€) *</label><input id="mPrix" type="number" step="0.01" min="0" placeholder="12.50"></div>
+            <div class="ff"><label>Unité</label>
+              <select id="mUnite"><option>unité</option><option>lot</option><option>kg</option><option>mètre</option><option>rouleau</option><option>boîte</option></select>
+            </div>
+            <div class="ff"><label>Référence</label><input id="mRef" type="text" placeholder="ROB-201"></div>
+            <div class="ff"><label>Badge</label>
+              <select id="mBadge"><option value="new">Nouveau</option><option value="pro">Pro</option><option value="stock">En stock</option></select>
+            </div>
+            <div class="ff ff-full"><label>Description</label><textarea id="mDesc" rows="3" placeholder="Description du produit…"></textarea></div>
+            <div class="ff"><label>URL image</label><input id="mImg" type="url" placeholder="https://…"></div>
+            <div class="ff"><label>Lien AliExpress</label><input id="mAli" type="url" placeholder="https://fr.aliexpress.com/…"></div>
+            <div class="ff ff-full"><label>Tags (séparés par virgule)</label><input id="mTags" type="text" placeholder="vanne, laiton, robinetterie"></div>
+          </div>
+          <button class="btn-green" style="margin-top:0.8rem;" onclick="saveManuel()">💾 Ajouter au catalogue</button>
+        </div>
+      </div>
+
+      <!-- BOT IA -->
+      <div class="page" id="page-bot">
+        <div class="ph"><h2>Bot <span>IA</span> — Import automatique</h2></div>
+        <div class="bot-header">
+          <div class="bot-avatar">🤖</div>
+          <div>
+            <div class="bot-title">AOTC <span>Bot</span></div>
+            <div class="bot-sub">Recherche sur 5 sources, traduit et importe automatiquement</div>
+          </div>
+          <div class="bot-status">En ligne</div>
+        </div>
+        <div class="bot-input-zone">
+          <h3>🌐 Source</h3>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;" id="sourceChips">
+            <div class="chip active" onclick="selectSource(this,'aliexpress')">🇨🇳 AliExpress</div>
+            <div class="chip" onclick="selectSource(this,'amazon')">📦 Amazon</div>
+            <div class="chip" onclick="selectSource(this,'manomano')">🔨 ManoMano</div>
+            <div class="chip" onclick="selectSource(this,'leroymerlin')">🏠 Leroy Merlin</div>
+            <div class="chip" onclick="selectSource(this,'ebay')">🛒 eBay</div>
+            <div class="chip" onclick="selectSource(this,'cdiscount')">💰 Cdiscount</div>
+          </div>
+
+          <h3>🔍 Mot-clé</h3>
+          <p style="margin-bottom:0.7rem;">Choisissez une catégorie ou tapez votre recherche.</p>
+          <div class="cat-chips" id="catChips">
+            <div class="chip active" onclick="selectChip(this,'raccord inox tuyauterie')">🔧 Raccords Inox</div>
+            <div class="chip" onclick="selectChip(this,'vanne laiton robinetterie')">🚰 Vannes</div>
+            <div class="chip" onclick="selectChip(this,'collier serrage tuyau')">🔩 Colliers</div>
+            <div class="chip" onclick="selectChip(this,'coupe tube professionnel')">✂️ Coupe-tube</div>
+            <div class="chip" onclick="selectChip(this,'électrode soudure inox')">🔥 Électrodes</div>
+            <div class="chip" onclick="selectChip(this,'joint étanchéité industriel')">📏 Joints</div>
+            <div class="chip" onclick="selectChip(this,'boulon ecrou inox')">🔩 Boulonnerie</div>
+            <div class="chip" onclick="selectChip(this,'outillage plombier professionnel')">🛠️ Outillage</div>
+          </div>
+          <div class="bot-row">
+            <div class="iinput" style="padding:0;">
+              <input id="botKeyword" type="text" value="raccord inox tuyauterie"
+                style="width:100%;background:transparent;border:none;color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.9rem;outline:none;">
+            </div>
+            <input class="bot-qty" id="botQty" type="number" min="1" max="20" value="5" title="Nb produits">
+            <button class="btn-main" id="botBtn" onclick="runBot()">🤖 Lancer</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:1.5rem;margin-top:0.8rem;flex-wrap:wrap;">
+            <div class="bot-marge">Marge × <input id="botMarge" type="number" min="1.5" max="10" step="0.5" value="3"></div>
+            <span style="font-size:0.75rem;color:var(--grey);">Ex: fournisseur 5€ × 3 = <span style="color:var(--orange);">15€ HT</span> sur votre site</span>
+          </div>
+          <div class="progress-bar" id="botProgress"><div class="progress-fill" id="botProgressFill"></div></div>
+        </div>
+        <div class="bot-log" id="botLog"></div>
+        <div class="bot-results" id="botResults">
+          <h4 id="botResultTitle">Produits trouvés — Sélectionnez ceux à importer</h4>
+          <div class="result-grid" id="resultGrid"></div>
+          <div class="bot-actions">
+            <button class="btn-green" onclick="importSelected()">💾 Importer la sélection (<span id="selCount">0</span>)</button>
+            <button class="btn-light" onclick="selectAll()">✅ Tout sélectionner</button>
+            <button class="btn-light" onclick="clearResults()">🗑️ Effacer</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://umouxtilhnmbypgxbste.supabase.co';
+const SB_KEY = 'sb_publishable_Ps_FCxeBseTPf4zSSR1kEg_Z3ttJFP1';
+const PWD    = 'aotc2024admin';
+let allP = [];
+
+// ── SUPABASE HEADERS ──
+const h=()=>({
+  'apikey': SB_KEY,
+  'Authorization': `Bearer ${SB_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+});
+
+// ── AUTH ──
+function checkLogin(){
+  if(document.getElementById('adminPwd').value===PWD){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    localStorage.setItem('aotc_admin','1');
+    init();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+function logout(){localStorage.removeItem('aotc_admin');location.reload();}
+if(localStorage.getItem('aotc_admin')==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminPanel').style.display='block';
+  setTimeout(init,100);
+}
+
+// ── NAV ──
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b=>{
+    const map={dashboard:'bord',import:'aliexpress',produits:'produits',manuel:'manuel',bot:'bot'};
+    if(b.textContent.toLowerCase().includes(map[id]||id)) b.classList.add('active');
+  });
+  if(id==='produits') loadProduits();
+  if(id==='dashboard') loadStats();
+}
+
+// ── SUPABASE ──
+const h=()=>({'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'});
+async function sbGet(q){const r=await fetch(`${SB_URL}/rest/v1/${q}`,{headers:h()});return r.json();}
+async function sbPost(t,d){
+  // Passer par le backend pour éviter les problèmes de clé Supabase
+  try {
+    const r=await fetch(`https://aotc-backend.onrender.com/admin-insert`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({table:t,data:d})
+    });
+    return r;
+  } catch(e) {
+    // Fallback direct Supabase
+    return fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:h(),body:JSON.stringify(d)});
+  }
+}
+async function sbPatch(t,id,d){return fetch(`${SB_URL}/rest/v1/${t}?id=eq.${id}`,{method:'PATCH',headers:h(),body:JSON.stringify(d)});}
+async function sbDel(t,id){return fetch(`${SB_URL}/rest/v1/${t}?id=eq.${id}`,{method:'DELETE',headers:h()});}
+
+// ── TOAST ──
+function toast(msg,err=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(err?' err':'');
+  t.style.display='block';setTimeout(()=>t.style.display='none',3000);
+}
+
+// ── STATS ──
+async function loadStats(){
+  const d=await sbGet('produits?select=id,actif,categorie,badge');
+  document.getElementById('s1').textContent=d.length;
+  document.getElementById('s2').textContent=d.filter(p=>p.actif).length;
+  document.getElementById('s3').textContent=[...new Set(d.map(p=>p.categorie).filter(Boolean))].length;
+  document.getElementById('s4').textContent=d.filter(p=>p.badge==='new').length;
+  document.getElementById('nbProd').textContent=d.length;
+}
+
+// ── IMPORT ──
+async function doImport(){
+  const url=document.getElementById('aliUrl').value.trim();
+  if(!url||!url.includes('aliexpress')){toast('Lien AliExpress invalide.',true);return;}
+  const btn=document.getElementById('importBtn');
+  btn.disabled=true;btn.textContent='⏳…';
+  const m=url.match(/\/item\/(\d+)/);
+  const ref='ALI-'+String(Math.floor(Math.random()*9000)+1000);
+  document.getElementById('pNom').value='Produit AliExpress'+(m?' #'+m[1]:'');
+  document.getElementById('pRef').value=ref;
+  document.getElementById('pDesc').value='Importé depuis AliExpress. Modifiez la description.';
+  document.getElementById('pPrix').value='';
+  document.getElementById('pImg').value='';
+  document.getElementById('pTags').value='';
+  document.getElementById('pNom').dataset.ali=url;
+  document.getElementById('prevBox').style.display='block';
+  document.getElementById('prevImgWrap').innerHTML='<div class="prev-ph">🔧</div>';
+  toast('✅ Complétez le prix et la photo puis sauvegardez !');
+  document.getElementById('pPrix').focus();
+  btn.disabled=false;btn.textContent='⚡ Analyser';
+}
+function updatePrevImg(){
+  const u=document.getElementById('pImg').value.trim();
+  document.getElementById('prevImgWrap').innerHTML=u&&u.startsWith('http')
+    ?`<img src="${u}" class="prev-img" onerror="this.parentElement.innerHTML='<div class=prev-ph>🔧</div>'">`
+    :'<div class="prev-ph">🔧</div>';
+}
+async function saveProd(){
+  const nom=document.getElementById('pNom').value.trim();
+  const prix=parseFloat(document.getElementById('pPrix').value);
+  if(!nom){toast('Nom obligatoire.',true);return;}
+  if(!prix||prix<=0){toast('Prix HT obligatoire.',true);return;}
+  const r=await sbPost('produits',{
+    nom,categorie:document.getElementById('pCat').value,
+    reference:document.getElementById('pRef').value,
+    description:document.getElementById('pDesc').value,
+    prix_ht:prix,unite:document.getElementById('pUnite').value,
+    badge:document.getElementById('pBadge').value,
+    tags:document.getElementById('pTags').value,
+    image_url:document.getElementById('pImg').value,
+    lien_aliexpress:document.getElementById('pNom').dataset.ali||'',
+    actif:true
+  });
+  if(r.ok){toast('✅ Produit ajouté !');document.getElementById('prevBox').style.display='none';document.getElementById('aliUrl').value='';loadStats();}
+  else toast('Erreur sauvegarde.',true);
+}
+
+// ── PRODUITS TABLE ──
+async function loadProduits(){
+  const d=await sbGet('produits?select=*&order=id.desc');
+  allP=d;renderTable(d);
+  document.getElementById('nbProd').textContent=d.length;
+}
+function renderTable(d){
+  document.getElementById('tcount').textContent=d.length+' produit(s)';
+  const b=document.getElementById('tbody');
+  if(!d.length){b.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--grey);">Aucun produit</td></tr>';return;}
+  b.innerHTML=d.map(p=>`<tr>
+    <td>${p.image_url&&p.image_url.startsWith('http')?`<img src="${p.image_url}" class="timg" onerror="this.style.display='none'">`:' <div class="tph">🔧</div>'}</td>
+    <td><strong>${p.nom}</strong><br><span style="font-size:0.7rem;color:var(--grey);">${p.reference||''}</span></td>
+    <td style="font-size:0.78rem;">${p.categorie||'—'}</td>
+    <td><strong>${p.prix_ht!=null?p.prix_ht.toFixed(2)+'€':'—'}</strong></td>
+    <td><span class="pill p-${p.badge||'stock'}">${p.badge==='new'?'Nouveau':p.badge==='pro'?'Pro':'Stock'}</span></td>
+    <td><button class="tog ${p.actif?'on':'off'}" onclick="toggle(${p.id},${p.actif})">${p.actif?'✅ Actif':'❌ Inactif'}</button></td>
+    <td>
+      ${p.lien_aliexpress?`<button class="icon-btn" onclick="window.open('${p.lien_aliexpress}')" title="AliExpress">🔗</button>`:''}
+      <button class="icon-btn" onclick="del(${p.id})" title="Supprimer">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+function filterTable(){
+  const q=document.getElementById('tsearch').value.toLowerCase();
+  renderTable(allP.filter(p=>(p.nom||'').toLowerCase().includes(q)||(p.categorie||'').toLowerCase().includes(q)||(p.reference||'').toLowerCase().includes(q)));
+}
+async function toggle(id,cur){await sbPatch('produits',id,{actif:!cur});toast(cur?'❌ Désactivé':'✅ Activé');loadProduits();}
+async function del(id){if(!confirm('Supprimer ce produit ?'))return;await sbDel('produits',id);toast('🗑️ Supprimé');loadProduits();}
+
+// ── AJOUT MANUEL ──
+async function saveManuel(){
+  const nom=document.getElementById('mNom').value.trim();
+  const prix=parseFloat(document.getElementById('mPrix').value);
+  if(!nom){toast('Nom obligatoire.',true);return;}
+  if(!prix||prix<=0){toast('Prix HT obligatoire.',true);return;}
+  const r=await sbPost('produits',{
+    nom,categorie:document.getElementById('mCat').value,
+    reference:document.getElementById('mRef').value,
+    description:document.getElementById('mDesc').value,
+    prix_ht:prix,unite:document.getElementById('mUnite').value,
+    badge:document.getElementById('mBadge').value,
+    tags:document.getElementById('mTags').value,
+    image_url:document.getElementById('mImg').value,
+    lien_aliexpress:document.getElementById('mAli').value,
+    actif:true
+  });
+  if(r.ok){
+    toast('✅ Produit ajouté !');
+    ['mNom','mRef','mDesc','mPrix','mImg','mAli','mTags'].forEach(id=>document.getElementById(id).value='');
+    loadStats();
+  } else toast('Erreur sauvegarde.',true);
+}
+
+async function init(){await loadStats();}
+
+// ── BOT IA ──
+const OPENAI_KEY  = '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';
+const SCRAPER_KEY = '805244ca4ccd53c678dbbbfd192b6c36';
+let botProducts=[], isRunning=false, currentSource='aliexpress';
+
+// Config des sources
+const SOURCES = {
+  aliexpress:  { name:'AliExpress',    flag:'🇨🇳', searchUrl: kw=>`https://fr.aliexpress.com/wholesale?SearchText=${enc(kw)}&SortType=total_transan_desc` },
+  amazon:      { name:'Amazon FR',     flag:'📦', searchUrl: kw=>`https://www.amazon.fr/s?k=${enc(kw)}&i=industrial` },
+  manomano:    { name:'ManoMano',      flag:'🔨', searchUrl: kw=>`https://www.manomano.fr/search/${enc(kw)}` },
+  leroymerlin: { name:'Leroy Merlin',  flag:'🏠', searchUrl: kw=>`https://www.leroymerlin.fr/recherche?q=${enc(kw)}` },
+  ebay:        { name:'eBay FR',       flag:'🛒', searchUrl: kw=>`https://www.ebay.fr/sch/i.html?_nkw=${enc(kw)}&_sacat=0` },
+  cdiscount:   { name:'Cdiscount',     flag:'💰', searchUrl: kw=>`https://www.cdiscount.com/search/10/${enc(kw)}.html` },
+};
+const enc = s => encodeURIComponent(s);
+
+function selectSource(el, src){
+  document.querySelectorAll('#sourceChips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentSource = src;
+  log(`Source sélectionnée : ${SOURCES[src].flag} ${SOURCES[src].name}`,'info');
+}
+
+function selectChip(el,kw){
+  document.querySelectorAll('#catChips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('botKeyword').value=kw;
+}
+
+function log(msg,type='info'){
+  const box=document.getElementById('botLog');
+  box.style.display='block';
+  const d=document.createElement('div');
+  d.className='log-line '+type;
+  const t=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  d.textContent=`[${t}] ${msg}`;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+
+function setProgress(p){
+  document.getElementById('botProgress').style.display='block';
+  document.getElementById('botProgressFill').style.width=p+'%';
+}
+
+const SERP_KEY = '431985b0e83bc27a7dcd06d774e3e20312345fdb85ce64e4d4ce69f5fedc0656';
+
+async function runBot(){
+  if(isRunning){toast('Bot déjà en cours…',true);return;}
+  const kw    = document.getElementById('botKeyword').value.trim();
+  const qty   = parseInt(document.getElementById('botQty').value)||5;
+  const marge = parseFloat(document.getElementById('botMarge').value)||3;
+  if(!kw){toast('Entrez un mot-clé.',true);return;}
+
+  isRunning=true;botProducts=[];
+  const btn=document.getElementById('botBtn');
+  btn.disabled=true;btn.textContent='⏳ En cours…';
+  document.getElementById('botLog').innerHTML='';
+  document.getElementById('botLog').style.display='block';
+  document.getElementById('botResults').style.display='none';
+  setProgress(5);
+
+  try {
+    log(`🔍 Recherche "${kw}" via Google Shopping…`,'info');
+    setProgress(15);
+
+    let raw = [];
+    try {
+      log(`📡 Appel backend : aotc-backend.onrender.com/search-products`,'info');
+      const res = await fetch('https://aotc-backend.onrender.com/search-products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keyword: kw, qty })
+      });
+      log(`📡 Réponse HTTP : ${res.status} ${res.statusText}`,'info');
+      const data = await res.json();
+      log(`📡 Données reçues : ${JSON.stringify(data).substring(0,100)}`,'info');
+      if(data.products && data.products.length > 0){
+        raw = data.products;
+        log(`✅ ${raw.length} vrais produits trouvés !`,'ok');
+      } else if(data.error){
+        log(`❌ Erreur backend : ${data.error}`,'err');
+        throw new Error(data.error);
+      } else {
+        log(`⚠️ Réponse vide ou inattendue : ${JSON.stringify(data).substring(0,200)}`,'warn');
+        throw new Error('Aucun produit');
+      }
+    } catch(e) {
+      log(`❌ Exception : ${e.message}`,'err');
+      log(`⚠️ Passage aux produits de démonstration`,'warn');
+      raw = demoProd(kw, qty, currentSource);
+    }
+
+    setProgress(40);
+    log(`🤖 GPT traduit ${raw.length} produit(s) en français…`,'info');
+
+    const enriched=[];
+    for(let i=0;i<raw.length;i++){
+      setProgress(40+Math.round((i/raw.length)*55));
+      log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
+      try {
+        enriched.push(await enrichGPT(raw[i], marge, kw, raw[i].source||'Google Shopping'));
+        log(`  ✅ ${enriched[enriched.length-1].nom} — ${enriched[enriched.length-1].prix_ht.toFixed(2)}€ HT`,'ok');
+      } catch(e){
+        enriched.push(basicEnrich(raw[i], marge, kw));
+        log(`  ⚠️ Enrichissement basique`,'warn');
+      }
+    }
+
+    setProgress(100);
+    botProducts=enriched;
+    log(`\n🎉 ${enriched.length} produit(s) prêt(s) à importer !`,'ok');
+    renderBotResults();
+
+  } catch(e){ log('❌ '+e.message,'err'); toast('Erreur : '+e.message,true); }
+
+  isRunning=false;btn.disabled=false;btn.textContent='🤖 Lancer';
+}
+      log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
+      try {
+        enriched.push(await enrichGPT(raw[i], marge, kw, src.name));
+        log(`  ✅ ${enriched[enriched.length-1].nom} — ${enriched[enriched.length-1].prix_ht.toFixed(2)}€ HT`,'ok');
+      } catch(e){
+        enriched.push(basicEnrich(raw[i], marge, kw));
+        log(`  ⚠️ Enrichissement basique appliqué`,'warn');
+      }
+    }
+
+    setProgress(100);
+    botProducts=enriched;
+    log(`\n🎉 ${enriched.length} produit(s) prêt(s) à importer !`,'ok');
+    renderBotResults();
+
+  } catch(e){ log('❌ '+e.message,'err'); toast('Erreur : '+e.message,true); }
+
+  isRunning=false;btn.disabled=false;btn.textContent='🤖 Lancer';
+}
+
+// ── PARSERS PAR SOURCE ──
+function parsePage(html, source, qty){
+  try {
+    switch(source){
+      case 'aliexpress':  return parseAliExpress(html, qty);
+      case 'amazon':      return parseAmazon(html, qty);
+      case 'manomano':    return parseManoMano(html, qty);
+      case 'leroymerlin': return parseLeroyMerlin(html, qty);
+      case 'ebay':        return parseEbay(html, qty);
+      case 'cdiscount':   return parseCdiscount(html, qty);
+      default:            return [];
+    }
+  } catch(e){ return []; }
+}
+
+function parseAliExpress(html, qty){
+  const products=[];
+  try {
+    const m=html.match(/"listItems"\s*:\s*(\[.+?\])/s)||html.match(/window\.__INIT_DATA__\s*=\s*({.+?});/s);
+    if(m){
+      const raw=JSON.parse(m[1]);
+      const items=Array.isArray(raw)?raw:(raw?.data?.root?.fields?.mods?.itemList?.content||[]);
+      items.slice(0,qty).forEach(it=>products.push({
+        title: it.title?.displayTitle||it.title||'Produit AliExpress',
+        price: parseFloat(it.prices?.salePrice?.minPrice||it.price||5),
+        image: (it.image?.imgUrl||it.imageUrl||'').replace(/^\/\//,'https://'),
+        sales: it.trade?.tradeDesc||'100+ ventes',
+        itemId:it.itemId||it.productId||rndId(),
+        url:   `https://fr.aliexpress.com/item/${it.itemId||''}.html`,
+        source:'AliExpress'
+      }));
+    }
+  } catch(e){}
+  return products;
+}
+
+function parseAmazon(html, qty){
+  const products=[];
+  try {
+    const blocks=[...html.matchAll(/data-asin="(\w+)"[\s\S]*?<span[^>]*class="[^"]*a-price-whole[^"]*"[^>]*>([\d,]+)<\/span>[\s\S]*?<span[^>]*class="[^"]*a-text-normal[^"]*"[^>]*>([^<]+)<\/span>/g)];
+    blocks.slice(0,qty).forEach(m=>products.push({
+      title: m[3].trim()||'Produit Amazon',
+      price: parseFloat(m[2].replace(',','.'))||10,
+      image: '',sales:'Disponible',
+      itemId:m[1],url:`https://www.amazon.fr/dp/${m[1]}`,source:'Amazon'
+    }));
+    if(!products.length){
+      const titleMatches=[...html.matchAll(/<span[^>]*class="[^"]*a-text-normal[^"]*"[^>]*>([^<]{10,80})<\/span>/g)].slice(0,qty);
+      const priceMatches=[...html.matchAll(/class="[^"]*a-price-whole[^"]*"[^>]*>([\d,]+)/g)];
+      titleMatches.forEach((m,i)=>products.push({
+        title:m[1].trim(),price:parseFloat((priceMatches[i]?.[1]||'10').replace(',','.'))||10,
+        image:'',sales:'Disponible',itemId:`AMZ${i}`,
+        url:`https://www.amazon.fr/s?k=${enc(m[1])}`,source:'Amazon'
+      }));
+    }
+  } catch(e){}
+  return products;
+}
+
+function parseManoMano(html, qty){
+  const products=[];
+  try {
+    const m=html.match(/window\.__INITIAL_STATE__\s*=\s*({.+?});<\/script>/s)||
+             html.match(/"products"\s*:\s*(\[.+?\])/s);
+    if(m){
+      const raw=JSON.parse(m[1]);
+      const items=raw?.search?.products||raw?.products||raw||[];
+      (Array.isArray(items)?items:[]).slice(0,qty).forEach(it=>products.push({
+        title: it.name||it.title||'Produit ManoMano',
+        price: parseFloat(it.price||it.priceMin||8),
+        image: it.imageUrl||it.thumbnail||'',
+        sales: 'Disponible',itemId:it.id||rndId(),
+        url:   it.url?`https://www.manomano.fr${it.url}`:`https://www.manomano.fr/search/${enc(it.name||'')}`,
+        source:'ManoMano'
+      }));
+    }
+  } catch(e){}
+  return products;
+}
+
+function parseLeroyMerlin(html, qty){
+  const products=[];
+  try {
+    const m=html.match(/"productList"\s*:\s*(\[.+?\])/s)||
+             html.match(/window\.__NUXT__\s*=\s*({.+?})<\/script>/s);
+    if(m){
+      const raw=JSON.parse(m[1]);
+      const items=Array.isArray(raw)?raw:(raw?.data?.[0]?.products||[]);
+      items.slice(0,qty).forEach(it=>products.push({
+        title: it.name||it.label||'Produit Leroy Merlin',
+        price: parseFloat(it.price?.selling||it.price||12),
+        image: it.images?.[0]?.url||it.image||'',
+        sales: 'En stock',itemId:it.id||rndId(),
+        url:   `https://www.leroymerlin.fr${it.url||'/recherche?q='+enc(it.name||'')}`,
+        source:'Leroy Merlin'
+      }));
+    }
+  } catch(e){}
+  return products;
+}
+
+function parseEbay(html, qty){
+  const products=[];
+  try {
+    const blocks=[...html.matchAll(/s-item__title[^>]*>([^<]{5,80})<[\s\S]*?s-item__price[^>]*>([\d\s,€]+)<[\s\S]*?s-item__image-img[^>]*src="([^"]+)"/g)];
+    blocks.slice(0,qty).forEach((m,i)=>products.push({
+      title:m[1].replace('Nouveau - ','').trim(),
+      price:parseFloat(m[2].replace(/[^\d,]/g,'').replace(',','.'))||8,
+      image:m[3]||'',sales:'eBay',itemId:`EBAY${i}`,
+      url:`https://www.ebay.fr/sch/i.html?_nkw=${enc(m[1])}`,source:'eBay'
+    }));
+  } catch(e){}
+  return products;
+}
+
+function parseCdiscount(html, qty){
+  const products=[];
+  try {
+    const m=html.match(/var\s+ProductList\s*=\s*(\[.+?\]);/s)||
+             html.match(/"products"\s*:\s*(\[.+?\])/s);
+    if(m){
+      const items=JSON.parse(m[1]);
+      items.slice(0,qty).forEach(it=>products.push({
+        title: it.Name||it.name||'Produit Cdiscount',
+        price: parseFloat(it.Price||it.price||9),
+        image: it.ImageUrl||it.image||'',
+        sales: 'Disponible',itemId:it.Id||rndId(),
+        url:   `https://www.cdiscount.com${it.ProductUrl||'/search/10/'+enc(it.Name||'')+'.html'}`,
+        source:'Cdiscount'
+      }));
+    }
+  } catch(e){}
+  return products;
+}
+
+function rndId(){ return Math.random().toString(36).substr(2,9); }
+
+function demoProd(kw, qty, source){
+  const src = SOURCES[source]?.name||source;
+  const modeles=['Pro','Industrial','Premium','Standard','Heavy Duty','Expert','Professional'];
+  return Array.from({length:qty},(_,i)=>({
+    title:`${kw} - ${modeles[i%modeles.length]}`,
+    price:+(Math.random()*20+3).toFixed(2),
+    image:'',sales:`${Math.floor(Math.random()*2000)+100}+ ventes`,
+    itemId:`DEMO${i+1}`,url:'#',source:src
+  }));
+}
+
+async function enrichGPT(p, marge, kw, sourceName){
+  // Appel via le backend sécurisé au lieu d'OpenAI directement
+  const res = await fetch('https://aotc-backend.onrender.com/enrich-product', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: p.title, price: p.price, keyword: kw, source: sourceName })
+  });
+  if(!res.ok) throw new Error('Erreur backend enrichissement');
+  const g = await res.json();
+  return {
+    nom:g.nom||p.title.substring(0,50),categorie:g.categorie||'Divers',
+    description:g.description||p.title,tags:g.tags||kw,
+    badge:g.badge||'new',unite:g.unite||'unité',
+    prix_ht:Math.round(p.price*marge*100)/100,
+    image_url:p.image,lien_aliexpress:p.url,
+    reference:(currentSource.substring(0,3).toUpperCase())+'-'+String(p.itemId).substring(0,6),
+    actif:true,_ali_price:p.price,_sales:p.sales,_img:p.image,_source:p.source
+  };
+}
+
+function basicEnrich(p, marge, kw){
+  return {
+    nom:p.title.substring(0,50),categorie:'Divers',description:p.title,
+    tags:kw.replace(/\s+/g,', '),badge:'new',unite:'unité',
+    prix_ht:Math.round(p.price*marge*100)/100,
+    image_url:p.image,lien_aliexpress:p.url,
+    reference:(currentSource.substring(0,3).toUpperCase())+'-'+String(p.itemId).substring(0,6),
+    actif:true,_ali_price:p.price,_sales:p.sales,_img:p.image,_source:p.source||currentSource
+  };
+}
+
+function renderBotResults(){
+  document.getElementById('botResults').style.display='block';
+  document.getElementById('botResultTitle').textContent=`${botProducts.length} produit(s) trouvé(s) — Sélectionnez ceux à importer`;
+  document.getElementById('resultGrid').innerHTML=botProducts.map((p,i)=>`
+    <div class="rcard" id="rc-${i}" onclick="toggleCard(${i})">
+      <div class="rc-check" id="rcheck-${i}">✓</div>
+      ${p._img&&p._img.startsWith('http')
+        ?`<img src="${p._img}" class="rc-img" onerror="this.outerHTML='<div class=rc-ph>🔧</div>'">`
+        :'<div class="rc-ph">🔧</div>'}
+      <div class="rc-name">${p.nom}</div>
+      <div class="rc-price">${p.prix_ht.toFixed(2)}€ <span style="font-size:0.62rem;color:var(--orange);">HT</span></div>
+      <div class="rc-vente">${p.categorie} · ${p._source||''} · fournisseur ${p._ali_price}€</div>
+    </div>
+  `).join('');
+  document.getElementById('selCount').textContent=0;
+}
+
+function toggleCard(i){
+  document.getElementById('rc-'+i).classList.toggle('selected');
+  document.getElementById('selCount').textContent=document.querySelectorAll('.rcard.selected').length;
+}
+function selectAll(){document.querySelectorAll('.rcard').forEach(c=>c.classList.add('selected'));document.getElementById('selCount').textContent=botProducts.length;}
+function clearResults(){botProducts=[];document.getElementById('botResults').style.display='none';document.getElementById('botLog').style.display='none';document.getElementById('botProgress').style.display='none';}
+
+async function importSelected(){
+  const sel=[...document.querySelectorAll('.rcard.selected')].map(c=>botProducts[parseInt(c.id.replace('rc-',''))]);
+  if(!sel.length){toast('Sélectionnez au moins un produit.',true);return;}
+  log(`\n💾 Import de ${sel.length} produit(s)…`,'info');
+  let ok=0;
+  for(const p of sel){
+    const payload={
+      nom:p.nom, categorie:p.categorie, reference:p.reference,
+      description:p.description, prix_ht:p.prix_ht, unite:p.unite,
+      badge:p.badge, tags:p.tags, image_url:p.image_url,
+      lien_aliexpress:p.lien_aliexpress, actif:true
+    };
+    try {
+      const r=await fetch('https://aotc-backend.onrender.com/admin-insert',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({table:'produits',data:payload})
+      });
+      const result=await r.json();
+      if(r.ok && result.success){ok++;log(`  ✅ "${p.nom}" importé`,'ok');}
+      else{log(`  ❌ "${p.nom}" — ${result.error||'Erreur'}`, 'err');}
+    } catch(e){
+      log(`  ❌ "${p.nom}" — ${e.message}`,'err');
+    }
+  }
+  if(ok>0) toast(`✅ ${ok} produit(s) importé(s) !`);
+  else toast('❌ Import échoué — vérifiez les logs Render',true);
+  loadStats();
+  document.querySelectorAll('.rcard.selected').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('selCount').textContent=0;
+}
+
+function selectChip(el,kw){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('botKeyword').value=kw;
+}
+
+function log(msg,type='info'){
+  const box=document.getElementById('botLog');
+  box.style.display='block';
+  const d=document.createElement('div');
+  d.className='log-line '+type;
+  const t=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  d.textContent=`[${t}] ${msg}`;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+
+function setProgress(p){
+  document.getElementById('botProgress').style.display='block';
+  document.getElementById('botProgressFill').style.width=p+'%';
+}
+
+async function runBot(){
+  if(isRunning){toast('Bot déjà en cours…',true);return;}
+  const kw=document.getElementById('botKeyword').value.trim();
+  const qty=parseInt(document.getElementById('botQty').value)||5;
+  const marge=parseFloat(document.getElementById('botMarge').value)||3;
+  if(!kw){toast('Entrez un mot-clé.',true);return;}
+  isRunning=true;botProducts=[];
+  const btn=document.getElementById('botBtn');
+  btn.disabled=true;btn.textContent='⏳ En cours…';
+  document.getElementById('botLog').innerHTML='';
+  document.getElementById('botLog').style.display='block';
+  document.getElementById('botResults').style.display='none';
+  setProgress(5);
+
+  try {
+    log(`🔍 Recherche "${kw}" sur AliExpress…`,'info');
+    const searchUrl=`https://fr.aliexpress.com/wholesale?SearchText=${encodeURIComponent(kw)}&SortType=total_transan_desc`;
+    const scraperUrl=`https://api.scraperapi.com/?api_key=${SCRAPER_KEY}&url=${encodeURIComponent(searchUrl)}&render=true`;
+    let raw=[];
+    try {
+      const res=await fetch(scraperUrl);
+      const html=await res.text();
+      raw=parseAli(html,qty);
+      log(`✅ ${raw.length} produits trouvés`,'ok');
+    } catch(e){
+      log('⚠️ Scraper indisponible — données de démonstration','warn');
+    }
+    if(!raw.length){raw=demoProd(kw,qty);log(`ℹ️ ${raw.length} produits de démonstration générés`,'info');}
+    setProgress(40);
+    log(`🤖 GPT enrichit ${raw.length} produits en français…`,'info');
+    const enriched=[];
+    for(let i=0;i<raw.length;i++){
+      setProgress(40+Math.round((i/raw.length)*50));
+      log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
+      try{enriched.push(await enrichGPT(raw[i],marge,kw));log(`  ✅ ${enriched[enriched.length-1].nom}`,'ok');}
+      catch(e){enriched.push(basicEnrich(raw[i],marge,kw));log(`  ⚠️ Enrichissement basique`,'warn');}
+    }
+    setProgress(100);botProducts=enriched;
+    log(`\n🎉 ${enriched.length} produits prêts à importer !`,'ok');
+    renderBotResults();
+  } catch(e){log('❌ '+e.message,'err');toast('Erreur : '+e.message,true);}
+  isRunning=false;btn.disabled=false;btn.textContent='🤖 Lancer';
+}
+
+function parseAli(html,qty){
+  const products=[];
+  try{
+    const m=html.match(/"listItems"\s*:\s*(\[.+?\])/s)||html.match(/window\.__INIT_DATA__\s*=\s*({.+?});/s);
+    if(m){
+      const raw=JSON.parse(m[1]);
+      const items=Array.isArray(raw)?raw:(raw?.data?.root?.fields?.mods?.itemList?.content||[]);
+      items.slice(0,qty).forEach(it=>{
+        products.push({
+          title:it.title?.displayTitle||it.title||'Produit',
+          price:parseFloat(it.prices?.salePrice?.minPrice||it.price||5),
+          image:(it.image?.imgUrl||it.imageUrl||'').replace(/^\/\//,'https://'),
+          sales:it.trade?.tradeDesc||'100+ ventes',
+          itemId:it.itemId||it.productId||Math.random().toString(36).substr(2,9),
+          url:`https://fr.aliexpress.com/item/${it.itemId||''}.html`
+        });
+      });
+    }
+  }catch(e){}
+  return products;
+}
+
+function demoProd(kw,qty){
+  return Array.from({length:qty},(_,i)=>({
+    title:`${kw} - Grade ${['Pro','Industrial','Premium','Standard','Heavy Duty'][i%5]}`,
+    price:+(Math.random()*15+2).toFixed(2),
+    image:'',sales:`${Math.floor(Math.random()*3000)+200}+ ventes`,
+    itemId:`DEMO${i+1}`,url:'https://fr.aliexpress.com'
+  }));
+}
+
+async function enrichGPT(p,marge,kw){
+  const prompt=`Expert tuyauterie industrielle française. Produit AliExpress: "${p.title}", prix: ${p.price}€, recherche: "${kw}".
+Réponds UNIQUEMENT en JSON valide:
+{"nom":"Nom français pro max 50 chars","categorie":"Raccords ou Robinetterie ou Boulonnerie ou Outillage ou Soudage ou Étanchéité ou Divers","description":"Description technique 1-2 phrases en français","tags":"tags,séparés,virgule","badge":"new ou pro ou stock","unite":"unité ou lot ou kg ou mètre"}`;
+  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENAI_KEY}`},
+    body:JSON.stringify({model:'gpt-4o-mini',max_tokens:250,temperature:0.3,messages:[{role:'user',content:prompt}]})
+  });
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error?.message||'Erreur OpenAI');
+  let g={};
+  try{g=JSON.parse(data.choices[0].message.content.trim().replace(/```json|```/g,'').trim());}catch(e){}
+  return {
+    nom:g.nom||p.title.substring(0,50),categorie:g.categorie||'Divers',
+    description:g.description||p.title,tags:g.tags||kw,
+    badge:g.badge||'new',unite:g.unite||'unité',
+    prix_ht:Math.round(p.price*marge*100)/100,
+    image_url:p.image,lien_aliexpress:p.url,
+    reference:'ALI-'+String(p.itemId).substring(0,6),actif:true,
+    _ali_price:p.price,_sales:p.sales,_img:p.image
+  };
+}
+
+function basicEnrich(p,marge,kw){
+  return {
+    nom:p.title.substring(0,50),categorie:'Divers',
+    description:p.title,tags:kw.replace(/\s+/g,', '),
+    badge:'new',unite:'unité',
+    prix_ht:Math.round(p.price*marge*100)/100,
+    image_url:p.image,lien_aliexpress:p.url,
+    reference:'ALI-'+String(p.itemId).substring(0,6),actif:true,
+    _ali_price:p.price,_sales:p.sales,_img:p.image
+  };
+}
+
+function renderBotResults(){
+  document.getElementById('botResults').style.display='block';
+  document.getElementById('botResultTitle').textContent=`${botProducts.length} produit(s) prêt(s) — Sélectionnez ceux à importer`;
+  document.getElementById('resultGrid').innerHTML=botProducts.map((p,i)=>`
+    <div class="rcard" id="rc-${i}" onclick="toggleCard(${i})">
+      <div class="rc-check" id="rcheck-${i}">✓</div>
+      ${p._img&&p._img.startsWith('http')
+        ?`<img src="${p._img}" class="rc-img" onerror="this.outerHTML='<div class=rc-ph>🔧</div>'">`
+        :'<div class="rc-ph">🔧</div>'}
+      <div class="rc-name">${p.nom}</div>
+      <div class="rc-price">${p.prix_ht.toFixed(2)}€ <span style="font-size:0.65rem;color:var(--orange);">HT</span></div>
+      <div class="rc-vente">${p.categorie} · fournisseur ${p._ali_price}€</div>
+    </div>
+  `).join('');
+  document.getElementById('selCount').textContent=0;
+}
+
+function toggleCard(i){
+  document.getElementById('rc-'+i).classList.toggle('selected');
+  document.getElementById('selCount').textContent=document.querySelectorAll('.rcard.selected').length;
+}
+function selectAll(){document.querySelectorAll('.rcard').forEach(c=>c.classList.add('selected'));document.getElementById('selCount').textContent=botProducts.length;}
+function clearResults(){botProducts=[];document.getElementById('botResults').style.display='none';document.getElementById('botLog').style.display='none';document.getElementById('botProgress').style.display='none';}
+
+async function importSelected(){
+  const sel=[...document.querySelectorAll('.rcard.selected')].map(c=>botProducts[parseInt(c.id.replace('rc-',''))]);
+  if(!sel.length){toast('Sélectionnez au moins un produit.',true);return;}
+  log(`\n💾 Import de ${sel.length} produit(s)…`,'info');
+  let ok=0;
+  for(const p of sel){
+    const r=await sbPost('produits',{nom:p.nom,categorie:p.categorie,reference:p.reference,description:p.description,prix_ht:p.prix_ht,unite:p.unite,badge:p.badge,tags:p.tags,image_url:p.image_url,lien_aliexpress:p.lien_aliexpress,actif:p.actif});
+    if(r.ok){ok++;log(`  ✅ "${p.nom}" importé`,'ok');}
+    else log(`  ❌ Erreur "${p.nom}"`,'err');
+  }
+  toast(`✅ ${ok} produit(s) importé(s) !`);
+  loadStats();
+  document.querySelectorAll('.rcard.selected').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('selCount').textContent=0;
+}
+</script>
+</body>
+</html>
