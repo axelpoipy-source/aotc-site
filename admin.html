@@ -150,7 +150,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     <h1>A<span>O</span>TC <span style="color:var(--grey);font-size:0.9rem;font-weight:400;">Admin</span></h1>
     <p>Panneau d'administration — accès restreint</p>
     <div class="field"><label>Mot de passe</label><input type="password" id="adminPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkLogin()"></div>
-    <button class="btn-main" style="width:100%;" onclick="checkLogin()">Accéder →</button>
+    <button onclick="checkLogin()" style="width:100%;background:#e8521a;border:none;color:white;padding:1rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:0.5rem;">ACCÉDER →</button>
     <p class="err-txt" id="loginErr">Mot de passe incorrect.</p>
   </div>
 </div>
