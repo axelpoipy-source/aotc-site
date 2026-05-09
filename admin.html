@@ -586,6 +586,8 @@ function setProgress(p){
   document.getElementById('botProgressFill').style.width=p+'%';
 }
 
+const SERP_KEY = '431985b0e83bc27a7dcd06d774e3e20312345fdb85ce64e4d4ce69f5fedc0656';
+
 async function runBot(){
   if(isRunning){toast('Bot déjà en cours…',true);return;}
   const kw    = document.getElementById('botKeyword').value.trim();
@@ -603,31 +605,61 @@ async function runBot(){
   setProgress(5);
 
   try {
-    log(`${src.flag} Recherche "${kw}" sur ${src.name}…`,'info');
-    const searchUrl  = src.searchUrl(kw);
-    const scraperUrl = `https://api.scraperapi.com/?api_key=${SCRAPER_KEY}&url=${enc(searchUrl)}&render=true`;
+    log(`🔍 Recherche "${kw}" via Google Shopping…`,'info');
+    setProgress(15);
 
-    let raw=[];
+    let raw = [];
     try {
-      const res  = await fetch(scraperUrl);
-      const html = await res.text();
-      raw = parsePage(html, currentSource, qty);
-      log(`✅ ${raw.length} produit(s) trouvé(s) sur ${src.name}`,'ok');
-    } catch(e){
-      log(`⚠️ Scraper indisponible — données de démonstration`,'warn');
-    }
+      // SerpAPI Google Shopping — vrais produits avec vraies photos
+      const serpUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${enc(kw)}&gl=fr&hl=fr&num=${qty}&api_key=${SERP_KEY}`;
+      const res = await fetch(serpUrl);
+      const data = await res.json();
 
-    if(!raw.length){
+      if(data.shopping_results && data.shopping_results.length > 0){
+        raw = data.shopping_results.slice(0, qty).map(item => ({
+          title:   item.title  || 'Produit',
+          price:   parseFloat((item.price||'10').replace(/[^0-9,.]/g,'').replace(',','.')) || 10,
+          image:   item.thumbnail || '',
+          sales:   item.source || 'Google Shopping',
+          itemId:  item.product_id || item.position || Math.random().toString(36).substr(2,6),
+          url:     item.link || '#',
+          source:  item.source || 'Google Shopping'
+        }));
+        log(`✅ ${raw.length} vrais produits trouvés sur Google Shopping !`,'ok');
+      } else {
+        log(`⚠️ Aucun résultat Google Shopping — essai sur ${src.name}…`,'warn');
+        throw new Error('Pas de résultats');
+      }
+    } catch(e) {
+      log(`⚠️ Google Shopping indisponible — produits de démonstration`,'warn');
       raw = demoProd(kw, qty, currentSource);
-      log(`ℹ️ ${raw.length} produits de démonstration générés`,'info');
     }
 
     setProgress(40);
-    log(`🤖 GPT enrichit ${raw.length} produits en français…`,'info');
+    log(`🤖 GPT traduit ${raw.length} produit(s) en français…`,'info');
 
     const enriched=[];
     for(let i=0;i<raw.length;i++){
       setProgress(40+Math.round((i/raw.length)*55));
+      log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
+      try {
+        enriched.push(await enrichGPT(raw[i], marge, kw, raw[i].source||src.name));
+        log(`  ✅ ${enriched[enriched.length-1].nom} — ${enriched[enriched.length-1].prix_ht.toFixed(2)}€ HT`,'ok');
+      } catch(e){
+        enriched.push(basicEnrich(raw[i], marge, kw));
+        log(`  ⚠️ Enrichissement basique`,'warn');
+      }
+    }
+
+    setProgress(100);
+    botProducts=enriched;
+    log(`\n🎉 ${enriched.length} produit(s) prêt(s) à importer !`,'ok');
+    renderBotResults();
+
+  } catch(e){ log('❌ '+e.message,'err'); toast('Erreur : '+e.message,true); }
+
+  isRunning=false;btn.disabled=false;btn.textContent='🤖 Lancer';
+}
       log(`  → "${raw[i].title.substring(0,45)}…"`,'info');
       try {
         enriched.push(await enrichGPT(raw[i], marge, kw, src.name));
@@ -857,11 +889,27 @@ async function importSelected(){
   log(`\n💾 Import de ${sel.length} produit(s)…`,'info');
   let ok=0;
   for(const p of sel){
-    const r=await sbPost('produits',{nom:p.nom,categorie:p.categorie,reference:p.reference,description:p.description,prix_ht:p.prix_ht,unite:p.unite,badge:p.badge,tags:p.tags,image_url:p.image_url,lien_aliexpress:p.lien_aliexpress,actif:p.actif});
-    if(r.ok){ok++;log(`  ✅ "${p.nom}" importé`,'ok');}
-    else log(`  ❌ Erreur "${p.nom}"`,'err');
+    const payload={
+      nom:p.nom, categorie:p.categorie, reference:p.reference,
+      description:p.description, prix_ht:p.prix_ht, unite:p.unite,
+      badge:p.badge, tags:p.tags, image_url:p.image_url,
+      lien_aliexpress:p.lien_aliexpress, actif:true
+    };
+    try {
+      const r=await fetch('https://aotc-backend.onrender.com/admin-insert',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({table:'produits',data:payload})
+      });
+      const result=await r.json();
+      if(r.ok && result.success){ok++;log(`  ✅ "${p.nom}" importé`,'ok');}
+      else{log(`  ❌ "${p.nom}" — ${result.error||'Erreur'}`, 'err');}
+    } catch(e){
+      log(`  ❌ "${p.nom}" — ${e.message}`,'err');
+    }
   }
-  toast(`✅ ${ok} produit(s) importé(s) dans le catalogue !`);
+  if(ok>0) toast(`✅ ${ok} produit(s) importé(s) !`);
+  else toast('❌ Import échoué — vérifiez les logs Render',true);
   loadStats();
   document.querySelectorAll('.rcard.selected').forEach(c=>c.classList.remove('selected'));
   document.getElementById('selCount').textContent=0;
