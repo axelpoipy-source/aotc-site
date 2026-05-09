@@ -363,6 +363,14 @@ const SB_KEY = 'sb_publishable_Ps_FCxeBseTPf4zSSR1kEg_Z3ttJFP1';
 const PWD    = 'aotc2024admin';
 let allP = [];
 
+// ── SUPABASE HEADERS ──
+const h=()=>({
+  'apikey': SB_KEY,
+  'Authorization': `Bearer ${SB_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+});
+
 // ── AUTH ──
 function checkLogin(){
   if(document.getElementById('adminPwd').value===PWD){
@@ -397,7 +405,20 @@ function nav(id){
 // ── SUPABASE ──
 const h=()=>({'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'});
 async function sbGet(q){const r=await fetch(`${SB_URL}/rest/v1/${q}`,{headers:h()});return r.json();}
-async function sbPost(t,d){return fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:{...h(),'Prefer':'return=representation'},body:JSON.stringify(d)});}
+async function sbPost(t,d){
+  // Passer par le backend pour éviter les problèmes de clé Supabase
+  try {
+    const r=await fetch(`https://aotc-backend.onrender.com/admin-insert`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({table:t,data:d})
+    });
+    return r;
+  } catch(e) {
+    // Fallback direct Supabase
+    return fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:h(),body:JSON.stringify(d)});
+  }
+}
 async function sbPatch(t,id,d){return fetch(`${SB_URL}/rest/v1/${t}?id=eq.${id}`,{method:'PATCH',headers:h(),body:JSON.stringify(d)});}
 async function sbDel(t,id){return fetch(`${SB_URL}/rest/v1/${t}?id=eq.${id}`,{method:'DELETE',headers:h()});}
 
