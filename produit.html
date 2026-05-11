@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOTC — Produit</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --steel:#1a1f2e;--mid:#222839;--card:#252d40;--light:#2e3650;
+  --orange:#e8521a;--orange2:#ff6b2b;--gold:#c9a84c;--green:#2a9d5c;
+  --white:#f0ede8;--grey:#7a8099;--border:rgba(232,82,26,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--steel);color:var(--white);font-family:'Barlow',sans-serif;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(26,31,46,0.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;gap:1rem;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;letter-spacing:0.08em;text-decoration:none;color:var(--white);}
+.logo span{color:var(--orange);}
+.nav-back{background:var(--light);border:1px solid var(--border);color:var(--white);padding:0.5rem 1rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.82rem;border-radius:6px;display:flex;align-items:center;gap:0.4rem;transition:all 0.18s;text-decoration:none;}
+.nav-back:hover{border-color:var(--orange);color:var(--orange);}
+.nav-right{display:flex;gap:0.5rem;margin-left:auto;}
+.nav-btn{background:var(--light);border:1px solid var(--border);color:var(--white);padding:0.5rem 0.85rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.8rem;border-radius:6px;display:flex;align-items:center;gap:0.35rem;transition:all 0.18s;}
+.nav-btn:hover{border-color:var(--orange);color:var(--orange);}
+.cbadge{background:var(--orange);color:white;border-radius:50%;width:16px;height:16px;font-size:0.62rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700;}
+
+/* BREADCRUMB */
+.breadcrumb{padding:1rem 2rem;font-size:0.8rem;color:var(--grey);display:flex;align-items:center;gap:0.5rem;}
+.breadcrumb a{color:var(--grey);text-decoration:none;transition:color 0.18s;}
+.breadcrumb a:hover{color:var(--orange);}
+.breadcrumb span{color:var(--white);}
+
+/* PRODUCT LAYOUT */
+.product-page{max-width:1100px;margin:0 auto;padding:0 2rem 4rem;}
+
+.product-main{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:3rem;}
+
+/* IMAGE */
+.product-img-wrap{position:relative;}
+.product-img-main{width:100%;aspect-ratio:1;background:var(--card);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:6rem;border:1px solid var(--border);overflow:hidden;}
+.product-img-main img{width:100%;height:100%;object-fit:cover;}
+.badge-wrap{position:absolute;top:1rem;left:1rem;display:flex;flex-direction:column;gap:0.4rem;}
+.pbadge{font-size:0.72rem;font-weight:700;padding:0.3rem 0.7rem;border-radius:4px;text-transform:uppercase;letter-spacing:0.06em;}
+.bnew{background:var(--orange);color:white;}
+.bpro{background:var(--gold);color:#1a1200;}
+.bstock{background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);}
+
+/* INFO */
+.product-info{}
+.product-cat{font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--orange);font-weight:600;margin-bottom:0.5rem;}
+.product-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.8rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:0.02em;line-height:1.1;margin-bottom:0.5rem;}
+.product-ref{font-size:0.8rem;color:var(--grey);margin-bottom:1rem;}
+
+/* RATING */
+.rating-row{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;}
+.stars{color:#f59e0b;font-size:1.1rem;}
+.rating-count{font-size:0.82rem;color:var(--grey);}
+.btn-avis-link{background:transparent;border:none;color:var(--orange);font-size:0.8rem;cursor:pointer;text-decoration:underline;padding:0;}
+
+/* PRICE */
+.price-block{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem;}
+.price-ht{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;line-height:1;}
+.price-ht .ht{font-size:0.9rem;color:var(--orange);font-weight:700;background:rgba(232,82,26,0.12);padding:0.15rem 0.4rem;border-radius:3px;margin-left:0.3rem;vertical-align:middle;}
+.price-unit{font-size:0.82rem;color:var(--grey);margin-top:0.3rem;}
+.price-ttc{font-size:0.8rem;color:var(--grey);margin-top:0.2rem;}
+
+/* QTY & ADD */
+.add-block{display:flex;gap:0.8rem;align-items:center;margin-bottom:1.2rem;}
+.qty-control{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.qty-btn{background:var(--light);border:none;color:var(--white);width:40px;height:44px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:background 0.18s;}
+.qty-btn:hover{background:var(--orange);}
+.qty-num{background:var(--card);color:var(--white);width:52px;height:44px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);outline:none;}
+.btn-add{flex:1;background:var(--orange);border:none;color:white;padding:0.85rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:6px;transition:background 0.18s;}
+.btn-add:hover{background:var(--orange2);}
+.btn-add.added{background:var(--green);}
+.btn-devis-prod{width:100%;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:6px;transition:all 0.18s;margin-bottom:1.2rem;}
+.btn-devis-prod:hover{border-color:var(--orange);color:var(--orange);}
+
+/* REASSURANCE */
+.reassurance{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.2rem;}
+.reas-item{background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:0.7rem;display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:var(--grey);}
+.reas-item .icon{font-size:1.1rem;}
+
+/* DESCRIPTION */
+.product-desc-section{margin-bottom:2.5rem;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+.section-title span{color:var(--orange);}
+.desc-text{font-size:0.92rem;color:var(--grey);line-height:1.8;}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:1rem;}
+.spec-item{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:0.7rem;}
+.spec-label{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.2rem;}
+.spec-val{font-size:0.88rem;font-weight:600;color:var(--white);}
+
+/* AVIS */
+.avis-section{margin-bottom:2.5rem;}
+.avis-summary{display:flex;align-items:center;gap:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem;}
+.avg-big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:3rem;color:var(--orange);line-height:1;}
+.avg-stars{color:#f59e0b;font-size:1.2rem;margin-bottom:0.3rem;}
+.avg-count{font-size:0.82rem;color:var(--grey);}
+.btn-write-avis{background:var(--orange);border:none;color:white;padding:0.7rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-left:auto;transition:background 0.18s;}
+.btn-write-avis:hover{background:var(--orange2);}
+.avis-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1rem;margin-bottom:0.8rem;}
+.avis-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.3rem;}
+.avis-nom{font-weight:600;font-size:0.88rem;}
+.avis-ent{font-size:0.75rem;color:var(--grey);}
+.avis-verif{font-size:0.65rem;background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);padding:0.15rem 0.4rem;border-radius:3px;}
+.avis-date{font-size:0.72rem;color:var(--grey);}
+.avis-stars{color:#f59e0b;font-size:0.95rem;margin-bottom:0.4rem;}
+.avis-txt{font-size:0.85rem;color:var(--grey);line-height:1.6;}
+
+/* AVIS FORM */
+.avis-form{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-top:1.5rem;}
+.avis-form h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;}
+.star-input{display:flex;gap:0.4rem;margin-bottom:1rem;}
+.star-input span{font-size:2.2rem;cursor:pointer;opacity:0.3;transition:opacity 0.15s;}
+.star-input span.active{opacity:1;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.35rem;}
+.field textarea,.field input{width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.7rem 0.9rem;font-family:'Barlow',sans-serif;font-size:0.92rem;border-radius:4px;outline:none;transition:border-color 0.18s;resize:vertical;}
+.field textarea:focus,.field input:focus{border-color:var(--orange);}
+.points-preview{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:0.7rem;margin-bottom:1rem;font-size:0.8rem;color:var(--gold);}
+.btn-submit-avis{width:100%;background:var(--orange);border:none;color:white;padding:0.9rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.18s;}
+.btn-submit-avis:hover{background:var(--orange2);}
+
+/* PRODUITS SIMILAIRES */
+.similar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;background:rgba(255,255,255,0.04);}
+.sim-card{background:var(--card);padding:1rem;cursor:pointer;transition:background 0.18s;}
+.sim-card:hover{background:var(--light);}
+.sim-img{width:100%;aspect-ratio:1;background:var(--mid);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:0.7rem;overflow:hidden;}
+.sim-img img{width:100%;height:100%;object-fit:cover;}
+.sim-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;text-transform:uppercase;margin-bottom:0.3rem;line-height:1.2;}
+.sim-price{font-size:0.85rem;color:var(--orange);font-weight:600;}
+
+/* MODAL OVERLAY */
+.overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);}
+
+/* CART DRAWER */
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(380px,95vw);background:var(--mid);z-index:501;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.28s ease;border-left:1px solid var(--border);}
+.cart-drawer.open{transform:translateX(0);}
+.cdhead{padding:1.3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cdhead h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;text-transform:uppercase;}
+.xbtn{background:transparent;border:1px solid var(--border);color:var(--grey);width:30px;height:30px;cursor:pointer;border-radius:4px;font-size:0.9rem;}
+.cditems{flex:1;overflow-y:auto;padding:0.8rem;}
+.cdempty{text-align:center;padding:2.5rem 1rem;color:var(--grey);}
+.cditem{display:flex;gap:0.7rem;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;}
+.cdimg{font-size:1.7rem;background:var(--card);width:44px;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cdinfo{flex:1;min-width:0;}
+.cdname{font-size:0.83rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cdprice{font-size:0.78rem;color:var(--orange);margin-top:0.15rem;}
+.cdqty{display:flex;align-items:center;gap:0.35rem;margin-top:0.35rem;}
+.qbtn{background:var(--light);border:none;color:var(--white);width:20px;height:20px;border-radius:3px;cursor:pointer;font-size:0.78rem;}
+.rmbtn{background:transparent;border:none;color:var(--grey);cursor:pointer;font-size:0.85rem;}
+.cdfoot{padding:1rem 1.5rem;border-top:1px solid var(--border);}
+.cdtotal{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;}
+.cdtotal span{color:var(--orange);font-size:1.4rem;}
+.btn-checkout{width:100%;background:var(--green);border:none;color:white;padding:0.9rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.18s;margin-bottom:0.5rem;}
+.btn-checkout:hover{background:#23a85e;}
+.btn-devis-cart{width:100%;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.7rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.18s;}
+.btn-devis-cart:hover{border-color:var(--orange);color:var(--orange);}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:1rem;}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+footer{background:#0f1219;padding:2rem;border-top:1px solid var(--border);text-align:center;font-size:0.78rem;color:var(--grey);}
+footer a{color:var(--grey);text-decoration:none;margin:0 0.5rem;}
+footer span{color:var(--orange);}
+
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .product-page{padding:0 1rem 3rem;}
+  .product-main{grid-template-columns:1fr;gap:1.5rem;}
+  .specs-grid{grid-template-columns:1fr;}
+  .reassurance{grid-template-columns:1fr;}
+  .breadcrumb{padding:0.8rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">A<span>O</span>TC</a>
+  <a href="index.html" class="nav-back">← Retour au catalogue</a>
+  <div class="nav-right">
+    <button class="nav-btn" id="accountBtn" onclick="openAccount()">👤 <span id="accountLabel">Mon compte</span></button>
+    <button class="nav-btn" onclick="openCart()">🛒 <span class="cbadge" id="cartBadge">0</span></button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">Accueil</a> › <a href="index.html">Catalogue</a> › <span id="breadCat">—</span> › <span id="breadName">—</span>
+</div>
+
+<!-- PRODUIT -->
+<div class="product-page">
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--grey);">Chargement du produit...</p>
+  </div>
+
+  <!-- CONTENU (caché pendant chargement) -->
+  <div id="productContent" style="display:none;">
+
+    <div class="product-main">
+
+      <!-- IMAGE -->
+      <div class="product-img-wrap">
+        <div class="product-img-main" id="productImg">🔧</div>
+        <div class="badge-wrap" id="productBadge"></div>
+      </div>
+
+      <!-- INFOS -->
+      <div class="product-info">
+        <div class="product-cat" id="productCat"></div>
+        <h1 class="product-name" id="productName"></h1>
+        <div class="product-ref" id="productRef"></div>
+
+        <!-- NOTE -->
+        <div class="rating-row" id="ratingRow">
+          <div class="stars" id="productStars"></div>
+          <span class="rating-count" id="ratingCount"></span>
+          <button class="btn-avis-link" onclick="scrollToAvis()">Voir les avis</button>
+        </div>
+
+        <!-- PRIX -->
+        <div class="price-block">
+          <div class="price-ht" id="productPrice">—<span class="ht">HT</span></div>
+          <div class="price-unit" id="productUnit"></div>
+          <div class="price-ttc" id="productTTC"></div>
+        </div>
+
+        <!-- QUANTITÉ + PANIER -->
+        <div class="add-block">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input class="qty-num" type="number" id="qtyInput" value="1" min="1" max="999">
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <button class="btn-add" id="addBtn" onclick="addToCart()">+ Ajouter au panier</button>
+        </div>
+
+        <button class="btn-devis-prod" onclick="openCart()">📧 Demander un devis</button>
+
+        <!-- RÉASSURANCE -->
+        <div class="reassurance">
+          <div class="reas-item"><span class="icon">🚚</span>Livraison 24h ouvrées</div>
+          <div class="reas-item"><span class="icon">✅</span>Produit certifié pro</div>
+          <div class="reas-item"><span class="icon">🔒</span>Paiement sécurisé</div>
+          <div class="reas-item"><span class="icon">↩️</span>Retour sous 30 jours</div>
+        </div>
+
+        <!-- LIEN FOURNISSEUR -->
+        <div id="supplierLink"></div>
+      </div>
+    </div>
+
+    <!-- DESCRIPTION COMPLÈTE -->
+    <div class="product-desc-section">
+      <h2 class="section-title">Description <span>du produit</span></h2>
+      <p class="desc-text" id="productDesc"></p>
+
+      <div class="specs-grid" id="specsGrid"></div>
+    </div>
+
+    <!-- AVIS CLIENTS -->
+    <div class="avis-section" id="avisSection">
+      <h2 class="section-title">Avis <span>clients</span></h2>
+
+      <div class="avis-summary" id="avisSummary">
+        <div>
+          <div class="avg-big" id="avgNote">—</div>
+          <div class="avg-stars" id="avgStars"></div>
+          <div class="avg-count" id="avgCount"></div>
+        </div>
+        <button class="btn-write-avis" onclick="showAvisForm()">✍️ Laisser un avis</button>
+      </div>
+
+      <div id="avisList"></div>
+
+      <!-- Formulaire avis -->
+      <div class="avis-form" id="avisForm" style="display:none;">
+        <h3 id="avisFormTitle">✍️ Laisser un avis</h3>
+
+        <div class="field">
+          <label>Votre note *</label>
+          <div class="star-input" id="starInput">
+            <span onclick="setNote(1)">⭐</span>
+            <span onclick="setNote(2)">⭐</span>
+            <span onclick="setNote(3)">⭐</span>
+            <span onclick="setNote(4)">⭐</span>
+            <span onclick="setNote(5)">⭐</span>
+          </div>
+          <p id="noteLabel" style="font-size:0.75rem;color:var(--grey);margin-top:0.3rem;"></p>
+        </div>
+
+        <div class="field">
+          <label>Commentaire (optionnel)</label>
+          <textarea id="avisComment" rows="3" placeholder="Qualité, conformité, délai de livraison..." oninput="updatePoints()"></textarea>
+        </div>
+
+        <div class="points-preview" id="pointsPreview">
+          ⭐ Récompense : <strong id="pointsVal">0 pts</strong> seront crédités sur votre compte fidélité
+        </div>
+
+        <button class="btn-submit-avis" onclick="submitAvis()" id="submitAvisBtn">✅ Publier mon avis</button>
+        <p style="font-size:0.75rem;color:var(--grey);margin-top:0.5rem;text-align:center;">Votre avis sera publié après vérification (24h max)</p>
+      </div>
+
+      <div id="avisLoginMsg" style="display:none;text-align:center;padding:1.5rem;background:var(--steel);border-radius:6px;border:1px solid var(--border);margin-top:1rem;">
+        <p style="color:var(--grey);margin-bottom:1rem;">Connectez-vous pour laisser un avis</p>
+        <button onclick="openAccount()" style="background:var(--orange);border:none;color:white;padding:0.8rem 2rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;">👤 Se connecter</button>
+      </div>
+    </div>
+
+    <!-- PRODUITS SIMILAIRES -->
+    <div id="similarSection">
+      <h2 class="section-title">Produits <span>similaires</span></h2>
+      <div class="similar-grid" id="similarGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cdhead">
+    <h3>🛒 Mon panier</h3>
+    <button class="xbtn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cditems" id="cartItems"><div class="cdempty">Votre panier est vide</div></div>
+  <div class="cdfoot">
+    <div class="cdtotal">Total HT <span id="cartTotal">0,00€</span></div>
+    <button class="btn-checkout" onclick="window.location.href='index.html#checkout'">💳 Commander</button>
+    <button class="btn-devis-cart" onclick="sendDevis()">📧 Demander un devis</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2024 <span>AOTC</span> — Poipy Axel · Tous les prix sont Hors Taxes (HT) — TVA 20% non incluse</p>
+  <p style="margin-top:0.5rem;"><a href="index.html">Catalogue</a> · <a href="#">Mentions légales</a> · <a href="#">Contact</a></p>
+</footer>
+
+<script>
+const SB_URL  = 'https://fwtpyncsrggpamlggiwi.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dHB5bmNzcmdncGFtbGdnaXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzY2MDIsImV4cCI6MjA5Mzg1MjYwMn0.EYUlGpdABDxDJ1Ck5d6wObZax5sjGlpCRh_LKQmPUQ4';
+const BACKEND = 'https://aotc-backend.onrender.com';
+
+let product = null;
+let curNote = 0;
+let isModif = false;
+let cart = JSON.parse(localStorage.getItem('aotc_cart') || '[]');
+let curUser = JSON.parse(localStorage.getItem('aotc_user') || 'null');
+
+// ── INIT ──
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id');
+
+if(!productId){
+  window.location.href = 'index.html';
+} else {
+  loadProduct(productId);
+}
+
+updateCartBadge();
+if(curUser) updateAccountBtn();
+
+// ── LOAD PRODUCT ──
+async function loadProduct(id){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/produits?id=eq.${id}&actif=eq.true`, {
+      headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`}
+    });
+    const data = await r.json();
+    if(!data || !data.length){ window.location.href = 'index.html'; return; }
+    product = data[0];
+    renderProduct(product);
+    await loadAvis(id);
+    await loadSimilar(product.categorie, id);
+  } catch(e){
+    document.getElementById('loading').innerHTML = '<p style="color:var(--grey);">Erreur de chargement</p>';
+  }
+}
+
+function fmt(n){ return parseFloat(n).toFixed(2).replace('.',',') + '€'; }
+
+function renderProduct(p){
+  document.title = `AOTC — ${p.nom}`;
+  document.getElementById('breadCat').textContent = p.categorie || '—';
+  document.getElementById('breadName').textContent = p.nom;
+  document.getElementById('productCat').textContent = p.categorie || '';
+  document.getElementById('productName').textContent = p.nom;
+  document.getElementById('productRef').textContent = p.reference ? `Réf. ${p.reference}` : '';
+
+  // Image
+  const imgEl = document.getElementById('productImg');
+  if(p.image_url && p.image_url.startsWith('http')){
+    imgEl.innerHTML = `<img src="${p.image_url}" alt="${p.nom}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='🔧'">`;
+  }
+
+  // Badge
+  const badges = {new:'<span class="pbadge bnew">Nouveau</span>', pro:'<span class="pbadge bpro">Pro</span>', stock:'<span class="pbadge bstock">En stock</span>'};
+  document.getElementById('productBadge').innerHTML = badges[p.badge] || '';
+
+  // Prix
+  document.getElementById('productPrice').innerHTML = `${fmt(p.prix_ht)}<span class="ht">HT</span>`;
+  document.getElementById('productUnit').textContent = `Par ${p.unite || 'unité'}`;
+  document.getElementById('productTTC').textContent = `Soit ${fmt(p.prix_ht * 1.20)} TTC (TVA 20%)`;
+
+  // Description
+  document.getElementById('productDesc').textContent = p.description || 'Description non disponible.';
+
+  // Specs depuis les tags
+  if(p.tags){
+    const tags = p.tags.split(',').map(t => t.trim()).filter(Boolean);
+    document.getElementById('specsGrid').innerHTML = tags.map(tag => `
+      <div class="spec-item">
+        <div class="spec-label">Caractéristique</div>
+        <div class="spec-val">${tag}</div>
+      </div>
+    `).join('');
+  }
+
+  // Lien fournisseur
+  if(p.lien_aliexpress && p.lien_aliexpress !== '#'){
+    document.getElementById('supplierLink').innerHTML = `
+      <a href="${p.lien_aliexpress}" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--grey);text-decoration:none;margin-top:0.5rem;">
+        🔗 Voir chez le fournisseur
+      </a>`;
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('productContent').style.display = 'block';
+}
+
+// ── QUANTITÉ ──
+function changeQty(d){
+  const input = document.getElementById('qtyInput');
+  input.value = Math.max(1, parseInt(input.value || 1) + d);
+}
+
+// ── PANIER ──
+function addToCart(){
+  if(!product) return;
+  const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+  const ex = cart.find(c => c.id === product.id);
+  if(ex) ex.qty += qty;
+  else cart.push({id: product.id, name: product.nom, price: product.prix_ht, unit: product.unite || 'unité', icon: '🔧', image: product.image_url || '', qty});
+  localStorage.setItem('aotc_cart', JSON.stringify(cart));
+  updateCartBadge();
+  const btn = document.getElementById('addBtn');
+  btn.textContent = '✓ Ajouté !';
+  btn.classList.add('added');
+  setTimeout(() => { btn.textContent = '+ Ajouter au panier'; btn.classList.remove('added'); }, 2000);
+  openCart();
+}
+
+function updateCartBadge(){ document.getElementById('cartBadge').textContent = cart.reduce((s,c) => s+c.qty, 0); }
+
+function openCart(){
+  renderCart();
+  document.getElementById('cartOverlay').style.display = 'block';
+  document.getElementById('cartDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart(){
+  document.getElementById('cartOverlay').style.display = 'none';
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function renderCart(){
+  const el = document.getElementById('cartItems');
+  const tel = document.getElementById('cartTotal');
+  if(!cart.length){ el.innerHTML = '<div class="cdempty">🛒 Panier vide</div>'; tel.textContent = '0,00€'; return; }
+  const total = cart.reduce((s,c) => s+c.price*c.qty, 0);
+  tel.textContent = fmt(total);
+  el.innerHTML = cart.map(c => `
+    <div class="cditem">
+      <div class="cdimg">${c.image && c.image.startsWith('http') ? `<img src="${c.image}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : c.icon||'🔧'}</div>
+      <div class="cdinfo">
+        <div class="cdname">${c.name}</div>
+        <div class="cdprice">${fmt(c.price)} HT / ${c.unit}</div>
+        <div class="cdqty">
+          <button class="qbtn" onclick="chQty(${c.id},-1)">−</button>
+          <span style="font-size:0.82rem;min-width:18px;text-align:center;">${c.qty}</span>
+          <button class="qbtn" onclick="chQty(${c.id},1)">+</button>
+          <button class="rmbtn" onclick="rmCart(${c.id})">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function chQty(id,d){ const it=cart.find(c=>c.id===id); if(!it)return; it.qty+=d; if(it.qty<=0)rmCart(id); else{localStorage.setItem('aotc_cart',JSON.stringify(cart));updateCartBadge();renderCart();} }
+function rmCart(id){ cart=cart.filter(c=>c.id!==id); localStorage.setItem('aotc_cart',JSON.stringify(cart)); updateCartBadge(); renderCart(); }
+function sendDevis(){
+  if(!cart.length) return;
+  const lines = cart.map(c=>`- ${c.name} x${c.qty} = ${fmt(c.price*c.qty)} HT`).join('\n');
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const body = encodeURIComponent(`Bonjour,\n\nJe souhaite un devis pour :\n\n${lines}\n\nTotal HT : ${fmt(total)}\n\nCordialement`);
+  window.location.href = `mailto:contact@aotc.fr?subject=Demande de devis AOTC&body=${body}`;
+}
+
+// ── AVIS ──
+async function loadAvis(produitId){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/avis?produit_id=eq.${produitId}&approuve=eq.true&order=created_at.desc`, {
+      headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`}
+    });
+    const avis = await r.json();
+    const avg = avis.length ? (avis.reduce((s,a)=>s+a.note,0)/avis.length).toFixed(1) : null;
+    const stars = n => '⭐'.repeat(Math.round(n)) + '☆'.repeat(5-Math.round(n));
+
+    // Mettre à jour rating row
+    if(avg){
+      document.getElementById('productStars').textContent = stars(avg);
+      document.getElementById('ratingCount').textContent = `${avg}/5 (${avis.length} avis)`;
+    } else {
+      document.getElementById('ratingRow').innerHTML = '<span style="font-size:0.8rem;color:var(--grey);">Aucun avis — soyez le premier !</span>';
+    }
+
+    // Summary
+    document.getElementById('avgNote').textContent = avg || '—';
+    document.getElementById('avgStars').textContent = avg ? stars(avg) : '☆☆☆☆☆';
+    document.getElementById('avgCount').textContent = avis.length ? `${avis.length} avis vérifié${avis.length>1?'s':''}` : 'Aucun avis';
+
+    // Liste
+    document.getElementById('avisList').innerHTML = avis.length ? avis.map(a => `
+      <div class="avis-card">
+        <div class="avis-header">
+          <div>
+            <span class="avis-nom">${a.nom}</span>
+            ${a.entreprise?`<span class="avis-ent"> — ${a.entreprise}</span>`:''}
+            <span class="avis-verif">✅ Achat vérifié</span>
+          </div>
+          <span class="avis-date">${new Date(a.created_at).toLocaleDateString('fr-FR')}</span>
+        </div>
+        <div class="avis-stars">${'⭐'.repeat(a.note)}${'☆'.repeat(5-a.note)}</div>
+        ${a.commentaire?`<p class="avis-txt">${a.commentaire}</p>`:''}
+      </div>`).join('') : '<p style="color:var(--grey);font-size:0.85rem;">Aucun avis pour l\'instant.</p>';
+
+    // Formulaire
+    if(curUser){
+      const dejaDonne = avis.find(a => a.client_email === curUser.email);
+      if(dejaDonne){ isModif=true; document.getElementById('avisFormTitle').textContent='Modifier mon avis'; setNote(dejaDonne.note); document.getElementById('avisComment').value=dejaDonne.commentaire||''; }
+    }
+  } catch(e){ console.error(e); }
+}
+
+function scrollToAvis(){ document.getElementById('avisSection').scrollIntoView({behavior:'smooth'}); showAvisForm(); }
+
+function showAvisForm(){
+  if(curUser){
+    document.getElementById('avisForm').style.display = 'block';
+    document.getElementById('avisLoginMsg').style.display = 'none';
+    document.getElementById('avisForm').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('avisLoginMsg').style.display = 'block';
+    document.getElementById('avisLoginMsg').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function setNote(n){
+  curNote = n;
+  const labels=['','Très mauvais 😞','Mauvais 😕','Correct 😐','Bien 😊','Excellent ! 🤩'];
+  document.querySelectorAll('.star-input span').forEach((s,i) => s.classList.toggle('active', i<n));
+  document.getElementById('noteLabel').textContent = labels[n]||'';
+  updatePoints();
+}
+
+function updatePoints(){
+  const words = document.getElementById('avisComment').value.trim().split(/\s+/).filter(w=>w.length>0).length;
+  let pts = isModif ? (words>0?20:10) : (words>0?50:20);
+  document.getElementById('pointsVal').textContent = pts + ' pts';
+}
+
+async function submitAvis(){
+  if(!curNote){ alert('Donnez une note'); return; }
+  if(!curUser) return;
+  const comment = document.getElementById('avisComment').value.trim();
+  const words = comment.split(/\s+/).filter(w=>w.length>0).length;
+  const pts = isModif ? (words>0?20:10) : (words>0?50:20);
+  const btn = document.getElementById('submitAvisBtn');
+  btn.disabled=true; btn.textContent='⏳ Envoi...';
+  try {
+    const data = { produit_id:parseInt(productId), commande_id:'manual_'+Date.now(), client_email:curUser.email, nom:curUser.prenom+' '+curUser.nom, entreprise:curUser.entreprise||null, note:curNote, commentaire:comment||null, points_accordes:pts, verifie:true, approuve:false };
+    let r;
+    if(isModif){
+      r = await fetch(`${SB_URL}/rest/v1/avis?produit_id=eq.${productId}&client_email=eq.${curUser.email}`, {method:'PATCH', headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'}, body:JSON.stringify({note:curNote,commentaire:comment||null,points_accordes:pts,updated_at:new Date().toISOString()})});
+    } else {
+      r = await fetch(`${SB_URL}/rest/v1/avis`, {method:'POST', headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation'}, body:JSON.stringify(data)});
+    }
+    if(r.ok){
+      curUser.points=(curUser.points||0)+pts;
+      localStorage.setItem('aotc_user',JSON.stringify(curUser));
+      document.getElementById('avisForm').innerHTML=`<div style="text-align:center;padding:2rem;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:6px;"><p style="font-size:2rem;">✅</p><p style="font-weight:600;margin:0.5rem 0;">${isModif?'Avis modifié !':'Avis envoyé !'}</p><p style="color:var(--grey);font-size:0.85rem;">Publié après vérification (24h max)</p><p style="color:var(--gold);margin-top:0.5rem;">⭐ +${pts} points crédités !</p></div>`;
+    }
+  } catch(e){ alert('Erreur: '+e.message); btn.disabled=false; btn.textContent='✅ Publier mon avis'; }
+}
+
+// ── PRODUITS SIMILAIRES ──
+async function loadSimilar(categorie, excludeId){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/produits?categorie=eq.${encodeURIComponent(categorie)}&id=neq.${excludeId}&actif=eq.true&limit=4`, {
+      headers: {'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}
+    });
+    const data = await r.json();
+    if(!data.length){ document.getElementById('similarSection').style.display='none'; return; }
+    document.getElementById('similarGrid').innerHTML = data.map(p=>`
+      <div class="sim-card" onclick="window.location.href='produit.html?id=${p.id}'">
+        <div class="sim-img">${p.image_url&&p.image_url.startsWith('http')?`<img src="${p.image_url}" alt="${p.nom}" onerror="this.parentElement.innerHTML='🔧'">`:' 🔧'}</div>
+        <div class="sim-name">${p.nom}</div>
+        <div class="sim-price">${fmt(p.prix_ht)} HT</div>
+      </div>`).join('');
+  } catch(e){ document.getElementById('similarSection').style.display='none'; }
+}
+
+// ── ACCOUNT ──
+function openAccount(){ window.location.href='index.html'; }
+function updateAccountBtn(){
+  if(curUser){ document.getElementById('accountLabel').textContent=curUser.prenom; document.getElementById('accountBtn').style.color='var(--gold)'; }
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeCart(); });
+</script>
+</body>
+</html>

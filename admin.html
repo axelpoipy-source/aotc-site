@@ -115,6 +115,7 @@ textarea { resize:vertical; }
     <button class="tab" onclick="tab('bot')">🤖 Bot IA</button>
     <button class="tab" onclick="tab('manuel')">➕ Ajout</button>
     <button class="tab" onclick="tab('produits')">📦 Produits</button>
+    <button class="tab" onclick="tab('avis')">⭐ Avis</button>
     <button class="tab" onclick="tab('liens')">🔗 Liens</button>
   </div>
 
@@ -233,6 +234,19 @@ textarea { resize:vertical; }
     </div>
   </div>
 
+  <!-- AVIS -->
+  <div class="page" id="p-avis">
+    <div class="card">
+      <h3>⭐ Gestion des avis clients</h3>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadAvisAdmin('all')">Tous</button>
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadAvisAdmin('pending')">⏳ En attente</button>
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadAvisAdmin('approved')">✅ Approuvés</button>
+      </div>
+      <div id="avis-list"><p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p></div>
+    </div>
+  </div>
+
   <!-- LIENS -->
   <div class="page" id="p-liens">
     <div class="card">
@@ -289,10 +303,62 @@ function tab(id){
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('p-'+id).classList.add('active');
   document.querySelectorAll('.tab').forEach(t => {
-    if(t.textContent.toLowerCase().includes(id === 'dashboard' ? 'accueil' : id === 'bot' ? 'bot' : id === 'manuel' ? 'ajout' : id === 'produits' ? 'produits' : 'liens'))
+    if(t.textContent.toLowerCase().includes(id === 'dashboard' ? 'accueil' : id === 'bot' ? 'bot' : id === 'manuel' ? 'ajout' : id === 'produits' ? 'produits' : id === 'avis' ? 'avis' : 'liens'))
       t.classList.add('active');
   });
   if(id === 'produits') loadProduits();
+  if(id === 'avis') loadAvisAdmin('pending');
+}
+
+// ── AVIS ADMIN ──
+async function loadAvisAdmin(filtre='all'){
+  const el = document.getElementById('avis-list');
+  el.innerHTML = '<p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p>';
+  try {
+    let url = `${SB_URL}/rest/v1/avis?select=*,produits(nom)&order=created_at.desc`;
+    if(filtre === 'pending')  url += '&approuve=eq.false';
+    if(filtre === 'approved') url += '&approuve=eq.true';
+    const r = await fetch(url, {headers: sbH()});
+    const data = await r.json();
+    if(!data.length){ el.innerHTML = '<p style="color:#7a8099;text-align:center;padding:1rem;">Aucun avis</p>'; return; }
+    el.innerHTML = data.map(a => `
+      <div style="background:#1a1f2e;border:1px solid #333;border-radius:4px;padding:1rem;margin-bottom:0.7rem;">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:0.5rem;">
+          <div>
+            <strong style="font-size:0.88rem;">${a.nom}</strong>
+            ${a.entreprise ? `<span style="font-size:0.75rem;color:#7a8099;"> — ${a.entreprise}</span>` : ''}
+            <span style="font-size:0.65rem;background:${a.approuve?'rgba(42,157,92,0.15)':'rgba(232,82,26,0.15)'};color:${a.approuve?'#2a9d5c':'#e8521a'};padding:0.15rem 0.4rem;border-radius:3px;margin-left:0.4rem;">${a.approuve ? '✅ Publié' : '⏳ En attente'}</span>
+          </div>
+          <span style="font-size:0.7rem;color:#7a8099;">${new Date(a.created_at).toLocaleDateString('fr-FR')}</span>
+        </div>
+        <div style="color:#f59e0b;font-size:0.85rem;margin-bottom:0.3rem;">${'⭐'.repeat(a.note)}${'☆'.repeat(5-a.note)}</div>
+        <p style="font-size:0.78rem;color:#7a8099;margin-bottom:0.3rem;">Produit : ${a.produits?.nom || 'ID '+a.produit_id}</p>
+        ${a.commentaire ? `<p style="font-size:0.82rem;color:#f0ede8;margin-bottom:0.5rem;">"${a.commentaire}"</p>` : ''}
+        <p style="font-size:0.72rem;color:#c9a84c;">⭐ ${a.points_accordes} points accordés</p>
+        <div style="display:flex;gap:0.5rem;margin-top:0.7rem;">
+          ${!a.approuve ? `<button onclick="approuverAvis(${a.id})" style="background:#2a9d5c;border:none;color:white;padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;font-size:0.78rem;">✅ Approuver</button>` : ''}
+          <button onclick="supprimerAvis(${a.id})" style="background:transparent;border:1px solid #444;color:#7a8099;padding:0.4rem 0.9rem;border-radius:4px;cursor:pointer;font-size:0.78rem;">🗑️ Supprimer</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e){ el.innerHTML = `<p style="color:#e84545;text-align:center;">Erreur: ${e.message}</p>`; }
+}
+
+async function approuverAvis(id){
+  await fetch(`${SB_URL}/rest/v1/avis?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {...sbH()},
+    body: JSON.stringify({approuve: true})
+  });
+  toast('✅ Avis approuvé et publié !');
+  loadAvisAdmin('pending');
+}
+
+async function supprimerAvis(id){
+  if(!confirm('Supprimer cet avis ?')) return;
+  await fetch(`${SB_URL}/rest/v1/avis?id=eq.${id}`, {method:'DELETE', headers: sbH()});
+  toast('🗑️ Avis supprimé');
+  loadAvisAdmin('all');
 }
 
 // ── TOAST ──

@@ -564,6 +564,79 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
   <p><a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Mentions légales</a> · <a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Confidentialité</a></p>
 </div>
 
+<!-- AVIS MODAL -->
+<div class="moverlay" id="avisOverlay" onclick="closeAvis()"></div>
+<div class="mbox" id="avisModal" style="display:none;max-height:90vh;overflow-y:auto;">
+  <div class="mhead">
+    <h2 id="avisTitle">Avis <span style="color:var(--orange)">clients</span></h2>
+    <button class="xbtn" onclick="closeAvis()">✕</button>
+  </div>
+  <div id="avisBody" style="padding:1.5rem;">
+
+    <!-- Liste des avis -->
+    <div id="avisList"></div>
+
+    <!-- Formulaire d'avis -->
+    <div id="avisForm" style="display:none;">
+      <div style="border-top:1px solid var(--border);padding-top:1.2rem;margin-top:1.2rem;">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;">
+          ✍️ <span id="avisFormTitle">Laisser un avis</span>
+        </h3>
+
+        <!-- Étoiles -->
+        <div style="margin-bottom:1rem;">
+          <label style="display:block;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.5rem;">Note *</label>
+          <div id="starRating" style="display:flex;gap:0.3rem;">
+            <span class="star" onclick="setNote(1)" style="font-size:2rem;cursor:pointer;opacity:0.3;">⭐</span>
+            <span class="star" onclick="setNote(2)" style="font-size:2rem;cursor:pointer;opacity:0.3;">⭐</span>
+            <span class="star" onclick="setNote(3)" style="font-size:2rem;cursor:pointer;opacity:0.3;">⭐</span>
+            <span class="star" onclick="setNote(4)" style="font-size:2rem;cursor:pointer;opacity:0.3;">⭐</span>
+            <span class="star" onclick="setNote(5)" style="font-size:2rem;cursor:pointer;opacity:0.3;">⭐</span>
+          </div>
+          <p id="noteLabel" style="font-size:0.75rem;color:var(--grey);margin-top:0.3rem;"></p>
+        </div>
+
+        <div class="stripe-field">
+          <label>Commentaire <span id="avisPoints" style="color:var(--gold);font-size:0.72rem;"></span></label>
+          <textarea id="avisCommentaire" rows="3" placeholder="Qualité du produit, délai de livraison, conformité..." style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.85rem;font-family:'Barlow',sans-serif;font-size:0.9rem;border-radius:4px;outline:none;resize:vertical;" oninput="updateAvisPoints()"></textarea>
+          <p style="font-size:0.72rem;color:var(--grey);margin-top:0.3rem;"><span id="wordCount">0</span> mots — <span id="pointsPreview" style="color:var(--gold);">0 pts</span> à gagner</p>
+        </div>
+
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:0.8rem;margin-bottom:1rem;">
+          <p style="font-size:0.8rem;color:var(--gold);">⭐ Récompense fidélité</p>
+          <div style="font-size:0.75rem;color:var(--grey);margin-top:0.3rem;" id="rewardDetails"></div>
+        </div>
+
+        <button class="btn-full" onclick="submitAvis()" id="avisSubmitBtn">✅ Publier mon avis</button>
+        <p style="font-size:0.75rem;color:var(--grey);margin-top:0.5rem;text-align:center;">Votre avis sera publié après vérification (24h max)</p>
+      </div>
+    </div>
+
+    <!-- Message si non connecté -->
+    <div id="avisLoginMsg" style="display:none;text-align:center;padding:1.5rem;background:var(--steel);border-radius:4px;border:1px solid var(--border);">
+      <p style="color:var(--grey);margin-bottom:1rem;">Connectez-vous pour laisser un avis</p>
+      <button class="btn-full" onclick="closeAvis();openAccount();">👤 Se connecter</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.avis-card{background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:0.8rem;}
+.avis-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.avis-nom{font-weight:600;font-size:0.88rem;}
+.avis-ent{font-size:0.75rem;color:var(--grey);}
+.avis-date{font-size:0.72rem;color:var(--grey);}
+.avis-stars{color:#f59e0b;font-size:0.9rem;margin-bottom:0.4rem;}
+.avis-txt{font-size:0.83rem;color:var(--grey);line-height:1.6;}
+.avis-badge{font-size:0.65rem;background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);padding:0.15rem 0.4rem;border-radius:3px;margin-left:0.5rem;}
+.note-avg{display:flex;align-items:center;gap:0.8rem;background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:1rem;}
+.note-big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2.5rem;color:var(--orange);}
+.note-stars{color:#f59e0b;font-size:1.1rem;}
+.btn-avis{background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.4rem 0.8rem;cursor:pointer;font-family:'Barlow',sans-serif;font-size:0.75rem;border-radius:4px;transition:all 0.18s;display:flex;align-items:center;gap:0.3rem;}
+.btn-avis:hover{border-color:var(--orange);color:var(--orange);}
+</style>
+
 <script>
 // ── SUPABASE ──
 const SUPABASE_URL = 'https://fwtpyncsrggpamlggiwi.supabase.co';
@@ -650,37 +723,29 @@ function render(){
   const badges={new:'<span class="pbadge bnew">Nouveau</span>',pro:'<span class="pbadge bpro">Pro</span>',stock:'<span class="pbadge bstock">En stock</span>'};
   grid.innerHTML=list.map(p=>{
     const cartItem=cart.find(c=>c.id===p.id);
-    const qty=cartItem?cartItem.qty:1;
     const inCart=!!cartItem;
     const imgHtml = p.image && p.image.startsWith('http')
       ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;" onerror="this.parentElement.innerHTML='${p.icon||'🔧'}';">`
       : (p.icon||'🔧');
-    return `<div class="pcard">
+
+    // Note moyenne (depuis cache local si disponible)
+    const noteHtml = p.avg_note
+      ? `<div style="color:#f59e0b;font-size:0.75rem;">⭐ ${p.avg_note} <span style="color:var(--grey);">(${p.nb_avis})</span></div>`
+      : `<div style="font-size:0.72rem;color:var(--grey);">Pas encore d'avis</div>`;
+
+    return `<div class="pcard" onclick="goProduct(${p.id})" style="cursor:pointer;">
       ${badges[p.badge]||''}
       <div class="pimg" style="${p.image&&p.image.startsWith('http')?'padding:0;overflow:hidden;':''}">${imgHtml}</div>
       <div class="pcat">${p.cat}</div>
       <div class="pname">${p.name}</div>
-      <div class="pref">${p.ref?'Réf. '+p.ref:''}${p.dn?' · '+p.dn:''}</div>
-      <div class="pdesc">${p.desc}</div>
-      <div class="pfoot">
+      ${noteHtml}
+      <div class="pfoot" style="margin-top:0.7rem;">
         <div class="pprice">${fmt(p.price)}<span class="pht">HT</span><span class="punit">/ ${p.unit}</span></div>
-        <div class="qty-wrap" id="qw-${p.id}">
-          ${inCart
-            ? `<div class="qty-ctrl">
-                <button class="qc-btn" onclick="changeQtyCard(${p.id},-1)">−</button>
-                <span class="qc-num" id="qn-${p.id}">${qty}</span>
-                <button class="qc-btn" onclick="changeQtyCard(${p.id},1)">+</button>
-                <button class="abtn added" onclick="removeFromCart(${p.id})" title="Retirer">✓</button>
-               </div>`
-            : `<div class="qty-ctrl">
-                <button class="qc-btn" onclick="decCardQty(${p.id})">−</button>
-                <span class="qc-num" id="qn-${p.id}">1</span>
-                <button class="qc-btn" onclick="incCardQty(${p.id})">+</button>
-                <button class="abtn" onclick="addToCartQty(${p.id})">+🛒</button>
-               </div>`
-          }
-        </div>
+        <button class="abtn ${inCart?'added':''}" onclick="event.stopPropagation();addToCartQty(${p.id})" title="Ajouter au panier">${inCart?'✓':'+'}</button>
       </div>
+      <button onclick="event.stopPropagation();goProduct(${p.id})" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:0.6rem;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+        Voir le produit →
+      </button>
     </div>`;
   }).join('');
 }
@@ -1082,6 +1147,197 @@ function paymentSuccess(nom, email, totalHT, totalTTC, livraison){
         Fermer
       </button>
     </div>`;
+}
+
+// ── AVIS CLIENTS ──
+let currentAvisProduit = null;
+let currentNote = 0;
+let isModifAvis = false;
+
+async function openAvis(produitId, produitNom){
+  currentAvisProduit = produitId;
+  currentNote = 0;
+  isModifAvis = false;
+  document.getElementById('avisTitle').innerHTML = `Avis <span style="color:var(--orange)">${produitNom}</span>`;
+  document.getElementById('avisOverlay').style.display = 'block';
+  document.getElementById('avisModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  await loadAvis(produitId);
+}
+
+function closeAvis(){
+  document.getElementById('avisOverlay').style.display = 'none';
+  document.getElementById('avisModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function loadAvis(produitId){
+  const body = document.getElementById('avisBody');
+
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${produitId}&approuve=eq.true&order=created_at.desc`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    const avis = await r.json();
+
+    // Note moyenne
+    const avgNote = avis.length ? (avis.reduce((s,a) => s+a.note, 0) / avis.length).toFixed(1) : null;
+    const stars = (n) => '⭐'.repeat(Math.round(n)) + '☆'.repeat(5-Math.round(n));
+
+    let html = '';
+
+    // Résumé
+    if(avis.length > 0){
+      html += `<div class="note-avg">
+        <div class="note-big">${avgNote}</div>
+        <div>
+          <div class="note-stars">${stars(avgNote)}</div>
+          <div style="font-size:0.78rem;color:var(--grey);">${avis.length} avis vérifié${avis.length>1?'s':''}</div>
+        </div>
+      </div>`;
+    } else {
+      html += `<p style="color:var(--grey);font-size:0.85rem;margin-bottom:1rem;">Aucun avis pour l'instant — soyez le premier !</p>`;
+    }
+
+    // Liste avis
+    avis.forEach(a => {
+      html += `<div class="avis-card">
+        <div class="avis-header">
+          <div>
+            <span class="avis-nom">${a.nom}</span>
+            ${a.entreprise ? `<span class="avis-ent"> — ${a.entreprise}</span>` : ''}
+            <span class="avis-badge">✅ Achat vérifié</span>
+          </div>
+          <span class="avis-date">${new Date(a.created_at).toLocaleDateString('fr-FR')}</span>
+        </div>
+        <div class="avis-stars">${'⭐'.repeat(a.note)}${'☆'.repeat(5-a.note)}</div>
+        ${a.commentaire ? `<p class="avis-txt">${a.commentaire}</p>` : ''}
+      </div>`;
+    });
+
+    document.getElementById('avisList').innerHTML = html;
+
+    // Vérifier si connecté et peut laisser un avis
+    if(curUser){
+      const dejaDonne = avis.find(a => a.client_email === curUser.email);
+      if(dejaDonne){
+        isModifAvis = true;
+        document.getElementById('avisFormTitle').textContent = 'Modifier mon avis';
+      document.getElementById('rewardDetails').innerHTML = '• Modification : +10 pts (note seule) ou +20 pts (avec commentaire)';
+        setNote(dejaDonne.note);
+        document.getElementById('avisCommentaire').value = dejaDonne.commentaire || '';
+      } else {
+        document.getElementById('rewardDetails').innerHTML = '• Note seule : +20 pts<br>• Note + commentaire : +50 pts';
+      }
+      document.getElementById('avisForm').style.display = 'block';
+      document.getElementById('avisLoginMsg').style.display = 'none';
+      updateAvisPoints();
+    } else {
+      document.getElementById('avisForm').style.display = 'none';
+      document.getElementById('avisLoginMsg').style.display = 'block';
+    }
+
+  } catch(e){
+    document.getElementById('avisList').innerHTML = '<p style="color:var(--grey);text-align:center;">Erreur de chargement</p>';
+  }
+}
+
+function setNote(n){
+  currentNote = n;
+  const labels = ['','Très mauvais 😞','Mauvais 😕','Correct 😐','Bien 😊','Excellent ! 🤩'];
+  document.querySelectorAll('.star').forEach((s,i) => s.style.opacity = i < n ? '1' : '0.3');
+  document.getElementById('noteLabel').textContent = labels[n] || '';
+  updateAvisPoints();
+}
+
+function updateAvisPoints(){
+  const comment = document.getElementById('avisCommentaire').value.trim();
+  const words = comment.split(/\s+/).filter(w => w.length > 0).length;
+  document.getElementById('wordCount').textContent = words;
+  let pts = 0;
+  if(isModifAvis){
+    pts = words > 0 ? 20 : 10;
+  } else {
+    pts = words > 0 ? 50 : 20;
+  }
+  document.getElementById('pointsPreview').textContent = pts + ' pts';
+}
+
+async function submitAvis(){
+  if(!currentNote){ alert('Veuillez donner une note'); return; }
+  if(!curUser){ return; }
+
+  const comment = document.getElementById('avisCommentaire').value.trim();
+  const words = comment.split(/\s+/).filter(w => w.length > 0).length;
+
+  let pts = 0;
+  if(isModifAvis){
+    pts = words > 0 ? 20 : 10;
+  } else {
+    pts = words > 0 ? 50 : 20;
+  }
+
+  const btn = document.getElementById('avisSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Envoi...';
+
+  try {
+    const data = {
+      produit_id: currentAvisProduit,
+      commande_id: 'manual_' + Date.now(),
+      client_email: curUser.email,
+      nom: curUser.prenom + ' ' + curUser.nom,
+      entreprise: curUser.entreprise || null,
+      note: currentNote,
+      commentaire: comment || null,
+      points_accordes: pts,
+      verifie: true,
+      approuve: false
+    };
+
+    let r;
+    if(isModifAvis){
+      r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${currentAvisProduit}&client_email=eq.${curUser.email}`, {
+        method: 'PATCH',
+        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify({note: currentNote, commentaire: comment||null, points_accordes: pts, updated_at: new Date().toISOString()})
+      });
+    } else {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/avis`, {
+        method: 'POST',
+        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+        body: JSON.stringify(data)
+      });
+    }
+
+    if(r.ok){
+      // Créditer les points
+      curUser.points = (curUser.points || 0) + pts;
+      localStorage.setItem('aotc_user', JSON.stringify(curUser));
+      const users = JSON.parse(localStorage.getItem('aotc_users') || '{}');
+      if(users[curUser.email]){ users[curUser.email] = curUser; localStorage.setItem('aotc_users', JSON.stringify(users)); }
+      updateAccBtn();
+
+      document.getElementById('avisForm').innerHTML = `
+        <div style="text-align:center;padding:1.5rem;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;margin-top:1rem;">
+          <p style="font-size:1.5rem;margin-bottom:0.5rem;">✅</p>
+          <p style="font-weight:600;margin-bottom:0.3rem;">${isModifAvis ? 'Avis modifié !' : 'Avis envoyé !'}</p>
+          <p style="font-size:0.82rem;color:var(--grey);">Votre avis sera publié après vérification.</p>
+          <p style="color:var(--gold);font-size:0.88rem;margin-top:0.5rem;">⭐ +${pts} points crédités !</p>
+        </div>`;
+    } else {
+      throw new Error('Erreur envoi');
+    }
+  } catch(e){
+    alert('Erreur : ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '✅ Publier mon avis';
+  }
+}
+
+// Navigation vers page produit
+function goProduct(id){
+  window.location.href = 'produit.html?id=' + id;
 }
 
 // ── LEGAL & COOKIES ──
