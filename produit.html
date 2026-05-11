@@ -249,12 +249,31 @@ footer span{color:var(--orange);}
 
         <button class="btn-devis-prod" onclick="openCart()">📧 Demander un devis</button>
 
+        <!-- LIVRAISON -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.2rem;">
+          <h4 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--orange);margin-bottom:0.8rem;">🚚 Livraison</h4>
+          <div id="deliveryInfo">
+            <!-- Rempli dynamiquement selon le prix -->
+          </div>
+          <div style="border-top:1px solid var(--border);margin-top:0.8rem;padding-top:0.8rem;">
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--grey);margin-bottom:0.3rem;">
+              <span>Moins de 50€ HT</span><span style="color:var(--white);">7,90€</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--grey);margin-bottom:0.3rem;">
+              <span>Entre 50€ et 150€ HT</span><span style="color:var(--white);">4,90€</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--grey);">
+              <span>Plus de 150€ HT</span><span style="color:var(--green);font-weight:700;">Gratuite 🎁</span>
+            </div>
+          </div>
+        </div>
+
         <!-- RÉASSURANCE -->
         <div class="reassurance">
-          <div class="reas-item"><span class="icon">🚚</span>Livraison 24h ouvrées</div>
           <div class="reas-item"><span class="icon">✅</span>Produit certifié pro</div>
           <div class="reas-item"><span class="icon">🔒</span>Paiement sécurisé</div>
           <div class="reas-item"><span class="icon">↩️</span>Retour sous 30 jours</div>
+          <div class="reas-item"><span class="icon">📞</span><a href="tel:+33755676674" style="color:var(--grey);text-decoration:none;">+33 7 55 67 66 74</a></div>
         </div>
 
         <!-- LIEN FOURNISSEUR -->
@@ -438,6 +457,9 @@ function renderProduct(p){
       </a>`;
   }
 
+  // Livraison dynamique
+  updateDeliveryInfo(p.prix_ht, p.source || '');
+
   document.getElementById('loading').style.display = 'none';
   document.getElementById('productContent').style.display = 'block';
 }
@@ -620,6 +642,55 @@ async function loadSimilar(categorie, excludeId){
         <div class="sim-price">${fmt(p.prix_ht)} HT</div>
       </div>`).join('');
   } catch(e){ document.getElementById('similarSection').style.display='none'; }
+}
+
+// ── LIVRAISON ──
+function getDeliveryDelay(source){
+  const s = (source||'').toLowerCase();
+  if(s.includes('amazon'))       return '2-3 jours ouvrés';
+  if(s.includes('manomano'))     return '3-5 jours ouvrés';
+  if(s.includes('leroy'))        return '2-4 jours ouvrés';
+  if(s.includes('cdiscount'))    return '3-5 jours ouvrés';
+  if(s.includes('aliexpress'))   return '2-4 semaines';
+  return '3-7 jours ouvrés';
+}
+
+function getShippingCost(totalHT){
+  if(totalHT >= 150) return 0;
+  if(totalHT >= 50)  return 4.90;
+  return 7.90;
+}
+
+function updateDeliveryInfo(prixHT, source){
+  const cartTotal = cart.reduce((s,c) => s+c.price*c.qty, 0);
+  const totalAvec = cartTotal + prixHT;
+  const frais = getShippingCost(totalAvec);
+  const delai = getDeliveryDelay(source);
+  const manquant = frais > 0 ? (frais === 4.90 ? 50 - totalAvec : 150 - totalAvec) : 0;
+
+  let html = `<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+    <span style="font-size:1.1rem;">⏱️</span>
+    <span style="font-size:0.85rem;color:var(--white);">Délai estimé : <strong>${delai}</strong></span>
+  </div>`;
+
+  if(frais === 0){
+    html += `<div style="background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.5rem 0.7rem;font-size:0.8rem;color:var(--green);">
+      🎁 Livraison <strong>gratuite</strong> pour cette commande !
+    </div>`;
+  } else if(manquant > 0){
+    html += `<div style="background:rgba(232,82,26,0.08);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.7rem;font-size:0.8rem;color:var(--grey);">
+      Plus que <strong style="color:var(--orange);">${fmt(manquant)}</strong> pour ${frais===4.90?'passer à 4,90€':'la livraison gratuite'} !
+    </div>`;
+  }
+
+  document.getElementById('deliveryInfo').innerHTML = html;
+}
+
+// Recalculer livraison quand le panier change
+const origAddToCart = addToCart;
+function addToCart(){
+  origAddToCart();
+  if(product) updateDeliveryInfo(product.prix_ht, product.source||'');
 }
 
 // ── ACCOUNT ──
