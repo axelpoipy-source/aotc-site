@@ -467,20 +467,98 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <p class="ferr" id="regErr"></p>
   </div>
   <div id="paneDashboard" class="mbody" style="display:none;">
-    <div class="lcard">
-      <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.15rem;">Points fidélité</p>
-      <div class="lpts" id="dashPts">0 pts</div>
-      <div class="llvl" id="dashLvl"></div>
-      <div class="ptrack"><div class="pfill" id="pFill" style="width:0%"></div></div>
-      <p style="font-size:0.72rem;color:var(--grey);" id="dashNext"></p>
+
+    <!-- Onglets dashboard -->
+    <div style="display:flex;border-bottom:1px solid var(--border);margin:-1.6rem -1.8rem 1.2rem;">
+      <button id="tabFidelite" onclick="switchDash('fidelite')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--orange);">⭐ Fidélité</button>
+      <button id="tabProfil" onclick="switchDash('profil')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">👤 Mon profil</button>
     </div>
-    <div class="lvlgrid">
-      <div class="lvlc" id="lb"><div class="li">🥉</div><div class="ln">Bronze</div><div class="lp">0 pts</div></div>
-      <div class="lvlc" id="ls"><div class="li">🥈</div><div class="ln">Argent</div><div class="lp">500 pts</div></div>
-      <div class="lvlc" id="lg"><div class="li">🥇</div><div class="ln">Or</div><div class="lp">1500 pts</div></div>
+
+    <!-- Fidélité -->
+    <div id="dashFidelite">
+      <div class="lcard">
+        <p style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.15rem;">Points fidélité</p>
+        <div class="lpts" id="dashPts">0 pts</div>
+        <div class="llvl" id="dashLvl"></div>
+        <div class="ptrack"><div class="pfill" id="pFill" style="width:0%"></div></div>
+        <p style="font-size:0.72rem;color:var(--grey);" id="dashNext"></p>
+      </div>
+      <div class="lvlgrid">
+        <div class="lvlc" id="lb"><div class="li">🥉</div><div class="ln">Bronze</div><div class="lp">0 pts</div></div>
+        <div class="lvlc" id="ls"><div class="li">🥈</div><div class="ln">Argent</div><div class="lp">500 pts</div></div>
+        <div class="lvlc" id="lg"><div class="li">🥇</div><div class="ln">Or</div><div class="lp">1500 pts</div></div>
+      </div>
+      <div class="avbox"><h4>Vos avantages</h4><div id="avList"></div></div>
     </div>
-    <div class="avbox"><h4>Vos avantages</h4><div id="avList"></div></div>
-    <button class="blogout" onclick="doLogout()">Se déconnecter</button>
+
+    <!-- Profil -->
+    <div id="dashProfil" style="display:none;">
+      <p style="font-size:0.75rem;color:var(--grey);margin-bottom:1rem;background:rgba(42,157,92,0.08);border:1px solid rgba(42,157,92,0.2);border-radius:4px;padding:0.6rem 0.8rem;">
+        🔒 Vos données sont sécurisées conformément au RGPD. Vous pouvez les modifier ou les supprimer à tout moment.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+        <div class="field"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Prénom</label>
+          <input id="prof-prenom" type="text" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div class="field"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Nom</label>
+          <input id="prof-nom" type="text" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.6rem;"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Email</label>
+        <input id="prof-email" type="email" disabled style="width:100%;background:var(--light);border:1px solid var(--border);color:var(--grey);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;cursor:not-allowed;">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+        <div><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Téléphone</label>
+          <input id="prof-tel" type="tel" placeholder="+33 7 55 67 66 74" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Entreprise</label>
+          <input id="prof-entreprise" type="text" placeholder="Nom de votre société" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.6rem;"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">SIRET (optionnel)</label>
+        <input id="prof-siret" type="text" placeholder="12345678901234" maxlength="14" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);margin:0.8rem 0 0.5rem;font-weight:600;">📦 Adresse de livraison</p>
+
+      <div style="margin-bottom:0.6rem;"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Adresse</label>
+        <input id="prof-adresse" type="text" placeholder="12 rue des Artisans" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem;">
+        <div><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Code postal</label>
+          <input id="prof-cp" type="text" placeholder="71800" maxlength="5" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Ville</label>
+          <input id="prof-ville" type="text" placeholder="La Clayette" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;"><label style="display:block;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Pays</label>
+        <select id="prof-pays" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;outline:none;">
+          <option value="FR">🇫🇷 France</option>
+          <option value="BE">🇧🇪 Belgique</option>
+          <option value="CH">🇨🇭 Suisse</option>
+          <option value="LU">🇱🇺 Luxembourg</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+        <input type="checkbox" id="prof-newsletter" style="width:16px;height:16px;accent-color:var(--orange);">
+        <label for="prof-newsletter" style="font-size:0.82rem;color:var(--grey);cursor:pointer;">Recevoir les nouveautés et promotions AOTC</label>
+      </div>
+
+      <p id="prof-save-msg" style="display:none;font-size:0.78rem;text-align:center;margin-bottom:0.5rem;"></p>
+      <button onclick="saveProfil()" style="width:100%;background:var(--orange);border:none;color:white;padding:0.82rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.18s;margin-bottom:0.5rem;" onmouseover="this.style.background='var(--orange2)'" onmouseout="this.style.background='var(--orange)'">💾 Sauvegarder</button>
+
+      <button onclick="deleteProfil()" style="width:100%;background:transparent;border:1px solid #444;color:var(--grey);padding:0.65rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.18s;margin-bottom:0.5rem;" onmouseover="this.style.borderColor='#e84545';this.style.color='#e84545'" onmouseout="this.style.borderColor='#444';this.style.color='var(--grey)'">🗑️ Supprimer mon compte</button>
+    </div>
+
+    <button class="blogout" onclick="doLogout()" style="margin-top:0.5rem;">Se déconnecter</button>
   </div>
 </div>
 
@@ -547,7 +625,7 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
   </div>
   <div class="fcol"><h4>Infos</h4>
     <ul class="flinks">
-      <li><a>À propos</a></li><li><a>Livraison</a></li>
+      <li><a href="certifications.html">Certifications</a></li><li><a>Livraison</a></li>
       <li><a href="retours.html">Retours</a></li><li><a onclick="openLegal()">CGV & Mentions légales</a></li>
     </ul>
   </div>
@@ -866,6 +944,121 @@ function sendDevis(){
   window.location.href=`mailto:contact@aotc.fr?subject=Demande de devis AOTC&body=${body}`;
 }
 
+// ── PROFIL CLIENT ──
+function switchDash(tab){
+  document.getElementById('dashFidelite').style.display = tab==='fidelite' ? 'block' : 'none';
+  document.getElementById('dashProfil').style.display   = tab==='profil'   ? 'block' : 'none';
+  document.getElementById('tabFidelite').style.color      = tab==='fidelite' ? 'var(--orange)' : 'var(--grey)';
+  document.getElementById('tabProfil').style.color        = tab==='profil'   ? 'var(--orange)' : 'var(--grey)';
+  document.getElementById('tabFidelite').style.borderBottomColor = tab==='fidelite' ? 'var(--orange)' : 'transparent';
+  document.getElementById('tabProfil').style.borderBottomColor   = tab==='profil'   ? 'var(--orange)' : 'transparent';
+  if(tab==='profil') loadProfil();
+}
+
+async function loadProfil(){
+  if(!curUser) return;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    const data = await r.json();
+    const p = data[0] || {};
+
+    document.getElementById('prof-prenom').value    = p.prenom    || curUser.prenom || '';
+    document.getElementById('prof-nom').value       = p.nom       || curUser.nom    || '';
+    document.getElementById('prof-email').value     = curUser.email;
+    document.getElementById('prof-tel').value       = p.telephone || curUser.telephone || '';
+    document.getElementById('prof-entreprise').value= p.entreprise|| curUser.entreprise || '';
+    document.getElementById('prof-siret').value     = p.siret     || '';
+    document.getElementById('prof-adresse').value   = p.adresse   || '';
+    document.getElementById('prof-cp').value        = p.cp        || '';
+    document.getElementById('prof-ville').value     = p.ville     || '';
+    document.getElementById('prof-pays').value      = p.pays      || 'FR';
+    document.getElementById('prof-newsletter').checked = p.newsletter || false;
+  } catch(e){ console.error('Erreur chargement profil:', e); }
+}
+
+async function saveProfil(){
+  if(!curUser) return;
+  const data = {
+    email:       curUser.email,
+    prenom:      document.getElementById('prof-prenom').value.trim(),
+    nom:         document.getElementById('prof-nom').value.trim(),
+    telephone:   document.getElementById('prof-tel').value.trim(),
+    entreprise:  document.getElementById('prof-entreprise').value.trim(),
+    siret:       document.getElementById('prof-siret').value.trim(),
+    adresse:     document.getElementById('prof-adresse').value.trim(),
+    cp:          document.getElementById('prof-cp').value.trim(),
+    ville:       document.getElementById('prof-ville').value.trim(),
+    pays:        document.getElementById('prof-pays').value,
+    newsletter:  document.getElementById('prof-newsletter').checked,
+    rgpd_accepte: true,
+    rgpd_date:   new Date().toISOString(),
+    updated_at:  new Date().toISOString()
+  };
+
+  const msg = document.getElementById('prof-save-msg');
+  try {
+    // Vérifier si profil existe déjà
+    const check = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    const existing = await check.json();
+
+    let r;
+    if(existing.length > 0){
+      r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+        method: 'PATCH',
+        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+    } else {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+        method: 'POST',
+        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+        body: JSON.stringify(data)
+      });
+    }
+
+    if(r.ok){
+      // Mettre à jour le localStorage
+      curUser.prenom     = data.prenom;
+      curUser.nom        = data.nom;
+      curUser.telephone  = data.telephone;
+      curUser.entreprise = data.entreprise;
+      curUser.adresse    = data.adresse;
+      curUser.cp         = data.cp;
+      curUser.ville      = data.ville;
+      curUser.pays       = data.pays;
+      localStorage.setItem('aotc_user', JSON.stringify(curUser));
+      updateAccBtn();
+
+      msg.textContent = '✅ Profil sauvegardé !';
+      msg.style.color = 'var(--green)';
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display='none', 3000);
+    } else {
+      throw new Error('Erreur sauvegarde');
+    }
+  } catch(e){
+    msg.textContent = '❌ Erreur : ' + e.message;
+    msg.style.color = '#e84545';
+    msg.style.display = 'block';
+  }
+}
+
+async function deleteProfil(){
+  if(!confirm('Supprimer définitivement votre compte et toutes vos données ? Cette action est irréversible.')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      method: 'DELETE',
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    doLogout();
+    alert('Votre compte a été supprimé. Vos données ont été effacées conformément au RGPD.');
+  } catch(e){ alert('Erreur lors de la suppression : ' + e.message); }
+}
+
 // ── ACCOUNT ──
 const LEVELS=[
   {name:'Bronze',min:0,   icon:'🥉',av:['1 point par euro dépensé','Accès aux offres membres']},
@@ -912,7 +1105,23 @@ function doLogin(){
   const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
   if(!em||!pw){err.textContent='Remplissez tous les champs.';err.style.display='block';return;}
   if(!users[em]||users[em].pass!==pw){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';return;}
-  err.style.display='none';curUser=users[em];localStorage.setItem('aotc_user',JSON.stringify(curUser));updateAccBtn();showDash();
+  err.style.display='none';
+  curUser=users[em];
+  // Charger le profil depuis Supabase
+  fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${em}`,{headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}})
+  .then(r=>r.json()).then(data=>{
+    if(data[0]){
+      const p=data[0];
+      curUser.telephone=p.telephone||curUser.telephone;
+      curUser.entreprise=p.entreprise||curUser.entreprise;
+      curUser.adresse=p.adresse||'';
+      curUser.cp=p.cp||'';
+      curUser.ville=p.ville||'';
+      curUser.pays=p.pays||'FR';
+    }
+    localStorage.setItem('aotc_user',JSON.stringify(curUser));
+    updateAccBtn();showDash();
+  }).catch(()=>{localStorage.setItem('aotc_user',JSON.stringify(curUser));updateAccBtn();showDash();});
 }
 function doRegister(){
   const pr=document.getElementById('regPrenom').value.trim(),no=document.getElementById('regNom').value.trim();
@@ -993,23 +1202,23 @@ async function openCheckout(){
       </div>
       <div class="stripe-field">
         <label>Téléphone</label>
-        <input id="payTel" type="tel" placeholder="+33 7 55 67 66 74">
+        <input id="payTel" type="tel" placeholder="+33 7 55 67 66 74" value="${curUser&&curUser.telephone?curUser.telephone:''}">
       </div>
     </div>
     <div style="border-top:1px solid var(--border);margin:1rem 0;padding-top:1rem;">
       <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:0.8rem;">📦 Adresse de livraison</p>
       <div class="stripe-field">
         <label>Adresse</label>
-        <input id="payAdresse" type="text" placeholder="12 rue des Artisans">
+        <input id="payAdresse" type="text" placeholder="12 rue des Artisans" value="${curUser&&curUser.adresse?curUser.adresse:''}">
       </div>
       <div class="stripe-field-row">
         <div class="stripe-field">
           <label>Code postal</label>
-          <input id="payCP" type="text" placeholder="75001" maxlength="5">
+          <input id="payCP" type="text" placeholder="75001" maxlength="5" value="${curUser&&curUser.cp?curUser.cp:''}">
         </div>
         <div class="stripe-field">
           <label>Ville</label>
-          <input id="payVille" type="text" placeholder="Paris">
+          <input id="payVille" type="text" placeholder="Paris" value="${curUser&&curUser.ville?curUser.ville:''}">
         </div>
       </div>
       <div class="stripe-field">
