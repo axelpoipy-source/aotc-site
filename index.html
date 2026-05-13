@@ -626,7 +626,7 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
   <div class="fcol"><h4>Infos</h4>
     <ul class="flinks">
       <li><a href="certifications.html">Certifications</a></li><li><a>Livraison</a></li>
-      <li><a href="retours.html">Retours</a></li><li><a onclick="openLegal()">CGV & Mentions légales</a></li>
+      <li><a href="retours.html">Retours</a></li><li><a href="cgv.html">CGV & Mentions légales</a></li>
     </ul>
   </div>
   <div class="fcol"><h4>Contact</h4>
@@ -639,7 +639,7 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
 </footer>
 <div class="fbot">
   <p>© 2024 <span>AOTC</span> — Poipy Axel · Tous les prix sont <span>Hors Taxes (HT)</span> — TVA 20% non incluse</p>
-  <p><a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Mentions légales</a> · <a onclick="openLegal()" style="color:var(--grey);cursor:pointer;">Confidentialité</a></p>
+  <p><a href="cgv.html" style="color:var(--grey);">Mentions légales</a> · <a href="cgv.html#rgpd" style="color:var(--grey);">Confidentialité</a> · <a href="cgv.html#cgv" style="color:var(--grey);">CGV</a></p>
 </div>
 
 <!-- AVIS MODAL -->
@@ -1243,6 +1243,12 @@ async function openCheckout(){
       <div id="card-element" style="min-height:40px;"></div>
       <div id="card-errors" style="color:#e84545;font-size:0.78rem;margin-top:0.4rem;"></div>
     </div>
+    <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.8rem;margin-top:0.5rem;">
+      <input type="checkbox" id="cgvCheck" style="width:16px;height:16px;margin-top:2px;accent-color:var(--orange);flex-shrink:0;">
+      <label for="cgvCheck" style="font-size:0.78rem;color:var(--grey);cursor:pointer;line-height:1.5;">
+        J'ai lu et j'accepte les <a href="cgv.html#cgv" target="_blank" style="color:var(--orange);">Conditions Générales de Vente</a> et la <a href="cgv.html#rgpd" target="_blank" style="color:var(--orange);">politique de confidentialité</a> d'AOTC.
+      </label>
+    </div>
     <button class="btn-pay" id="payBtn" onclick="processPayment()">🔒 Payer <span id="payAmount">${fmt(total*1.20)} TTC</span></button>
     <div class="secure-badge">🔒 Paiement sécurisé par Stripe · Données chiffrées</div>
   `;
@@ -1264,6 +1270,14 @@ function closeCheckout(){
 
 async function processPayment(){
   if(!stripe||!cardElement){alert('Stripe non chargé, réessayez dans 2 secondes.');return;}
+
+  // Vérifier CGV
+  const cgvCheck = document.getElementById('cgvCheck');
+  if(cgvCheck && !cgvCheck.checked){
+    const el = document.getElementById('card-errors');
+    if(el) el.textContent = '⚠️ Vous devez accepter les CGV pour continuer.';
+    return;
+  }
 
   const get = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
   const nom         = get('payNom');
