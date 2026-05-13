@@ -116,6 +116,7 @@ textarea { resize:vertical; }
     <button class="tab" onclick="tab('manuel')">➕ Ajout</button>
     <button class="tab" onclick="tab('produits')">📦 Produits</button>
     <button class="tab" onclick="tab('avis')">⭐ Avis</button>
+    <button class="tab" onclick="tab('commandes')">📋 Commandes</button>
     <button class="tab" onclick="tab('liens')">🔗 Liens</button>
   </div>
 
@@ -215,10 +216,20 @@ textarea { resize:vertical; }
       </div>
       <label>Description</label>
       <textarea id="m-desc" rows="2" placeholder="Description du produit..."></textarea>
+      <label>Certifications (séparées par virgule)</label>
+      <input type="text" id="m-certs" placeholder="CE, NF, EN-10253, PED, 316L...">
+      <label>Matière</label>
+      <input type="text" id="m-matiere" placeholder="Inox 316L, Laiton, Acier carbone...">
+      <label>Pression maximale</label>
+      <input type="text" id="m-pression" placeholder="PN16, 40 bar...">
       <label>URL Image</label>
       <input type="url" id="m-img" placeholder="https://...">
       <label>Lien fournisseur</label>
       <input type="url" id="m-lien" placeholder="https://...">
+      <label>Fiche technique (lien fournisseur/fabricant)</label>
+      <input type="url" id="m-fiche" placeholder="https://... (lien vers la fiche technique)">
+      <label>Certificat CE/NF (lien fournisseur/fabricant)</label>
+      <input type="url" id="m-certificat" placeholder="https://... (lien vers le certificat)">
       <label>Tags (séparés par virgule)</label>
       <input type="text" id="m-tags" placeholder="inox, raccord, DN50">
       <button class="btn-green" onclick="saveManuel()">💾 Ajouter au catalogue</button>
@@ -244,6 +255,20 @@ textarea { resize:vertical; }
         <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadAvisAdmin('approved')">✅ Approuvés</button>
       </div>
       <div id="avis-list"><p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p></div>
+    </div>
+  </div>
+
+  <!-- COMMANDES -->
+  <div class="page" id="p-commandes">
+    <div class="card">
+      <h3>📋 Commandes clients</h3>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadCommandes('all')">Toutes</button>
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadCommandes('en_attente')">⏳ En attente</button>
+        <button class="btn-small" style="padding:0.5rem 1rem;" onclick="loadCommandes('commandé')">✅ Commandées</button>
+        <button class="btn-main" style="padding:0.5rem 1rem;font-size:0.8rem;" onclick="sendGroupedNow()">📧 Envoyer commandes groupées</button>
+      </div>
+      <div id="commandes-list"><p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p></div>
     </div>
   </div>
 
@@ -308,6 +333,7 @@ function tab(id){
   });
   if(id === 'produits') loadProduits();
   if(id === 'avis') loadAvisAdmin('pending');
+  if(id === 'commandes') loadCommandes('all');
 }
 
 // ── AVIS ADMIN ──
@@ -359,6 +385,81 @@ async function supprimerAvis(id){
   await fetch(`${SB_URL}/rest/v1/avis?id=eq.${id}`, {method:'DELETE', headers: sbH()});
   toast('🗑️ Avis supprimé');
   loadAvisAdmin('all');
+}
+
+// ── COMMANDES ──
+async function loadCommandes(filtre='all'){
+  const el = document.getElementById('commandes-list');
+  el.innerHTML = '<p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p>';
+  try {
+    let url = `${SB_URL}/rest/v1/commandes?select=*&order=created_at.desc`;
+    if(filtre === 'en_attente') url += '&statut=eq.en_attente';
+    if(filtre === 'commandé')   url += '&statut=eq.commandé';
+    const r = await fetch(url, {headers: sbH()});
+    const data = await r.json();
+    if(!data.length){ el.innerHTML = '<p style="color:#7a8099;text-align:center;padding:1rem;">Aucune commande</p>'; return; }
+
+    // Grouper par fournisseur pour affichage
+    const groupes = {};
+    data.forEach(c => {
+      const f = c.fournisseur || 'Divers';
+      if(!groupes[f]) groupes[f] = [];
+      groupes[f].push(c);
+    });
+
+    el.innerHTML = Object.entries(groupes).map(([fournisseur, cmds]) => `
+      <div style="margin-bottom:1.2rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+          <h4 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;color:var(--orange);">
+            📦 ${fournisseur} — ${cmds.length} commande${cmds.length>1?'s':''}
+          </h4>
+          <span style="font-size:0.78rem;color:var(--grey);">${cmds.reduce((s,c)=>s+c.total_ht,0).toFixed(2)}€ HT total</span>
+        </div>
+        ${cmds.map(c => `
+          <div style="background:#1a1f2e;border:1px solid #333;border-radius:4px;padding:0.9rem;margin-bottom:0.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.4rem;">
+              <div>
+                <strong style="font-size:0.85rem;">${c.client_nom}</strong>
+                ${c.client_entreprise?`<span style="font-size:0.75rem;color:#7a8099;"> — ${c.client_entreprise}</span>`:''}
+                <span style="font-size:0.65rem;background:${c.commande_fournisseur?'rgba(42,157,92,0.15)':'rgba(232,82,26,0.15)'};color:${c.commande_fournisseur?'#2a9d5c':'#e8521a'};padding:0.15rem 0.4rem;border-radius:3px;margin-left:0.4rem;">
+                  ${c.commande_fournisseur?'✅ Commandée':'⏳ En attente'}
+                </span>
+              </div>
+              <span style="font-size:0.7rem;color:#7a8099;">${new Date(c.created_at).toLocaleDateString('fr-FR')} ${new Date(c.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>
+            </div>
+            <p style="font-size:0.8rem;color:#f0ede8;margin-bottom:0.3rem;">🛍️ ${c.articles}</p>
+            <p style="font-size:0.78rem;color:#7a8099;margin-bottom:0.3rem;">📍 ${c.adresse_livraison}</p>
+            ${c.client_telephone?`<p style="font-size:0.78rem;color:#7a8099;">📞 ${c.client_telephone}</p>`:''}
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+              <span style="font-size:0.85rem;color:#e8521a;font-weight:bold;">${c.total_ht.toFixed(2)}€ HT</span>
+              ${!c.commande_fournisseur?`<button onclick="marquerCommandee(${c.id})" style="background:#2a9d5c;border:none;color:white;padding:0.3rem 0.7rem;border-radius:3px;cursor:pointer;font-size:0.75rem;">✅ Marquer commandée</button>`:''}
+            </div>
+          </div>`).join('')}
+      </div>
+    `).join('');
+  } catch(e){ el.innerHTML = `<p style="color:#e84545;text-align:center;">Erreur: ${e.message}</p>`; }
+}
+
+async function marquerCommandee(id){
+  await fetch(`${SB_URL}/rest/v1/commandes?id=eq.${id}`, {
+    method: 'PATCH', headers: sbH(),
+    body: JSON.stringify({commande_fournisseur: true, statut: 'commandé'})
+  });
+  toast('✅ Commande marquée comme passée !');
+  loadCommandes('all');
+}
+
+async function sendGroupedNow(){
+  if(!confirm('Envoyer maintenant les commandes groupées par email ?')) return;
+  try {
+    const r = await fetch('https://aotc-backend.onrender.com/send-grouped-orders', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'x-admin-secret':'aotc2024admin'}
+    });
+    const d = await r.json();
+    if(d.success) toast('✅ Emails groupés envoyés !');
+    else toast('Erreur: ' + d.error, true);
+  } catch(e){ toast('Erreur: ' + e.message, true); }
 }
 
 // ── TOAST ──
@@ -447,8 +548,13 @@ async function saveManuel(){
     unite:           document.getElementById('m-unite').value,
     badge:           document.getElementById('m-badge').value,
     description:     document.getElementById('m-desc').value,
+    certifications:  document.getElementById('m-certs').value,
+    matiere:         document.getElementById('m-matiere').value,
+    pression_max:    document.getElementById('m-pression').value,
     image_url:       document.getElementById('m-img').value,
     lien_aliexpress: document.getElementById('m-lien').value,
+    fiche_technique_url: document.getElementById('m-fiche').value,
+    certificat_url:  document.getElementById('m-certificat').value,
     tags:            document.getElementById('m-tags').value,
     actif: true
   };
@@ -460,7 +566,7 @@ async function saveManuel(){
       body: JSON.stringify({table:'produits', data})
     });
     const res = await r.json();
-    if(res.success){ toast('✅ Produit ajouté !'); ['m-nom','m-prix','m-desc','m-img','m-lien','m-tags'].forEach(id => document.getElementById(id).value = ''); loadStats(); }
+    if(res.success){ toast('✅ Produit ajouté !'); ['m-nom','m-prix','m-desc','m-certs','m-matiere','m-pression','m-img','m-lien','m-fiche','m-certificat','m-tags'].forEach(id => document.getElementById(id).value = ''); loadStats(); }
     else throw new Error(res.error);
   } catch(e){ toast('Erreur: ' + e.message, true); }
 }
@@ -555,6 +661,10 @@ async function runBot(){
           tags: g.tags || kw,
           badge: g.badge || 'new',
           unite: g.unite || 'unité',
+          certifications: g.certifications || '',
+          matiere: g.matiere || '',
+          pression_max: g.pression_max || '',
+          temperature_max: g.temperature_max || '',
           prix_ht: Math.round(raw[i].price * marge * 100) / 100,
           image_url: raw[i].image || '',
           lien_aliexpress: raw[i].url || '',
@@ -637,6 +747,10 @@ async function importSel(){
           nom:p.nom, categorie:p.categorie, reference:p.reference,
           description:p.description, prix_ht:p.prix_ht, unite:p.unite,
           badge:p.badge, tags:p.tags, image_url:p.image_url,
+          certifications: p.certifications || '',
+          matiere: p.matiere || '',
+          pression_max: p.pression_max || '',
+          temperature_max: p.temperature_max || '',
           lien_aliexpress:p.lien_aliexpress, actif:true
         }})
       });

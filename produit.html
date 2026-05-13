@@ -438,16 +438,33 @@ function renderProduct(p){
   // Description
   document.getElementById('productDesc').textContent = p.description || 'Description non disponible.';
 
-  // Specs depuis les tags
-  if(p.tags){
-    const tags = p.tags.split(',').map(t => t.trim()).filter(Boolean);
-    document.getElementById('specsGrid').innerHTML = tags.map(tag => `
-      <div class="spec-item">
-        <div class="spec-label">Caractéristique</div>
-        <div class="spec-val">${tag}</div>
-      </div>
+  // Certifications
+  if(p.certifications){
+    const certs = p.certifications.split(',').map(c => c.trim()).filter(Boolean);
+    const certBadges = certs.map(c => `
+      <span style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);color:#2a9d5c;padding:0.3rem 0.7rem;border-radius:4px;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;">✅ ${c}</span>
     `).join('');
+    const certDiv = document.createElement('div');
+    certDiv.style.cssText = 'margin-bottom:1.2rem;';
+    certDiv.innerHTML = `
+      <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.5rem;">Certifications & Normes</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">${certBadges}</div>`;
+    document.getElementById('productRef').after(certDiv);
   }
+
+  // Specs techniques
+  const specs = [];
+  if(p.matiere)         specs.push({label:'Matière',          val: p.matiere});
+  if(p.pression_max)    specs.push({label:'Pression max',     val: p.pression_max});
+  if(p.temperature_min) specs.push({label:'Température min',  val: p.temperature_min});
+  if(p.temperature_max) specs.push({label:'Température max',  val: p.temperature_max});
+  if(p.tags) p.tags.split(',').map(t=>t.trim()).filter(Boolean).forEach(t => specs.push({label:'Caractéristique', val:t}));
+
+  document.getElementById('specsGrid').innerHTML = specs.length ? specs.map(s=>`
+    <div class="spec-item">
+      <div class="spec-label">${s.label}</div>
+      <div class="spec-val">${s.val}</div>
+    </div>`).join('') : '';
 
   // Lien fournisseur
   if(p.lien_aliexpress && p.lien_aliexpress !== '#'){
@@ -455,6 +472,19 @@ function renderProduct(p){
       <a href="${p.lien_aliexpress}" target="_blank" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--grey);text-decoration:none;margin-top:0.5rem;">
         🔗 Voir chez le fournisseur
       </a>`;
+  }
+
+  // Documents techniques
+  if(p.fiche_technique_url || p.certificat_url){
+    const docsDiv = document.createElement('div');
+    docsDiv.style.cssText = 'margin-bottom:1.2rem;';
+    docsDiv.innerHTML = `
+      <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.5rem;">Documents techniques</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        ${p.fiche_technique_url ? `<a href="${p.fiche_technique_url}" target="_blank" style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);color:#2a9d5c;padding:0.4rem 0.8rem;border-radius:4px;font-size:0.8rem;text-decoration:none;">📄 Fiche technique</a>` : ''}
+        ${p.certificat_url ? `<a href="${p.certificat_url}" target="_blank" style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(232,82,26,0.1);border:1px solid var(--border);color:var(--orange);padding:0.4rem 0.8rem;border-radius:4px;font-size:0.8rem;text-decoration:none;">🏆 Certificat CE/NF</a>` : ''}
+      </div>`;
+    document.getElementById('supplierLink').after(docsDiv);
   }
 
   // Livraison dynamique
