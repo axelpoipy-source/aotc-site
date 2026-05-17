@@ -1552,13 +1552,6 @@ function updateAccBtn(){
   else{ l.textContent='Mon compte'; b.classList.remove('gold'); }
 }
 
-// Init au chargement — après que toutes les fonctions sont définies
-window.addEventListener('DOMContentLoaded', function(){
-  updateAccBtn();
-  initAuth();
-  loadProducts();
-});
-
 // ── STRIPE PAIEMENT ──
 const STRIPE_PK = 'pk_test_51TU33pEXJM7LGecZb8rymMLykBt3ufcTf6F46oFVNXYoGOuV9802J0PuJdUDjaSJdQrqfUqNqXzk2loGyhPshP2t00FqSQlkQK';
 const BACKEND_URL = 'https://aotc-backend.onrender.com';
@@ -2005,9 +1998,14 @@ function refuseCookies(){localStorage.setItem('aotc_cookies','refused');document
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAccount();closeLegal();closeCart();}});
 
 // ── INIT ──
-updateCartBadge();
-if(localStorage.getItem('aotc_cookies')) document.getElementById('cookieBanner').style.display='none';
-render();
+window.addEventListener('DOMContentLoaded', function(){
+  updateCartBadge();
+  updateAccBtn();
+  if(localStorage.getItem('aotc_cookies')) document.getElementById('cookieBanner').style.display='none';
+  render();
+  loadProducts();
+  initAuth();
+});
 </script>
 </body>
 </html>
