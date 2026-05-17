@@ -743,6 +743,9 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
 const SUPABASE_URL = 'https://fwtpyncsrggpamlggiwi.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dHB5bmNzcmdncGFtbGdnaXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzY2MDIsImV4cCI6MjA5Mzg1MjYwMn0.EYUlGpdABDxDJ1Ck5d6wObZax5sjGlpCRh_LKQmPUQ4';
 
+// Déclaration globale curUser — disponible partout
+let curUser = JSON.parse(localStorage.getItem('aotc_user') || 'null');
+
 // Produits de secours (affichés pendant le chargement)
 const PRODUCTS_FALLBACK = [
   {id:1,  cat:'Raccords',     name:'Coude 90° Inox 316L',     ref:'RAC-001', dn:'DN50',    price:12.90, unit:'unité',  badge:'pro',   icon:'🔧', desc:'Coude à souder, finition miroir, pression maxi 40 bar',         tags:['inox','coude','raccord','316l']},
@@ -1549,10 +1552,11 @@ function updateAccBtn(){
   else{ l.textContent='Mon compte'; b.classList.remove('gold'); }
 }
 
-// Init au chargement
-let curUser = JSON.parse(localStorage.getItem('aotc_user')||'null');
-updateAccBtn();
-initAuth();
+// Init au chargement — après que toutes les fonctions sont définies
+window.addEventListener('DOMContentLoaded', function(){
+  updateAccBtn();
+  initAuth();
+});
 
 // ── STRIPE PAIEMENT ──
 const STRIPE_PK = 'pk_test_51TU33pEXJM7LGecZb8rymMLykBt3ufcTf6F46oFVNXYoGOuV9802J0PuJdUDjaSJdQrqfUqNqXzk2loGyhPshP2t00FqSQlkQK';
