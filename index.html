@@ -450,6 +450,10 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <div class="field"><label>Mot de passe</label><input id="loginPass" type="password" placeholder="••••••••"></div>
     <button class="bfull" onclick="doLogin()">Se connecter →</button>
     <p class="ferr" id="loginErr"></p>
+    <div id="loginNotConfirmed" style="display:none;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:0.8rem;margin-top:0.5rem;text-align:center;">
+      <p style="font-size:0.8rem;color:var(--gold);margin-bottom:0.5rem;">⚠️ Email non confirmé. Vérifiez votre boîte mail.</p>
+      <a onclick="showTab('resend')" style="font-size:0.78rem;color:var(--orange);cursor:pointer;text-decoration:underline;">Renvoyer l'email de confirmation</a>
+    </div>
     <p style="text-align:center;margin-top:0.6rem;">
       <a onclick="showTab('forgot')" style="font-size:0.78rem;color:var(--grey);cursor:pointer;text-decoration:underline;">Mot de passe oublié ?</a>
     </p>
@@ -462,7 +466,21 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <button class="bfull" onclick="doForgot()">📧 Envoyer le lien →</button>
     <p class="ferr" id="forgotErr"></p>
     <p id="forgotOk" style="display:none;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.7rem;font-size:0.82rem;color:var(--green);text-align:center;margin-top:0.5rem;">
-      ✅ Email envoyé ! Vérifiez votre boîte mail.
+      ✅ Email envoyé ! Vérifiez votre boîte mail (et vos spams).
+    </p>
+    <p style="text-align:center;margin-top:0.8rem;">
+      <a onclick="showTab('login')" style="font-size:0.78rem;color:var(--grey);cursor:pointer;text-decoration:underline;">← Retour à la connexion</a>
+    </p>
+  </div>
+
+  <!-- RENVOYER EMAIL CONFIRMATION -->
+  <div id="paneResend" class="mbody" style="display:none;">
+    <p style="font-size:0.82rem;color:var(--grey);margin-bottom:1rem;">Entrez votre email pour recevoir un nouveau lien de confirmation.</p>
+    <div class="field"><label>Email</label><input id="resendEmail" type="email" placeholder="votre@email.fr"></div>
+    <button class="bfull" onclick="doResend()">📧 Renvoyer l'email →</button>
+    <p class="ferr" id="resendErr"></p>
+    <p id="resendOk" style="display:none;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.7rem;font-size:0.82rem;color:var(--green);text-align:center;margin-top:0.5rem;">
+      ✅ Email de confirmation renvoyé ! Vérifiez votre boîte mail et vos spams.
     </p>
     <p style="text-align:center;margin-top:0.8rem;">
       <a onclick="showTab('login')" style="font-size:0.78rem;color:var(--grey);cursor:pointer;text-decoration:underline;">← Retour à la connexion</a>
@@ -1309,17 +1327,22 @@ function closeAccount(){
   document.getElementById('accountModal').style.display='none';
   document.body.style.overflow='';
 }
-function showTab(tab){
-  document.getElementById('paneLogin').style.display    = tab==='login'    ? 'block' : 'none';
-  document.getElementById('paneRegister').style.display = tab==='register' ? 'block' : 'none';
-  document.getElementById('paneForgot').style.display   = tab==='forgot'   ? 'block' : 'none';
-  document.getElementById('paneDashboard').style.display = 'none';
-  document.getElementById('modalTabs').style.display = tab==='forgot' ? 'none' : 'flex';
-  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
-  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
-  document.getElementById('modalTitle').innerHTML = tab==='forgot'
-    ? 'Mot de passe <span style="color:var(--orange)">oublié</span>'
-    : 'Mon <span style="color:var(--orange)">Compte</span>';
+function showTab(t){
+  ['login','register','forgot','resend'].forEach(function(id){
+    const pane = document.getElementById('pane'+id.charAt(0).toUpperCase()+id.slice(1));
+    if(pane) pane.style.display = t===id ? 'block' : 'none';
+  });
+  const titles = {
+    login:    'Mon <span style="color:var(--orange)">Compte</span>',
+    register: 'Mon <span style="color:var(--orange)">Compte</span>',
+    forgot:   'Mot de passe <span style="color:var(--orange)">oublié</span>',
+    resend:   'Confirmer <span style="color:var(--orange)">mon email</span>'
+  };
+  document.getElementById('modalTitle').innerHTML = titles[t] || titles.login;
+  document.getElementById('modalTabs').style.display = (t==='login'||t==='register') ? 'flex' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active', t==='login');
+  document.getElementById('tabRegister').classList.toggle('active', t==='register');
+  if(t==='login') document.getElementById('loginNotConfirmed').style.display='none';
 }
 
 async function doForgot(){
@@ -1424,19 +1447,25 @@ async function doLogin(){
   const em  = document.getElementById('loginEmail').value.trim();
   const pw  = document.getElementById('loginPass').value;
   const err = document.getElementById('loginErr');
+  const notConfirmed = document.getElementById('loginNotConfirmed');
   if(!em||!pw){ err.textContent='Remplissez tous les champs.'; err.style.display='block'; return; }
 
   const btn = document.querySelector('#paneLogin .bfull');
   if(btn){ btn.disabled=true; btn.textContent='Connexion...'; }
+  err.style.display='none';
+  notConfirmed.style.display='none';
 
   try {
     const data = await sbAuthRequest('/token?grant_type=password', { email: em, password: pw });
 
     if(data.error || !data.access_token){
-      err.textContent = data.error_description === 'Email not confirmed'
-        ? '⚠️ Confirmez votre email avant de vous connecter.'
-        : 'Email ou mot de passe incorrect.';
-      err.style.display = 'block';
+      if(data.error_description === 'Email not confirmed'){
+        notConfirmed.style.display='block';
+        document.getElementById('resendEmail').value = em;
+      } else {
+        err.textContent = 'Email ou mot de passe incorrect.';
+        err.style.display = 'block';
+      }
       return;
     }
 
@@ -1451,6 +1480,25 @@ async function doLogin(){
     err.style.display = 'block';
   } finally {
     if(btn){ btn.disabled=false; btn.textContent='Se connecter →'; }
+  }
+}
+
+async function doResend(){
+  const email = document.getElementById('resendEmail').value.trim();
+  const err   = document.getElementById('resendErr');
+  const ok    = document.getElementById('resendOk');
+  err.style.display='none';
+  ok.style.display='none';
+
+  if(!email){ err.textContent='Entrez votre email.'; err.style.display='block'; return; }
+
+  try {
+    await sbAuthRequest('/resend', { type: 'signup', email });
+    ok.style.display = 'block';
+    document.getElementById('resendEmail').value = '';
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
   }
 }
 
