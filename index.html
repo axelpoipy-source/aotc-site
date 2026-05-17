@@ -450,6 +450,23 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <div class="field"><label>Mot de passe</label><input id="loginPass" type="password" placeholder="••••••••"></div>
     <button class="bfull" onclick="doLogin()">Se connecter →</button>
     <p class="ferr" id="loginErr"></p>
+    <p style="text-align:center;margin-top:0.6rem;">
+      <a onclick="showTab('forgot')" style="font-size:0.78rem;color:var(--grey);cursor:pointer;text-decoration:underline;">Mot de passe oublié ?</a>
+    </p>
+  </div>
+
+  <!-- MOT DE PASSE OUBLIÉ -->
+  <div id="paneForgot" class="mbody" style="display:none;">
+    <p style="font-size:0.82rem;color:var(--grey);margin-bottom:1rem;">Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe.</p>
+    <div class="field"><label>Email</label><input id="forgotEmail" type="email" placeholder="votre@email.fr"></div>
+    <button class="bfull" onclick="doForgot()">📧 Envoyer le lien →</button>
+    <p class="ferr" id="forgotErr"></p>
+    <p id="forgotOk" style="display:none;background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.7rem;font-size:0.82rem;color:var(--green);text-align:center;margin-top:0.5rem;">
+      ✅ Email envoyé ! Vérifiez votre boîte mail.
+    </p>
+    <p style="text-align:center;margin-top:0.8rem;">
+      <a onclick="showTab('login')" style="font-size:0.78rem;color:var(--grey);cursor:pointer;text-decoration:underline;">← Retour à la connexion</a>
+    </p>
   </div>
   <div id="paneRegister" class="mbody" style="display:none;">
     <div class="frow">
@@ -471,7 +488,8 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <!-- Onglets dashboard -->
     <div style="display:flex;border-bottom:1px solid var(--border);margin:-1.6rem -1.8rem 1.2rem;">
       <button id="tabFidelite" onclick="switchDash('fidelite')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--orange);">⭐ Fidélité</button>
-      <button id="tabProfil" onclick="switchDash('profil')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">👤 Mon profil</button>
+      <button id="tabCommandes" onclick="switchDash('commandes')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">📦 Commandes</button>
+      <button id="tabProfil" onclick="switchDash('profil')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">👤 Profil</button>
     </div>
 
     <!-- Fidélité -->
@@ -489,6 +507,11 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
         <div class="lvlc" id="lg"><div class="li">🥇</div><div class="ln">Or</div><div class="lp">1500 pts</div></div>
       </div>
       <div class="avbox"><h4>Vos avantages</h4><div id="avList"></div></div>
+    </div>
+
+    <!-- Commandes -->
+    <div id="dashCommandes" style="display:none;">
+      <div id="cmdList"><p style="text-align:center;color:var(--grey);padding:1.5rem;">Chargement...</p></div>
     </div>
 
     <!-- Profil -->
@@ -914,56 +937,265 @@ function changeQty(id,d){
   else{saveCart();updateCartBadge();renderCart();}
 }
 function updateCartBadge(){document.getElementById('cartBadge').textContent=cart.reduce((s,c)=>s+c.qty,0);}
+// ── TARIFS DÉGRESSIFS ──
+const PALIERS = [
+  { min: 51, remise: 0.10, label: '-10%' },
+  { min: 21, remise: 0.06, label: '-6%'  },
+  { min: 6,  remise: 0.03, label: '-3%'  },
+  { min: 1,  remise: 0,    label: ''     }
+];
+
+function getRemise(qty){
+  return PALIERS.find(p => qty >= p.min) || PALIERS[PALIERS.length-1];
+}
+
+function prixAvecRemise(price, qty){
+  const { remise } = getRemise(qty);
+  return price * (1 - remise);
+}
+
 function renderCart(){
-  const el=document.getElementById('cartItems');
-  const tel=document.getElementById('cartTotal');
-  if(!cart.length){el.innerHTML='<div class="cdempty">🛒 Votre panier est vide</div>';tel.textContent='0,00€';return;}
-  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
-  tel.textContent=fmt(total);
-  el.innerHTML=cart.map(c=>`<div class="cditem">
-    <div class="cdimg">${c.icon}</div>
-    <div class="cdinfo">
-      <div class="cdname">${c.name}</div>
-      <div class="cdprice">${fmt(c.price)} HT / ${c.unit}</div>
-      <div class="cdqty">
-        <button class="qbtn" onclick="changeQty(${c.id},-1)">−</button>
-        <span style="font-size:0.82rem;min-width:18px;text-align:center;">${c.qty}</span>
-        <button class="qbtn" onclick="changeQty(${c.id},1)">+</button>
-        <button class="rmbtn" onclick="removeFromCart(${c.id})" title="Retirer">🗑️</button>
+  const el  = document.getElementById('cartItems');
+  const tel = document.getElementById('cartTotal');
+  if(!cart.length){ el.innerHTML='<div class="cdempty">🛒 Votre panier est vide</div>'; tel.textContent='0,00€'; return; }
+
+  // Calculer total avec remises
+  const total = cart.reduce((s,c) => s + prixAvecRemise(c.price, c.qty) * c.qty, 0);
+  const totalSansRemise = cart.reduce((s,c) => s + c.price * c.qty, 0);
+  const economie = totalSansRemise - total;
+  tel.textContent = fmt(total);
+
+  el.innerHTML = cart.map(c => {
+    const { remise, label } = getRemise(c.qty);
+    const prixFinal = prixAvecRemise(c.price, c.qty);
+    const imgHtml = c.image && c.image.startsWith('http')
+      ? `<img src="${c.image}" style="width:100%;height:100%;object-fit:cover;border-radius:3px;" onerror="this.parentElement.innerHTML='${c.icon||'🔧'}';">`
+      : (c.icon || '🔧');
+
+    // Prochain palier
+    const prochainPalier = PALIERS.slice().reverse().find(p => p.min > c.qty && p.remise > remise);
+    const manque = prochainPalier ? prochainPalier.min - c.qty : 0;
+
+    return `<div class="cditem">
+      <div class="cdimg">${imgHtml}</div>
+      <div class="cdinfo">
+        <div class="cdname">${c.name}</div>
+        <div class="cdprice" style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+          ${remise > 0
+            ? `<span style="text-decoration:line-through;color:var(--grey);font-size:0.72rem;">${fmt(c.price)}</span>
+               <span style="color:var(--green);font-weight:700;">${fmt(prixFinal)}</span>
+               <span style="background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);padding:0.1rem 0.35rem;border-radius:3px;font-size:0.65rem;font-weight:700;">${label}</span>`
+            : `<span>${fmt(c.price)}</span>`
+          } HT / ${c.unit}
+        </div>
+        ${prochainPalier && manque > 0
+          ? `<div style="font-size:0.68rem;color:var(--gold);margin-top:0.2rem;">➕ +${manque} unité${manque>1?'s':''} pour ${prochainPalier.label}</div>`
+          : remise > 0 ? `<div style="font-size:0.68rem;color:var(--green);margin-top:0.2rem;">✅ Remise volume appliquée</div>` : ''
+        }
+        <div class="cdqty">
+          <button class="qbtn" onclick="changeQty(${c.id},-1)">−</button>
+          <span style="font-size:0.82rem;min-width:18px;text-align:center;">${c.qty}</span>
+          <button class="qbtn" onclick="changeQty(${c.id},1)">+</button>
+          <button class="rmbtn" onclick="removeFromCart(${c.id})" title="Retirer">🗑️</button>
+        </div>
       </div>
-    </div>
-  </div>`).join('');
+    </div>`;
+  }).join('');
+
+  // Afficher l'économie totale si remise
+  if(economie > 0.01){
+    el.innerHTML += `<div style="background:rgba(42,157,92,0.1);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.6rem 0.8rem;margin-top:0.5rem;font-size:0.78rem;color:var(--green);text-align:center;">
+      🎉 Vous économisez <strong>${fmt(economie)}</strong> grâce aux remises volume !
+    </div>`;
+  }
 }
 function openCart(){renderCart();document.getElementById('cartOverlay').style.display='block';document.getElementById('cartDrawer').classList.add('open');document.body.style.overflow='hidden';}
 function closeCart(){document.getElementById('cartOverlay').style.display='none';document.getElementById('cartDrawer').classList.remove('open');document.body.style.overflow='';}
-function sendDevis(){
-  if(!cart.length) return;
-  const lines=cart.map(c=>`- ${c.name} (Réf.${c.ref}) x${c.qty} = ${fmt(c.price*c.qty)} HT`).join('\n');
-  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
-  const body=encodeURIComponent(`Bonjour,\n\nJe souhaite un devis pour :\n\n${lines}\n\nTotal HT estimé : ${fmt(total)}\n\nCordialement`);
-  window.location.href=`mailto:contact@aotc.fr?subject=Demande de devis AOTC&body=${body}`;
+async function sendDevis(){
+  if(!cart.length){ toast('Panier vide',true); return; }
+  if(!curUser){ toast('Connectez-vous pour demander un devis',true); openAccount(); return; }
+  const btn = document.querySelector('[onclick="sendDevis()"]');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Génération...'; }
+  try {
+    const r = await fetch('https://aotc-backend.onrender.com/generate-quote',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        nom: curUser.prenom+' '+curUser.nom,
+        email: curUser.email,
+        telephone: curUser.telephone||'',
+        entreprise: curUser.entreprise||'',
+        adresse: [(curUser.adresse||''),(curUser.cp||''),(curUser.ville||'')].filter(Boolean).join(' '),
+        items: cart.map(c=>({ nom:c.name, prix_ht:c.price, qty:c.qty }))
+      })
+    });
+    const data = await r.json();
+    if(data.success){ toast('✅ Devis '+data.quoteNum+' envoyé par email !'); closeCart(); }
+    else throw new Error(data.error);
+  } catch(e){ toast('Erreur : '+e.message, true); }
+  if(btn){ btn.disabled=false; btn.textContent='📄 Demander un devis'; }
 }
 
-// ── PROFIL CLIENT ──
+// ── RESET MOT DE PASSE (depuis lien email) ──
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('reset');
+  const email  = params.get('email');
+  if(token && email){
+    // Afficher le modal de nouveau mot de passe
+    setTimeout(function(){
+      openAccount();
+      showTab('login');
+      document.getElementById('paneLogin').innerHTML = `
+        <p style="font-size:0.82rem;color:var(--grey);margin-bottom:1rem;">Choisissez un nouveau mot de passe pour <strong style="color:var(--white);">${email}</strong></p>
+        <div class="field"><label>Nouveau mot de passe</label><input id="newPass1" type="password" placeholder="Min. 6 caractères"></div>
+        <div class="field"><label>Confirmer le mot de passe</label><input id="newPass2" type="password" placeholder="Répétez le mot de passe"></div>
+        <button class="bfull" onclick="doResetPassword('${email}','${token}')">✅ Enregistrer le nouveau mot de passe</button>
+        <p class="ferr" id="resetErr"></p>`;
+      document.getElementById('modalTitle').innerHTML = 'Nouveau <span style="color:var(--orange)">mot de passe</span>';
+      document.getElementById('modalTabs').style.display = 'none';
+    }, 500);
+  }
+})();
+
+async function doResetPassword(email, token){
+  const p1  = document.getElementById('newPass1').value;
+  const p2  = document.getElementById('newPass2').value;
+  const err = document.getElementById('resetErr');
+  err.style.display = 'none';
+
+  if(!p1 || p1.length < 6){ err.textContent='Mot de passe trop court (6 caractères min).'; err.style.display='block'; return; }
+  if(p1 !== p2){ err.textContent='Les mots de passe ne correspondent pas.'; err.style.display='block'; return; }
+
+  try {
+    const r = await fetch('https://aotc-backend.onrender.com/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, token, newPassword: p1 })
+    });
+    const data = await r.json();
+    if(data.success){
+      // Mettre à jour le mot de passe dans localStorage
+      const users = JSON.parse(localStorage.getItem('aotc_users')||'{}');
+      if(users[email]){ users[email].pass = p1; localStorage.setItem('aotc_users', JSON.stringify(users)); }
+      toast('✅ Mot de passe mis à jour ! Vous pouvez vous connecter.');
+      closeAccount();
+      // Nettoyer l'URL
+      window.history.replaceState({}, '', window.location.pathname);
+    } else {
+      err.textContent = data.error || 'Lien invalide ou expiré.';
+      err.style.display = 'block';
+    }
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
+  }
+}
 function switchDash(tab){
-  document.getElementById('dashFidelite').style.display = tab==='fidelite' ? 'block' : 'none';
-  document.getElementById('dashProfil').style.display   = tab==='profil'   ? 'block' : 'none';
-  document.getElementById('tabFidelite').style.color      = tab==='fidelite' ? 'var(--orange)' : 'var(--grey)';
-  document.getElementById('tabProfil').style.color        = tab==='profil'   ? 'var(--orange)' : 'var(--grey)';
-  document.getElementById('tabFidelite').style.borderBottomColor = tab==='fidelite' ? 'var(--orange)' : 'transparent';
+  ['fidelite','commandes','profil'].forEach(t => {
+    document.getElementById('dash'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab ? 'block' : 'none';
+    const btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(btn){
+      btn.style.color = t===tab ? 'var(--orange)' : 'var(--grey)';
+      btn.style.borderBottomColor = t===tab ? 'var(--orange)' : 'transparent';
+    }
+  });
+  if(tab==='profil')    loadProfil();
+  if(tab==='commandes') loadOrderHistory();
+}
+
+async function loadOrderHistory(){
+  if(!curUser) return;
+  const el = document.getElementById('cmdList');
+  el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:1.5rem;">Chargement...</p>';
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&order=created_at.desc`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    const cmds = await r.json();
+
+    if(!cmds.length){
+      el.innerHTML = `
+        <div style="text-align:center;padding:2rem;color:var(--grey);">
+          <p style="font-size:2rem;margin-bottom:0.5rem;">📦</p>
+          <p>Vous n'avez pas encore de commande.</p>
+          <button onclick="closeAccount()" style="background:var(--orange);border:none;color:white;padding:0.7rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:1rem;">🛒 Voir le catalogue</button>
+        </div>`;
+      return;
+    }
+
+    const statusLabel = { en_attente:'⏳ En attente', commandé:'📦 En cours', livré:'✅ Livré', annulé:'❌ Annulé' };
+    const statusColor = { en_attente:'var(--orange)', commandé:'var(--gold)', livré:'var(--green)', annulé:'#e84545' };
+
+    el.innerHTML = cmds.map(cmd => {
+      const date   = new Date(cmd.created_at).toLocaleDateString('fr-FR');
+      const statut = cmd.statut || 'en_attente';
+      return `
+        <div style="background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:1rem;margin-bottom:0.8rem;">
+          <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.6rem;">
+            <div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">
+                Commande du ${date}
+              </span>
+              <span style="font-size:0.65rem;background:rgba(232,82,26,0.1);color:var(--orange);border:1px solid var(--border);padding:0.15rem 0.4rem;border-radius:3px;margin-left:0.5rem;">
+                ${cmd.fournisseur || 'AOTC'}
+              </span>
+            </div>
+            <span style="font-size:0.75rem;font-weight:600;color:${statusColor[statut] || 'var(--grey)'};">
+              ${statusLabel[statut] || statut}
+            </span>
+          </div>
+          <p style="font-size:0.82rem;color:var(--grey);margin-bottom:0.4rem;">
+            🛍️ ${cmd.articles || '—'}
+          </p>
+          <p style="font-size:0.78rem;color:var(--grey);margin-bottom:0.4rem;">
+            📍 ${cmd.adresse_livraison || '—'}
+          </p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;flex-wrap:wrap;gap:0.3rem;">
+            <span style="font-size:0.9rem;font-weight:700;color:var(--orange);">
+              ${cmd.total_ttc ? cmd.total_ttc.toFixed(2)+'€ TTC' : '—'}
+            </span>
+            <div style="display:flex;gap:0.4rem;">
+              <button onclick="reorderCmd('${cmd.articles}')" style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+                🔄 Recommander
+              </button>
+              ${cmd.stripe_payment_id ? `
+              <button onclick="contactSupport('${cmd.stripe_payment_id}')" style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+                📧 Contact SAV
+              </button>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch(e){
+    el.innerHTML = `<p style="text-align:center;color:#e84545;padding:1rem;">Erreur : ${e.message}</p>`;
+  }
+}
+
+function reorderCmd(articles){
+  // Fermer le modal et aller vers le catalogue
+  closeAccount();
+  toast('🛒 Retrouvez vos produits dans le catalogue !');
+}
+
+function contactSupport(paymentId){
+  const subject = encodeURIComponent(`SAV — Commande ${paymentId}`);
+  const body = encodeURIComponent(`Bonjour,\n\nJe souhaite vous contacter concernant ma commande ${paymentId}.\n\n[Décrivez votre problème ici]\n\nCordialement,\n${curUser?.prenom || ''} ${curUser?.nom || ''}`);
+  window.location.href = `mailto:contact@aotc.fr?subject=${subject}&body=${body}`;
+}
   document.getElementById('tabProfil').style.borderBottomColor   = tab==='profil'   ? 'var(--orange)' : 'transparent';
   if(tab==='profil') loadProfil();
 }
 
 async function loadProfil(){
   if(!curUser) return;
+  const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`}
     });
     const data = await r.json();
     const p = data[0] || {};
-
     document.getElementById('prof-prenom').value    = p.prenom    || curUser.prenom || '';
     document.getElementById('prof-nom').value       = p.nom       || curUser.nom    || '';
     document.getElementById('prof-email').value     = curUser.email;
@@ -1065,7 +1297,6 @@ const LEVELS=[
   {name:'Argent',min:500, icon:'🥈',av:['1,5 point par euro dépensé','−5% sur toutes commandes','Livraison prioritaire']},
   {name:'Or',    min:1500,icon:'🥇',av:['2 points par euro dépensé','−10% sur toutes commandes','Livraison offerte dès 50€','Accès ventes privées']},
 ];
-let curUser=JSON.parse(localStorage.getItem('aotc_user')||'null');
 function getLvl(p){return[...LEVELS].reverse().find(l=>p>=l.min)||LEVELS[0];}
 function openAccount(){
   document.getElementById('accountOverlay').style.display='block';
@@ -1079,13 +1310,48 @@ function closeAccount(){
   document.body.style.overflow='';
 }
 function showTab(tab){
-  document.getElementById('paneLogin').style.display=tab==='login'?'block':'none';
-  document.getElementById('paneRegister').style.display=tab==='register'?'block':'none';
-  document.getElementById('paneDashboard').style.display='none';
-  document.getElementById('modalTabs').style.display='flex';
-  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
-  document.getElementById('tabRegister').classList.toggle('active',tab==='register');
-  document.getElementById('modalTitle').innerHTML='Mon <span style="color:var(--orange)">Compte</span>';
+  document.getElementById('paneLogin').style.display    = tab==='login'    ? 'block' : 'none';
+  document.getElementById('paneRegister').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('paneForgot').style.display   = tab==='forgot'   ? 'block' : 'none';
+  document.getElementById('paneDashboard').style.display = 'none';
+  document.getElementById('modalTabs').style.display = tab==='forgot' ? 'none' : 'flex';
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+  document.getElementById('modalTitle').innerHTML = tab==='forgot'
+    ? 'Mot de passe <span style="color:var(--orange)">oublié</span>'
+    : 'Mon <span style="color:var(--orange)">Compte</span>';
+}
+
+async function doForgot(){
+  const email = document.getElementById('forgotEmail').value.trim();
+  const err   = document.getElementById('forgotErr');
+  const ok    = document.getElementById('forgotOk');
+  err.style.display = 'none';
+  ok.style.display  = 'none';
+
+  if(!email){ err.textContent='Entrez votre email.'; err.style.display='block'; return; }
+
+  const users = JSON.parse(localStorage.getItem('aotc_users')||'{}');
+  if(!users[email]){ err.textContent='Aucun compte trouvé avec cet email.'; err.style.display='block'; return; }
+
+  try {
+    const r = await fetch('https://aotc-backend.onrender.com/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await r.json();
+    if(data.success){
+      ok.style.display = 'block';
+      document.getElementById('forgotEmail').value = '';
+    } else {
+      err.textContent = data.error || "Erreur lors de l'envoi.";
+      err.style.display = 'block';
+    }
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
+  }
 }
 function showDash(){
   ['paneLogin','paneRegister'].forEach(id=>document.getElementById(id).style.display='none');
@@ -1100,48 +1366,193 @@ function showDash(){
   ['lb','ls','lg'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',LEVELS[i].name===lvl.name));
   document.getElementById('avList').innerHTML=lvl.av.map(a=>`<div class="avitem">✓ ${a}</div>`).join('');
 }
-function doLogin(){
-  const em=document.getElementById('loginEmail').value.trim(),pw=document.getElementById('loginPass').value,err=document.getElementById('loginErr');
-  const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
-  if(!em||!pw){err.textContent='Remplissez tous les champs.';err.style.display='block';return;}
-  if(!users[em]||users[em].pass!==pw){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';return;}
-  err.style.display='none';
-  curUser=users[em];
-  // Charger le profil depuis Supabase
-  fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${em}`,{headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}})
-  .then(r=>r.json()).then(data=>{
-    if(data[0]){
-      const p=data[0];
-      curUser.telephone=p.telephone||curUser.telephone;
-      curUser.entreprise=p.entreprise||curUser.entreprise;
-      curUser.adresse=p.adresse||'';
-      curUser.cp=p.cp||'';
-      curUser.ville=p.ville||'';
-      curUser.pays=p.pays||'FR';
+// ── SUPABASE AUTH ──
+const SUPABASE_AUTH_URL = SUPABASE_URL + '/auth/v1';
+
+async function sbAuthRequest(endpoint, body){
+  const r = await fetch(SUPABASE_AUTH_URL + endpoint, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+// Vérifier session au chargement
+async function initAuth(){
+  const token = localStorage.getItem('aotc_token');
+  if(!token) return;
+  try {
+    const r = await fetch(SUPABASE_AUTH_URL + '/user', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
+    });
+    if(r.ok){
+      const user = await r.json();
+      await loadUserProfile(user, token);
+    } else {
+      localStorage.removeItem('aotc_token');
     }
-    localStorage.setItem('aotc_user',JSON.stringify(curUser));
-    updateAccBtn();showDash();
-  }).catch(()=>{localStorage.setItem('aotc_user',JSON.stringify(curUser));updateAccBtn();showDash();});
+  } catch(e){ localStorage.removeItem('aotc_token'); }
 }
-function doRegister(){
-  const pr=document.getElementById('regPrenom').value.trim(),no=document.getElementById('regNom').value.trim();
-  const em=document.getElementById('regEmail').value.trim(),pw=document.getElementById('regPass').value;
-  const en=document.getElementById('regEnt').value.trim(),err=document.getElementById('regErr');
-  if(!pr||!no||!em||!pw){err.textContent='Remplissez tous les champs obligatoires.';err.style.display='block';return;}
-  if(pw.length<6){err.textContent='Mot de passe trop court (min. 6 caractères).';err.style.display='block';return;}
-  const users=JSON.parse(localStorage.getItem('aotc_users')||'{}');
-  if(users[em]){err.textContent='Email déjà utilisé.';err.style.display='block';return;}
-  err.style.display='none';
-  const u={prenom:pr,nom:no,email:em,pass:pw,entreprise:en,points:50,createdAt:new Date().toISOString()};
-  users[em]=u;localStorage.setItem('aotc_users',JSON.stringify(users));
-  curUser=u;localStorage.setItem('aotc_user',JSON.stringify(u));updateAccBtn();showDash();
+
+async function loadUserProfile(authUser, token){
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${authUser.email}`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
+    });
+    const data = await r.json();
+    const p = data[0] || {};
+    curUser = {
+      email:      authUser.email,
+      prenom:     p.prenom     || authUser.user_metadata?.prenom || '',
+      nom:        p.nom        || authUser.user_metadata?.nom    || '',
+      telephone:  p.telephone  || '',
+      entreprise: p.entreprise || authUser.user_metadata?.entreprise || '',
+      adresse:    p.adresse    || '',
+      cp:         p.cp         || '',
+      ville:      p.ville      || '',
+      pays:       p.pays       || 'FR',
+      points:     p.points     || 0,
+      token:      token
+    };
+    localStorage.setItem('aotc_user', JSON.stringify(curUser));
+    updateAccBtn();
+  } catch(e){ console.error('Erreur chargement profil:', e); }
 }
-function doLogout(){curUser=null;localStorage.removeItem('aotc_user');updateAccBtn();showTab('login');}
+
+async function doLogin(){
+  const em  = document.getElementById('loginEmail').value.trim();
+  const pw  = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  if(!em||!pw){ err.textContent='Remplissez tous les champs.'; err.style.display='block'; return; }
+
+  const btn = document.querySelector('#paneLogin .bfull');
+  if(btn){ btn.disabled=true; btn.textContent='Connexion...'; }
+
+  try {
+    const data = await sbAuthRequest('/token?grant_type=password', { email: em, password: pw });
+
+    if(data.error || !data.access_token){
+      err.textContent = data.error_description === 'Email not confirmed'
+        ? '⚠️ Confirmez votre email avant de vous connecter.'
+        : 'Email ou mot de passe incorrect.';
+      err.style.display = 'block';
+      return;
+    }
+
+    const token = data.access_token;
+    localStorage.setItem('aotc_token', token);
+    err.style.display = 'none';
+    await loadUserProfile(data.user, token);
+    showDash();
+
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='Se connecter →'; }
+  }
+}
+
+async function doRegister(){
+  const pr  = document.getElementById('regPrenom').value.trim();
+  const no  = document.getElementById('regNom').value.trim();
+  const em  = document.getElementById('regEmail').value.trim();
+  const pw  = document.getElementById('regPass').value;
+  const en  = document.getElementById('regEnt').value.trim();
+  const err = document.getElementById('regErr');
+
+  if(!pr||!no||!em||!pw){ err.textContent='Remplissez tous les champs obligatoires.'; err.style.display='block'; return; }
+  if(pw.length<8){ err.textContent='Mot de passe trop court (min. 8 caractères).'; err.style.display='block'; return; }
+  if(!/[A-Z]/.test(pw)||!/[0-9]/.test(pw)){ err.textContent='Le mot de passe doit contenir une majuscule et un chiffre.'; err.style.display='block'; return; }
+
+  const btn = document.querySelector('#paneRegister .bfull');
+  if(btn){ btn.disabled=true; btn.textContent='Création...'; }
+
+  try {
+    const data = await sbAuthRequest('/signup', {
+      email: em,
+      password: pw,
+      data: { prenom: pr, nom: no, entreprise: en }
+    });
+
+    if(data.error){
+      err.textContent = data.error === 'User already registered' ? 'Email déjà utilisé.' : data.error_description || data.error;
+      err.style.display = 'block';
+      return;
+    }
+
+    // Créer le profil dans la table clients
+    await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ email: em, prenom: pr, nom: no, entreprise: en, points: 50, rgpd_accepte: true, rgpd_date: new Date().toISOString() })
+    });
+
+    err.style.display = 'none';
+    // Afficher message de confirmation email
+    document.getElementById('paneRegister').innerHTML = `
+      <div style="text-align:center;padding:1.5rem 0;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📧</div>
+        <h3 style="color:var(--green);margin-bottom:0.5rem;">Compte créé !</h3>
+        <p style="color:var(--grey);font-size:0.85rem;">Un email de confirmation a été envoyé à <strong style="color:var(--white);">${em}</strong>.</p>
+        <p style="color:var(--grey);font-size:0.82rem;margin-top:0.5rem;">Cliquez sur le lien dans l'email pour activer votre compte.</p>
+        <button onclick="showTab('login')" style="margin-top:1rem;background:var(--orange);border:none;color:white;padding:0.7rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;border-radius:4px;cursor:pointer;">← Retour à la connexion</button>
+      </div>`;
+
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='Créer mon compte →'; }
+  }
+}
+
+async function doLogout(){
+  try {
+    if(curUser?.token){
+      await fetch(SUPABASE_AUTH_URL + '/logout', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${curUser.token}` }
+      });
+    }
+  } catch(e){}
+  curUser = null;
+  localStorage.removeItem('aotc_token');
+  localStorage.removeItem('aotc_user');
+  updateAccBtn();
+  showTab('login');
+}
+
+async function doForgot(){
+  const email = document.getElementById('forgotEmail').value.trim();
+  const err   = document.getElementById('forgotErr');
+  const ok    = document.getElementById('forgotOk');
+  err.style.display = 'none';
+  ok.style.display  = 'none';
+
+  if(!email){ err.textContent='Entrez votre email.'; err.style.display='block'; return; }
+
+  try {
+    await sbAuthRequest('/recover', { email });
+    ok.style.display = 'block';
+    document.getElementById('forgotEmail').value = '';
+  } catch(e){
+    err.textContent = 'Erreur réseau. Réessayez.';
+    err.style.display = 'block';
+  }
+}
+
 function updateAccBtn(){
-  const l=document.getElementById('accountLabel'),b=document.getElementById('accountBtn');
-  if(curUser){l.textContent=curUser.prenom;b.classList.add('gold');}
-  else{l.textContent='Mon compte';b.classList.remove('gold');}
+  const l=document.getElementById('accountLabel'), b=document.getElementById('accountBtn');
+  if(curUser){ l.textContent=curUser.prenom||curUser.email; b.classList.add('gold'); }
+  else{ l.textContent='Mon compte'; b.classList.remove('gold'); }
 }
+
+// Init au chargement
+let curUser = JSON.parse(localStorage.getItem('aotc_user')||'null');
+updateAccBtn();
+initAuth();
 
 // ── STRIPE PAIEMENT ──
 const STRIPE_PK = 'pk_test_51TU33pEXJM7LGecZb8rymMLykBt3ufcTf6F46oFVNXYoGOuV9802J0PuJdUDjaSJdQrqfUqNqXzk2loGyhPshP2t00FqSQlkQK';
@@ -1178,13 +1589,31 @@ function mountCard(){
 async function openCheckout(){
   if(!cart.length) return;
   closeCart();
-  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const total = cart.reduce((s,c) => s + prixAvecRemise(c.price, c.qty) * c.qty, 0);
+  const totalSansRemise = cart.reduce((s,c) => s + c.price * c.qty, 0);
+  const economie = totalSansRemise - total;
+
+  const recapItems = cart.map(c => {
+    const { remise, label } = getRemise(c.qty);
+    const prixF = prixAvecRemise(c.price, c.qty);
+    return `<div class="recap-item">
+      <span>${c.name} x${c.qty}${label ? ` <span style="color:var(--green);font-size:0.7rem;">${label}</span>` : ''}</span>
+      <span>${fmt(prixF * c.qty)}</span>
+    </div>`;
+  }).join('');
+
+  const remiseHtml = economie > 0.01
+    ? `<div class="recap-item" style="color:var(--green);">
+        <span>🎉 Remise volume</span>
+        <span>-${fmt(economie)}</span>
+       </div>`
+    : '';
 
   document.getElementById('checkoutBody').innerHTML=`
     <div class="test-badge">🔒 Paiements sécurisés — Propulsé par Stripe</div>
     <div class="checkout-recap">
       <h4>📦 Récapitulatif</h4>
-      <div id="checkoutRecap">${cart.map(c=>`<div class="recap-item"><span>${c.name} x${c.qty}</span><span>${fmt(c.price*c.qty)}</span></div>`).join('')}</div>
+      <div id="checkoutRecap">${recapItems}${remiseHtml}</div>
       <div class="recap-total">Total HT <span id="checkoutTotal">${fmt(total)}</span></div>
     </div>
     <div class="stripe-field">

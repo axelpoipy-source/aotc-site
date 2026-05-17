@@ -117,6 +117,7 @@ textarea { resize:vertical; }
     <button class="tab" onclick="tab('produits')">📦 Produits</button>
     <button class="tab" onclick="tab('avis')">⭐ Avis</button>
     <button class="tab" onclick="tab('commandes')">📋 Commandes</button>
+    <button class="tab" onclick="tab('newsletter')">📨 Newsletter</button>
     <button class="tab" onclick="tab('liens')">🔗 Liens</button>
   </div>
 
@@ -272,6 +273,52 @@ textarea { resize:vertical; }
     </div>
   </div>
 
+  <!-- NEWSLETTER -->
+  <div class="page" id="p-newsletter">
+    <div class="card">
+      <h3>📨 Envoyer une newsletter</h3>
+      <p style="color:#7a8099;font-size:0.82rem;margin-bottom:1rem;">Envoyée uniquement aux clients ayant accepté de recevoir vos emails.</p>
+
+      <div id="nl-stats" style="background:#1a1f2e;border:1px solid #333;border-radius:4px;padding:0.8rem;margin-bottom:1rem;font-size:0.82rem;color:#7a8099;">
+        Chargement des abonnés...
+      </div>
+
+      <label>Objet de l'email *</label>
+      <input type="text" id="nl-sujet" placeholder="Ex: Nouveautés AOTC — Raccords inox en promo !">
+
+      <label style="margin-top:0.8rem;">Titre principal *</label>
+      <input type="text" id="nl-titre" placeholder="Ex: 🔧 Nouveaux produits disponibles !">
+
+      <label style="margin-top:0.8rem;">Message *</label>
+      <textarea id="nl-message" rows="5" placeholder="Rédigez votre message ici...&#10;&#10;Ex: Bonjour,&#10;Nous venons d'ajouter 15 nouveaux raccords inox 316L dans notre catalogue..."></textarea>
+
+      <label style="margin-top:0.8rem;">Lien bouton (optionnel)</label>
+      <input type="url" id="nl-lien" placeholder="https://axelpoipy-source.github.io/aotc-site" value="https://axelpoipy-source.github.io/aotc-site">
+
+      <label style="margin-top:0.8rem;">Texte du bouton</label>
+      <input type="text" id="nl-btn" placeholder="Voir les nouveautés →" value="Voir les nouveautés →">
+
+      <div style="background:rgba(42,157,92,0.08);border:1px solid rgba(42,157,92,0.3);border-radius:4px;padding:0.8rem;margin-top:1rem;font-size:0.8rem;color:#2a9d5c;">
+        ✅ Un lien de désabonnement sera automatiquement ajouté en bas de chaque email (conforme RGPD).
+      </div>
+
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap;">
+        <button class="btn-orange" onclick="previewNewsletter()" style="background:transparent;border:1px solid #444;color:#7a8099;padding:0.7rem 1rem;font-size:0.82rem;">👁️ Aperçu</button>
+        <button class="btn-green" onclick="sendNewsletter()">📨 Envoyer à tous les abonnés</button>
+      </div>
+
+      <div id="nl-preview" style="display:none;margin-top:1rem;border:1px solid #333;border-radius:4px;overflow:hidden;">
+        <p style="background:#333;padding:0.5rem 0.8rem;font-size:0.75rem;color:#7a8099;">Aperçu de l'email</p>
+        <iframe id="nl-iframe" style="width:100%;height:400px;border:none;background:white;"></iframe>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3>📊 Historique des newsletters</h3>
+      <div id="nl-historique"><p style="color:#7a8099;font-size:0.82rem;">Aucune newsletter envoyée pour l'instant.</p></div>
+    </div>
+  </div>
+
   <!-- LIENS -->
   <div class="page" id="p-liens">
     <div class="card">
@@ -290,22 +337,70 @@ textarea { resize:vertical; }
 const BACKEND = 'https://aotc-backend.onrender.com';
 const SB_URL  = 'https://fwtpyncsrggpamlggiwi.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dHB5bmNzcmdncGFtbGdnaXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzY2MDIsImV4cCI6MjA5Mzg1MjYwMn0.EYUlGpdABDxDJ1Ck5d6wObZax5sjGlpCRh_LKQmPUQ4';
-const PWD     = 'aotc2024';
 
+let adminSecret = null;
 let botProds = [], isRunning = false, allProds = [];
 
-// ── AUTH ──
-function login(){
-  const v = document.getElementById('pwd').value;
-  if(v === PWD){
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('admin').style.display = 'block';
-    localStorage.setItem('aotc_adm','1');
-    loadStats();
-  } else {
+// ── AUTH ADMIN SÉCURISÉE ──
+async function login(){
+  const v = document.getElementById('pwd').value.trim();
+  if(!v){ document.getElementById('err').textContent='Entrez le mot de passe.'; document.getElementById('err').style.display='block'; return; }
+
+  const btn = document.querySelector('#login button');
+  if(btn){ btn.disabled=true; btn.textContent='Vérification...'; }
+
+  try {
+    const r = await fetch(`${BACKEND}/admin-auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: v })
+    });
+    const data = await r.json();
+
+    if(data.success){
+      adminSecret = v;
+      sessionStorage.setItem('aotc_adm', v);
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('admin').style.display = 'block';
+      loadStats();
+    } else {
+      document.getElementById('err').textContent = 'Mot de passe incorrect.';
+      document.getElementById('err').style.display = 'block';
+      document.getElementById('pwd').value = '';
+    }
+  } catch(e){
+    document.getElementById('err').textContent = 'Erreur réseau.';
     document.getElementById('err').style.display = 'block';
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='Accéder →'; }
   }
 }
+
+// Vérifier session existante
+(async function(){
+  const saved = sessionStorage.getItem('aotc_adm');
+  if(saved){
+    try {
+      const r = await fetch(`${BACKEND}/admin-auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: saved })
+      });
+      const data = await r.json();
+      if(data.success){
+        adminSecret = saved;
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('admin').style.display = 'block';
+        loadStats();
+      } else {
+        sessionStorage.removeItem('aotc_adm');
+      }
+    } catch(e){ sessionStorage.removeItem('aotc_adm'); }
+  }
+})();
+
+function sbH(){ return {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`}; }
+function adminH(){ return {'Content-Type':'application/json', 'x-admin-secret': adminSecret}; }
 
 document.getElementById('pwd').addEventListener('keydown', e => {
   if(e.key === 'Enter') login();
@@ -332,8 +427,83 @@ function tab(id){
       t.classList.add('active');
   });
   if(id === 'produits') loadProduits();
-  if(id === 'avis') loadAvisAdmin('pending');
-  if(id === 'commandes') loadCommandes('all');
+  if(id === 'newsletter') loadNewsletterStats();
+}
+
+// ── NEWSLETTER ──
+async function loadNewsletterStats(){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/clients?newsletter=eq.true&select=email,prenom,nom`, { headers: sbH() });
+    const data = await r.json();
+    document.getElementById('nl-stats').innerHTML = `
+      <span style="color:#f0ede8;font-weight:600;">${data.length} abonné${data.length>1?'s':''}</span>
+      <span style="color:#7a8099;margin-left:0.5rem;">recevront cette newsletter</span>`;
+  } catch(e){
+    document.getElementById('nl-stats').innerHTML = '<span style="color:#e84545;">Erreur de chargement</span>';
+  }
+}
+
+function buildEmailHTML(titre, message, lien, btnTxt){
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;background:white;">
+    <div style="background:#1a1f2e;padding:1.5rem 2rem;">
+      <h1 style="color:#e8521a;margin:0;font-size:1.8rem;letter-spacing:0.05em;">AOTC</h1>
+      <p style="color:#7a8099;margin:0.3rem 0 0;font-size:0.82rem;">Accessoires Outils Tuyauterie Chaudronnerie</p>
+    </div>
+    <div style="padding:2rem;">
+      <h2 style="color:#1a1f2e;margin-top:0;">${titre}</h2>
+      <div style="color:#444;line-height:1.8;font-size:0.92rem;">${message.replace(/\n/g,'<br>')}</div>
+      ${lien ? `<div style="text-align:center;margin:2rem 0;">
+        <a href="${lien}" style="background:#e8521a;color:white;padding:0.9rem 2rem;border-radius:4px;text-decoration:none;font-weight:bold;font-size:0.95rem;">${btnTxt||'Voir le catalogue →'}</a>
+      </div>` : ''}
+    </div>
+    <div style="background:#f5f5f5;padding:1rem 2rem;border-top:1px solid #e0e0e0;text-align:center;">
+      <p style="color:#888;font-size:0.78rem;margin:0;">
+        AOTC — contact@aotc.fr — +33 7 55 67 66 74<br>
+        <a href="https://axelpoipy-source.github.io/aotc-site" style="color:#e8521a;">Voir le catalogue</a> ·
+        <a href="{{UNSUBSCRIBE_LINK}}" style="color:#888;">Se désabonner</a>
+      </p>
+    </div>
+  </div>
+</body></html>`;
+}
+
+function previewNewsletter(){
+  const titre   = document.getElementById('nl-titre').value;
+  const message = document.getElementById('nl-message').value;
+  const lien    = document.getElementById('nl-lien').value;
+  const btnTxt  = document.getElementById('nl-btn').value;
+  if(!titre || !message){ toast('Remplissez le titre et le message', true); return; }
+  const html = buildEmailHTML(titre, message, lien, btnTxt).replace('{{UNSUBSCRIBE_LINK}}','#');
+  const preview = document.getElementById('nl-preview');
+  const iframe  = document.getElementById('nl-iframe');
+  preview.style.display = 'block';
+  iframe.srcdoc = html;
+  preview.scrollIntoView({ behavior:'smooth' });
+}
+
+async function sendNewsletter(){
+  const sujet   = document.getElementById('nl-sujet').value.trim();
+  const titre   = document.getElementById('nl-titre').value.trim();
+  const message = document.getElementById('nl-message').value.trim();
+  const lien    = document.getElementById('nl-lien').value.trim();
+  const btnTxt  = document.getElementById('nl-btn').value.trim();
+
+  if(!sujet || !titre || !message){ toast('Remplissez tous les champs obligatoires (*)', true); return; }
+  if(!confirm('Envoyer cette newsletter à tous les abonnés ?')) return;
+
+  try {
+    const r = await fetch('https://aotc-backend.onrender.com/send-newsletter', {
+      method: 'POST',
+      headers: adminH(),
+      body: JSON.stringify({ sujet, titre, message, lien, btnTxt })
+    });
+    const data = await r.json();
+    if(data.success) toast(`✅ Newsletter envoyée à ${data.sent} abonné(s) !`);
+    else toast('Erreur : ' + data.error, true);
+  } catch(e){ toast('Erreur : ' + e.message, true); }
 }
 
 // ── AVIS ADMIN ──
@@ -454,7 +624,7 @@ async function sendGroupedNow(){
   try {
     const r = await fetch('https://aotc-backend.onrender.com/send-grouped-orders', {
       method: 'POST',
-      headers: {'Content-Type':'application/json', 'x-admin-secret':'aotc2024admin'}
+      headers: adminH()
     });
     const d = await r.json();
     if(d.success) toast('✅ Emails groupés envoyés !');
