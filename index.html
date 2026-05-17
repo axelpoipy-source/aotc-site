@@ -1556,6 +1556,7 @@ function updateAccBtn(){
 window.addEventListener('DOMContentLoaded', function(){
   updateAccBtn();
   initAuth();
+  loadProducts();
 });
 
 // ── STRIPE PAIEMENT ──
@@ -2005,11 +2006,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAccount();clos
 
 // ── INIT ──
 updateCartBadge();
-if(curUser) updateAccBtn();
 if(localStorage.getItem('aotc_cookies')) document.getElementById('cookieBanner').style.display='none';
-// Afficher les produits de démonstration immédiatement puis charger Supabase
 render();
-loadProducts();
 </script>
 </body>
 </html>
