@@ -1186,9 +1186,6 @@ function contactSupport(paymentId){
   const body = encodeURIComponent(`Bonjour,\n\nJe souhaite vous contacter concernant ma commande ${paymentId}.\n\n[Décrivez votre problème ici]\n\nCordialement,\n${curUser?.prenom || ''} ${curUser?.nom || ''}`);
   window.location.href = `mailto:contact@aotc.fr?subject=${subject}&body=${body}`;
 }
-  document.getElementById('tabProfil').style.borderBottomColor   = tab==='profil'   ? 'var(--orange)' : 'transparent';
-  if(tab==='profil') loadProfil();
-}
 
 async function loadProfil(){
   if(!curUser) return;
