@@ -119,6 +119,58 @@ nav{position:sticky;top:0;z-index:200;background:rgba(26,31,46,0.98);backdrop-fi
 .cart-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.55);}
 .cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(380px,95vw);background:var(--mid);z-index:401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.28s ease;border-left:1px solid var(--border);}
 .cart-drawer.open{transform:translateX(0);}
+
+/* ── STOCK BADGES ── */
+.bstock{background:rgba(42,157,92,0.15);color:var(--green);border:1px solid rgba(42,157,92,0.3);}
+.brupture{background:rgba(232,82,26,0.12);color:#e84545;border:1px solid rgba(232,82,26,0.3);}
+
+/* ── FAVORIS ── */
+.fav-btn{position:absolute;top:0.5rem;right:0.5rem;background:rgba(26,31,46,0.7);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;transition:all 0.18s;z-index:2;}
+.fav-btn:hover,.fav-btn.active{background:rgba(232,82,26,0.15);border-color:var(--orange);}
+.fav-btn.active{color:#e84545;}
+
+/* ── FILTRES AVANCÉS ── */
+.adv-filters{background:var(--mid);border-bottom:1px solid var(--border);padding:0.6rem 2rem;display:none;flex-wrap:wrap;gap:0.5rem;align-items:center;}
+.adv-filters.open{display:flex;}
+.adv-select{background:var(--steel);border:1px solid var(--border);color:var(--grey);padding:0.35rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.78rem;border-radius:4px;cursor:pointer;outline:none;}
+.adv-select:focus,.adv-select:hover{border-color:var(--orange);color:var(--white);}
+.adv-label{font-size:0.7rem;color:var(--grey);letter-spacing:0.08em;text-transform:uppercase;}
+.adv-clear{background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.35rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.75rem;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+.adv-clear:hover{border-color:#e84545;color:#e84545;}
+.tip{position:relative;display:inline-flex;align-items:center;}
+.tip-icon{width:16px;height:16px;background:var(--light);border:1px solid var(--border);border-radius:50%;font-size:0.62rem;color:var(--grey);cursor:help;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:0.3rem;transition:all 0.15s;}
+.tip-icon:hover{background:var(--orange);border-color:var(--orange);color:white;}
+.tip-box{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.8rem;font-size:0.75rem;color:var(--grey);line-height:1.5;width:220px;z-index:500;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+.tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--border);}
+.tip-icon:hover + .tip-box, .tip-icon:focus + .tip-box{display:block;}
+
+/* ── VISITE GUIDÉE ── */
+.tour-overlay{position:fixed;inset:0;z-index:2000;pointer-events:none;}
+.tour-highlight{position:absolute;border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,0.7);transition:all 0.4s ease;pointer-events:none;}
+.tour-card{position:fixed;background:var(--card);border:1px solid var(--orange);border-radius:10px;padding:1.2rem 1.4rem;max-width:300px;z-index:2001;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:tourPop 0.25s ease;}
+@keyframes tourPop{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.tour-step{font-size:0.68rem;color:var(--orange);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;}
+.tour-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;color:var(--white);margin-bottom:0.4rem;}
+.tour-text{font-size:0.82rem;color:var(--grey);line-height:1.6;margin-bottom:0.9rem;}
+.tour-nav{display:flex;justify-content:space-between;align-items:center;gap:0.5rem;}
+.tour-dots{display:flex;gap:4px;}
+.tour-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background 0.2s;}
+.tour-dot.active{background:var(--orange);}
+.tour-btn{background:var(--orange);border:none;color:white;padding:0.5rem 1rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;cursor:pointer;border-radius:4px;letter-spacing:0.04em;}
+.tour-skip{background:transparent;border:none;color:var(--grey);font-size:0.75rem;cursor:pointer;text-decoration:underline;}
+.config-msg{display:flex;gap:0.5rem;}
+.config-msg.config-user{flex-direction:row-reverse;}
+.config-bubble{background:var(--steel);border:1px solid var(--border);border-radius:12px;padding:0.7rem 0.9rem;font-size:0.85rem;color:var(--white);line-height:1.6;max-width:85%;}
+.config-msg.config-user .config-bubble{background:var(--orange);border-color:var(--orange);color:white;}
+.config-msg.config-bot .config-bubble{border-radius:4px 12px 12px 12px;}
+.config-msg.config-user .config-bubble{border-radius:12px 4px 12px 12px;}
+.config-chip{background:var(--light);border:1px solid var(--border);color:var(--white);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.75rem;border-radius:20px;cursor:pointer;transition:all 0.15s;}
+.config-chip:hover{background:var(--orange);border-color:var(--orange);}
+.config-typing{display:flex;gap:4px;align-items:center;padding:0.5rem 0.9rem;}
+.config-typing span{width:6px;height:6px;background:var(--grey);border-radius:50%;animation:typing 1.2s infinite;}
+.config-typing span:nth-child(2){animation-delay:0.2s;}
+.config-typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 .cdhead{padding:1.3rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .cdhead h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.25rem;text-transform:uppercase;}
 .xbtn{background:transparent;border:1px solid var(--border);color:var(--grey);width:30px;height:30px;cursor:pointer;border-radius:4px;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
@@ -274,24 +326,39 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
 <nav>
   <div class="logo">A<span>O</span>TC <small>Pro</small></div>
 
-  <div class="search-wrap">
+  <div class="search-wrap" style="position:relative;">
     <span class="s-icon">🔍</span>
     <input class="search-input" id="searchInput" type="text"
-      placeholder="Raccord DN50, vanne laiton, joint spiralisé, électrode…"
-      oninput="handleSearch()" autocomplete="off">
+      placeholder="Raccord DN50, vanne laiton, joint spiralisé…"
+      oninput="handleSearch()" onkeydown="handleSearchKey(event)"
+      onfocus="showSuggestions()" autocomplete="off">
     <span class="s-count" id="sCount"></span>
     <button class="s-clear" id="sClear" onclick="clearSearch()">✕</button>
+    <!-- Suggestions dropdown -->
+    <div id="searchSuggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;z-index:600;max-height:320px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4);"></div>
   </div>
 
   <div class="nav-right">
-    <button class="nav-btn" id="accountBtn" onclick="openAccount()">👤 <span id="accountLabel">Mon compte</span></button>
-    <button class="nav-btn" onclick="openCart()">🛒 <span class="cbadge" id="cartBadge">0</span></button>
+    <button class="nav-btn" id="configBtn" onclick="openConfigurateur()" style="background:linear-gradient(135deg,var(--orange),#c9401a);border-color:var(--orange);color:white;font-weight:700;" title="Trouvez le bon produit grâce à notre assistant technique expert">
+      🔍 Recherche guidée
+    </button>
+    <button class="nav-btn" id="offresBtn" onclick="openOffres()" style="position:relative;" title="Consultez nos offres et promotions en cours">
+      🏷️ <span id="offresLabel">Offres</span>
+      <span id="offresBadge" style="display:none;position:absolute;top:-6px;right:-6px;background:#e84545;color:white;font-size:0.6rem;font-weight:700;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;padding:0 3px;"></span>
+    </button>
+    <button class="nav-btn" id="accountBtn" onclick="openAccount()" title="Accédez à votre compte, historique de commandes et programme fidélité">👤 <span id="accountLabel">Mon compte</span></button>
+    <button class="nav-btn" onclick="openCart()" title="Voir votre panier et finaliser votre commande">🛒 <span class="cbadge" id="cartBadge">0</span></button>
   </div>
 </nav>
 
 <!-- FILTER BAR -->
 <div class="filter-bar">
-  <span class="flabel">Filtrer :</span>
+  <span class="flabel">Filtrer :
+    <span class="tip">
+      <span class="tip-icon" tabindex="0">?</span>
+      <span class="tip-box">Filtrez les produits par famille. Cliquez sur une catégorie pour afficher uniquement ces références.</span>
+    </span>
+  </span>
   <button class="fbtn active" onclick="setFilter('all',this)">Tout</button>
   <div class="fdiv"></div>
   <button class="fbtn" onclick="setFilter('Raccords',this)">🔧 Raccords</button>
@@ -303,6 +370,7 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
   <div class="fdiv"></div>
   <button class="fbtn" onclick="setFilter('new',this)">🆕 Nouveautés</button>
   <button class="fbtn" onclick="setFilter('pro',this)">⭐ Sélection Pro</button>
+  <button class="fbtn" id="favFilterBtn" onclick="setFilter('favorites',this)">❤️ Mes favoris</button>
 </div>
 
 <!-- HERO STRIP -->
@@ -327,15 +395,58 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
   <span class="ht-big">PRIX HT</span>
 </div>
 
+<!-- FILTRES AVANCÉS -->
+<div class="adv-filters" id="advFilters">
+  <span class="adv-label">Affiner :</span>
+  <select class="adv-select" id="fMatiere" onchange="applyAdvFilters()">
+    <option value="">Matière</option>
+    <option value="inox 316L">Inox 316L</option>
+    <option value="inox 304">Inox 304</option>
+    <option value="laiton">Laiton</option>
+    <option value="acier carbone">Acier carbone</option>
+    <option value="fonte">Fonte</option>
+    <option value="EPDM">EPDM</option>
+    <option value="PTFE">PTFE</option>
+  </select>
+  <select class="adv-select" id="fPN" onchange="applyAdvFilters()">
+    <option value="">Pression (PN)</option>
+    <option value="6">PN6</option>
+    <option value="10">PN10</option>
+    <option value="16">PN16</option>
+    <option value="25">PN25</option>
+    <option value="40">PN40</option>
+  </select>
+  <select class="adv-select" id="fCert" onchange="applyAdvFilters()">
+    <option value="">Certification</option>
+    <option value="CE">CE</option>
+    <option value="NF">NF</option>
+    <option value="ATEX">ATEX</option>
+    <option value="316L">316L</option>
+  </select>
+  <select class="adv-select" id="fStock" onchange="applyAdvFilters()">
+    <option value="">Disponibilité</option>
+    <option value="stock">En stock uniquement</option>
+    <option value="rupture">Afficher ruptures</option>
+  </select>
+  <button class="adv-clear" onclick="clearAdvFilters()">✕ Réinitialiser</button>
+</div>
+
 <!-- SORT BAR -->
 <div class="sort-bar">
   <p id="resultLabel"><strong id="resultNum">0</strong> référence(s) affichée(s)</p>
   <div class="sort-opts">
+    <button class="sbtn" id="advFilterBtn" onclick="toggleAdvFilters()" title="Filtres avancés : matière, PN, certification, stock" style="border-color:var(--border);">
+      ⚙️ Filtres
+      <span id="advFilterCount" style="display:none;background:var(--orange);color:white;font-size:0.6rem;padding:0.1rem 0.3rem;border-radius:10px;margin-left:0.3rem;"></span>
+    </button>
+    <span style="font-size:0.75rem;color:var(--grey);margin:0 0.2rem;">|</span>
     <span style="font-size:0.75rem;color:var(--grey);margin-right:0.2rem;">Trier :</span>
+    <button class="sbtn" onclick="setSort('relevance',this)" id="sortRelevance">⭐ Pertinence</button>
     <button class="sbtn active" onclick="setSort('default',this)">Défaut</button>
     <button class="sbtn" onclick="setSort('price-asc',this)">Prix ↑</button>
     <button class="sbtn" onclick="setSort('price-desc',this)">Prix ↓</button>
     <button class="sbtn" onclick="setSort('name',this)">A–Z</button>
+    <button class="sbtn" id="voiceBtn" onclick="startVoiceSearch()" title="Recherche vocale" style="font-size:0.9rem;">🎤</button>
   </div>
 </div>
 
@@ -356,6 +467,89 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <div class="cdtotal">Total <span style="font-size:0.72rem;color:var(--grey);font-weight:400;font-family:'Barlow',sans-serif;">HT</span>&nbsp;<span id="cartTotal">0,00€</span></div>
     <button class="btn-devis" onclick="openCheckout()" style="background:var(--green);">💳 Payer par carte</button>
     <button class="btn-devis" onclick="sendDevis()" style="background:transparent;border:1px solid var(--border);margin-top:0.5rem;font-size:0.85rem;">📧 Demander un devis</button>
+  </div>
+</div>
+
+<!-- VISITE GUIDÉE -->
+<div class="tour-overlay" id="tourOverlay" style="display:none;">
+  <div class="tour-highlight" id="tourHighlight"></div>
+</div>
+<div class="tour-card" id="tourCard" style="display:none;">
+  <div class="tour-step" id="tourStep">Étape 1 / 5</div>
+  <div class="tour-title" id="tourTitle"></div>
+  <div class="tour-text" id="tourText"></div>
+  <div class="tour-nav">
+    <div class="tour-dots" id="tourDots"></div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <button class="tour-skip" onclick="endTour()">Passer</button>
+      <button class="tour-btn" id="tourNextBtn" onclick="tourNext()">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIGURATEUR EXPERT -->
+<div class="moverlay" id="configOverlay" onclick="closeConfigurateur()" style="display:none;"></div>
+<div id="configModal" style="display:none;position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+
+    <!-- Header -->
+    <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--dark),var(--mid));">
+      <div>
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--white);margin-bottom:0.1rem;">🔍 Assistant Expert AOTC</h3>
+        <p style="font-size:0.72rem;color:var(--grey);">Décrivez votre besoin — je trouve le bon produit</p>
+      </div>
+      <button onclick="closeConfigurateur()" style="background:transparent;border:none;color:var(--grey);font-size:1.3rem;cursor:pointer;padding:0.3rem;">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="configMessages" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.8rem;min-height:200px;max-height:380px;">
+      <div class="config-msg config-bot">
+        <div class="config-bubble">
+          👋 Bonjour ! Je suis votre assistant technique AOTC.<br><br>
+          Décrivez votre besoin ou dites-moi simplement dans quel domaine vous travaillez :<br><br>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;">
+            <button onclick="configQuickStart('Tuyauterie industrielle')" class="config-chip">🔧 Tuyauterie industrielle</button>
+            <button onclick="configQuickStart('Chaudronnerie')" class="config-chip">⚙️ Chaudronnerie</button>
+            <button onclick="configQuickStart('Robinetterie')" class="config-chip">🚰 Robinetterie</button>
+            <button onclick="configQuickStart('Plomberie')" class="config-chip">🔩 Plomberie</button>
+            <button onclick="configQuickStart('Soudage')" class="config-chip">🔥 Soudage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div id="configResults" style="display:none;padding:0 1rem 0.5rem;">
+      <p style="font-size:0.72rem;color:var(--orange);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">📦 Produits correspondants</p>
+      <div id="configProductList" style="display:flex;flex-direction:column;gap:0.4rem;max-height:150px;overflow-y:auto;"></div>
+    </div>
+
+    <!-- Input -->
+    <div style="padding:1rem;border-top:1px solid var(--border);background:var(--dark);">
+      <div style="display:flex;gap:0.5rem;">
+        <input id="configInput" type="text" placeholder="Décrivez votre besoin technique..."
+          style="flex:1;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.7rem 0.9rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:6px;outline:none;"
+          onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'"
+          onkeydown="if(event.key==='Enter')sendConfigMsg()">
+        <button onclick="sendConfigMsg()" id="configSendBtn"
+          style="background:var(--orange);border:none;color:white;padding:0.7rem 1rem;border-radius:6px;cursor:pointer;font-size:1rem;transition:all 0.18s;"
+          onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">➤</button>
+      </div>
+      <button onclick="resetConfigurateur()" style="background:transparent;border:none;color:var(--grey);font-size:0.72rem;cursor:pointer;margin-top:0.4rem;padding:0;">
+        🔄 Recommencer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- OFFRES DRAWER -->
+<div class="cart-drawer" id="offresDrawer" style="width:340px;">
+  <div class="cdhead">
+    <h3>🏷️ Offres & Promotions</h3>
+    <button class="xbtn" onclick="closeOffres()">✕</button>
+  </div>
+  <div class="cditems" id="offresItems" style="padding:0;">
+    <p style="text-align:center;color:var(--grey);padding:2rem 1rem;">Chargement...</p>
   </div>
 </div>
 
@@ -493,7 +687,15 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     </div>
     <div class="field"><label>Entreprise (optionnel)</label><input id="regEnt" type="text" placeholder="Plomberie Martin"></div>
     <div class="field"><label>Email</label><input id="regEmail" type="email" placeholder="votre@email.fr"></div>
-    <div class="field"><label>Mot de passe</label><input id="regPass" type="password" placeholder="Min. 6 caractères"></div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input id="regPass" type="password" placeholder="Min. 8 car., 1 majuscule, 1 chiffre ou symbole" oninput="checkPassMatch()">
+    </div>
+    <div class="field">
+      <label>Confirmer le mot de passe</label>
+      <input id="regPass2" type="password" placeholder="Répétez votre mot de passe" oninput="checkPassMatch()">
+      <p id="passMatchMsg" style="display:none;font-size:0.75rem;margin-top:0.3rem;"></p>
+    </div>
     <div style="background:var(--steel);border:1px solid var(--border);border-left:3px solid var(--gold);padding:0.7rem 0.9rem;border-radius:4px;margin-bottom:0.9rem;font-size:0.8rem;">
       <p style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gold);margin-bottom:0.15rem;">⭐ 50 points offerts à l'inscription</p>
       <p style="color:var(--grey);">Gagnez des points à chaque commande et débloquez des remises pro.</p>
@@ -505,9 +707,10 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
 
     <!-- Onglets dashboard -->
     <div style="display:flex;border-bottom:1px solid var(--border);margin:-1.6rem -1.8rem 1.2rem;">
-      <button id="tabFidelite" onclick="switchDash('fidelite')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--orange);">⭐ Fidélité</button>
-      <button id="tabCommandes" onclick="switchDash('commandes')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">📦 Commandes</button>
-      <button id="tabProfil" onclick="switchDash('profil')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">👤 Profil</button>
+      <button id="tabFidelite" onclick="switchDash('fidelite')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--orange);">⭐ Fidélité</button>
+      <button id="tabCommandes" onclick="switchDash('commandes')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">📦 Commandes</button>
+      <button id="tabRecurrent" onclick="switchDash('recurrent')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">🔁 Récurrents</button>
+      <button id="tabProfil" onclick="switchDash('profil')" style="flex:1;padding:0.75rem;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;">👤 Profil</button>
     </div>
 
     <!-- Fidélité -->
@@ -530,6 +733,17 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
     <!-- Commandes -->
     <div id="dashCommandes" style="display:none;">
       <div id="cmdList"><p style="text-align:center;color:var(--grey);padding:1.5rem;">Chargement...</p></div>
+    </div>
+
+    <!-- Commandes récurrentes -->
+    <div id="dashRecurrent" style="display:none;">
+      <div style="background:rgba(232,82,26,0.08);border:1px solid var(--border);border-radius:4px;padding:0.8rem;margin-bottom:1rem;font-size:0.8rem;color:var(--grey);">
+        🔁 Programmez vos réapprovisionnements automatiques. Vous recevrez un email de confirmation avant chaque commande — vous gardez le contrôle.
+      </div>
+      <button onclick="openNewRecurring()" style="width:100%;background:var(--orange);border:none;color:white;padding:0.8rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-bottom:1rem;">
+        ➕ Nouvelle commande récurrente
+      </button>
+      <div id="recurringList"><p style="text-align:center;color:var(--grey);padding:1rem;">Chargement...</p></div>
     </div>
 
     <!-- Profil -->
@@ -675,6 +889,8 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
       <li><a>contact@aotc.fr</a></li>
       <li><a href="tel:+33755676674" style="color:var(--grey);text-decoration:none;">📞 +33 7 55 67 66 74</a></li>
       <li><a onclick="openCart()">Demander un devis</a></li>
+      <li><a onclick="replayTour()" style="cursor:pointer;color:var(--grey);">🎯 Revoir la visite guidée</a></li>
+      <li><a onclick="openConfigurateur()" style="cursor:pointer;color:var(--grey);">🔍 Recherche guidée</a></li>
     </ul>
   </div>
 </footer>
@@ -811,59 +1027,384 @@ async function loadProducts(){
   }
 }
 
-let curFilter='all', curSearch='', curSort='default';
-let cart = JSON.parse(localStorage.getItem('aotc_cart')||'[]');
+function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' '); }
 
-// ── RENDER ──
+// ── INDEX TECHNIQUE ──
+// Synonymes et abréviations techniques pour la recherche
+const TECH_SYNONYMS = {
+  'inox': ['304','316','316l','acier inoxydable','stainless'],
+  'laiton': ['brass','cu zn','bronze'],
+  'fonte': ['ggi','gjs','gi'],
+  'raccord': ['fitting','manchon','nipple','union','coude','té'],
+  'vanne': ['robinet','valve','ball valve'],
+  'joint': ['seal','garniture','rondelle','étanchéité'],
+  'bride': ['flange','bague','collerette'],
+  'boulon': ['vis','écrou','goujon','fixation'],
+  'dn': ['diamètre nominal','nominal diameter','nb'],
+  'pn': ['pression nominale','nominal pressure','bar'],
+  'clapet': ['anti-retour','check valve','nrv'],
+  'couplage': ['manchon','sleeve','coupling'],
+};
+
+function expandQuery(q){
+  const words = norm(q).split(/\s+/).filter(Boolean);
+  const expanded = [...words];
+  words.forEach(w => {
+    Object.entries(TECH_SYNONYMS).forEach(([key, syns]) => {
+      if(w.includes(key) || key.includes(w)) syns.forEach(s => expanded.push(s));
+      syns.forEach(s => { if(w.includes(norm(s))) expanded.push(key); });
+    });
+  });
+  return [...new Set(expanded)];
+}
+
+// ── RECHERCHE FLOUE (tolérance aux fautes) ──
+function fuzzyScore(str, query){
+  const s = norm(str), q = norm(query);
+  if(s.includes(q)) return 100;
+
+  // Score par mots
+  const words = q.split(/\s+/).filter(Boolean);
+  const expandedWords = expandQuery(q);
+  let score = 0;
+
+  expandedWords.forEach(w => {
+    if(s.includes(w)) score += w.length * 10;
+    else {
+      // Distance de Levenshtein simplifiée pour les fautes de frappe
+      const sWords = s.split(/\s+/);
+      sWords.forEach(sw => {
+        if(sw.length > 2 && w.length > 2){
+          const dist = levenshtein(sw, w);
+          if(dist <= 1) score += 8;
+          else if(dist <= 2 && w.length > 4) score += 4;
+        }
+        // Préfixe commun
+        const minLen = Math.min(sw.length, w.length);
+        let common = 0;
+        for(let i = 0; i < minLen; i++){ if(sw[i]===w[i]) common++; else break; }
+        if(common >= 3) score += common * 2;
+      });
+    }
+  });
+
+  return score;
+}
+
+function levenshtein(a, b){
+  const m = a.length, n = b.length;
+  if(m === 0) return n; if(n === 0) return m;
+  const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j-1],dp[i-1][j],dp[i][j-1]);
+  return dp[m][n];
+}
+
+// ── INDEX PRODUITS ──
+function buildProductIndex(p){
+  const parts = [
+    p.name, p.cat, p.ref||'', p.desc||'',
+    ...(p.tags||[]),
+    p.matiere||'', p.certifications||'',
+    p.dn ? `dn${p.dn} dn ${p.dn}` : '',
+    p.pression_max ? `pn${p.pression_max} pn ${p.pression_max} bar` : '',
+    p.temperature_max ? `${p.temperature_max}°c` : '',
+  ];
+  return parts.join(' ').toLowerCase();
+}
+
+// ── MOTEUR DE RECHERCHE PRINCIPAL ──
 function getFiltered(){
-  let l=[...PRODUCTS];
+  let l = [...PRODUCTS];
+
+  // Filtre catégorie
   if(curFilter==='new') l=l.filter(p=>p.badge==='new');
   else if(curFilter==='pro') l=l.filter(p=>p.badge==='pro');
+  else if(curFilter==='favorites') l=l.filter(p=>favorites.includes(p.id));
   else if(curFilter!=='all') l=l.filter(p=>p.cat===curFilter);
+
+  // Filtres avancés
+  if(advFilters.matiere) l=l.filter(p=>norm(buildProductIndex(p)).includes(norm(advFilters.matiere)));
+  if(advFilters.pn) l=l.filter(p=>{ const idx=buildProductIndex(p); return idx.includes(`pn${advFilters.pn}`) || idx.includes(`pn ${advFilters.pn}`) || (p.pression_max && String(p.pression_max)===advFilters.pn); });
+  if(advFilters.cert) l=l.filter(p=>norm(p.certifications||'').includes(norm(advFilters.cert)));
+  if(advFilters.stock==='stock') l=l.filter(p=>p.en_stock!==false);
+  // Si pas de filtre stock, afficher tous les produits (ruptures incluses)
+
+  // Recherche
   if(curSearch.trim()){
-    const q=norm(curSearch);
-    l=l.filter(p=>{
-      const h=norm([p.name,p.cat,p.ref,p.dn,p.desc,...p.tags].join(' '));
-      return q.split(' ').filter(Boolean).every(w=>h.includes(w));
+    const q = curSearch.trim();
+    const scored = l.map(p => ({
+      p, score: fuzzyScore(buildProductIndex(p), q)
+    })).filter(x => x.score > 0);
+    scored.sort((a,b) => b.score - a.score);
+    l = scored.map(x => x.p);
+  }
+
+  // Tri
+  if(curSort==='relevance') l = sortByRelevance(l);
+  else if(curSort==='price-asc')  l.sort((a,b)=>a.price-b.price);
+  else if(curSort==='price-desc') l.sort((a,b)=>b.price-a.price);
+  else if(curSort==='name')       l.sort((a,b)=>a.name.localeCompare(b.name));
+  else {
+    // Tri défaut : en stock d'abord
+    l.sort((a,b) => {
+      if(a.en_stock===false && b.en_stock!==false) return 1;
+      if(a.en_stock!==false && b.en_stock===false) return -1;
+      return 0;
     });
   }
-  if(curSort==='price-asc')  l.sort((a,b)=>a.price-b.price);
-  if(curSort==='price-desc') l.sort((a,b)=>b.price-a.price);
-  if(curSort==='name')       l.sort((a,b)=>a.name.localeCompare(b.name));
+
   return l;
 }
-function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
 
+// ── SUGGESTIONS EN TEMPS RÉEL ──
+let suggestTimeout = null;
+const searchHistory = JSON.parse(localStorage.getItem('aotc_search_history')||'[]');
+
+function handleSearch(){
+  curSearch = document.getElementById('searchInput').value;
+  const hasTxt = curSearch.trim().length > 0;
+  document.getElementById('sClear').style.display = hasTxt ? 'flex' : 'none';
+  render();
+  const c = document.getElementById('sCount');
+  if(hasTxt){ const n=getFiltered().length; c.style.display='flex'; c.textContent=n+' rés.'; }
+  else c.style.display = 'none';
+
+  clearTimeout(suggestTimeout);
+  if(curSearch.trim().length >= 2){
+    suggestTimeout = setTimeout(() => buildSuggestions(curSearch), 150);
+  } else {
+    hideSuggestions();
+    if(!curSearch.trim()) showHistorySuggestions();
+  }
+}
+
+function handleSearchKey(e){
+  const box = document.getElementById('searchSuggestions');
+  const items = box.querySelectorAll('.sug-item');
+  const active = box.querySelector('.sug-item.active');
+  if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    const next = active ? active.nextElementSibling : items[0];
+    if(next){ active?.classList.remove('active'); next.classList.add('active'); }
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    const prev = active ? active.previousElementSibling : items[items.length-1];
+    if(prev){ active?.classList.remove('active'); prev.classList.add('active'); }
+  } else if(e.key === 'Enter'){
+    if(active){ active.click(); return; }
+    saveSearchHistory(curSearch);
+    hideSuggestions();
+  } else if(e.key === 'Escape'){
+    hideSuggestions();
+  }
+}
+
+function buildSuggestions(q){
+  const box = document.getElementById('searchSuggestions');
+  const q2 = q.trim();
+  if(!q2){ hideSuggestions(); return; }
+
+  // Produits correspondants (top 6)
+  const results = PRODUCTS.map(p => ({
+    p, score: fuzzyScore(buildProductIndex(p), q2)
+  })).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
+
+  // Catégories correspondantes
+  const cats = [...new Set(PRODUCTS.map(p=>p.cat))].filter(c =>
+    norm(c).includes(norm(q2)) || norm(q2).includes(norm(c).substring(0,4))
+  ).slice(0,3);
+
+  if(!results.length && !cats.length){ hideSuggestions(); return; }
+
+  let html = '';
+
+  // Catégories
+  if(cats.length){
+    html += `<div style="padding:0.4rem 0.8rem;font-size:0.65rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;border-bottom:1px solid var(--border);">Catégories</div>`;
+    html += cats.map(c => `
+      <div class="sug-item" onclick="setFilter('${c}',null);hideSuggestions();document.getElementById('searchInput').value='';clearSearch();"
+           style="padding:0.6rem 1rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;font-size:0.83rem;color:var(--grey);transition:background 0.15s;"
+           onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">
+        <span style="color:var(--orange);">📁</span> ${c}
+      </div>`).join('');
+  }
+
+  // Produits
+  if(results.length){
+    html += `<div style="padding:0.4rem 0.8rem;font-size:0.65rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;border-bottom:1px solid var(--border);${cats.length?'border-top:1px solid var(--border);':''}">Produits</div>`;
+    html += results.map(({p}) => `
+      <div class="sug-item" onclick="selectSuggestion('${p.name.replace(/'/g,"\\'")}')"
+           style="padding:0.6rem 1rem;cursor:pointer;display:flex;align-items:center;gap:0.8rem;transition:background 0.15s;"
+           onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">
+        <span style="font-size:1.1rem;flex-shrink:0;">${p.icon||'🔧'}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.83rem;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${highlightMatch(p.name, q2)}</div>
+          <div style="font-size:0.72rem;color:var(--grey);">${p.cat} · ${fmt(p.price)} HT</div>
+        </div>
+      </div>`).join('');
+  }
+
+  box.innerHTML = html;
+  box.style.display = 'block';
+
+  // Style active
+  const style = document.getElementById('sugStyle');
+  if(!style){
+    const s = document.createElement('style');
+    s.id = 'sugStyle';
+    s.textContent = '.sug-item.active{background:var(--steel)!important;color:var(--white)!important;}';
+    document.head.appendChild(s);
+  }
+}
+
+function highlightMatch(text, query){
+  const q = query.trim();
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if(idx === -1) return text;
+  return text.substring(0,idx) +
+    `<strong style="color:var(--orange);">${text.substring(idx,idx+q.length)}</strong>` +
+    text.substring(idx+q.length);
+}
+
+function selectSuggestion(name){
+  document.getElementById('searchInput').value = name;
+  curSearch = name;
+  saveSearchHistory(name);
+  hideSuggestions();
+  render();
+  document.getElementById('sClear').style.display = 'flex';
+  const n = getFiltered().length;
+  const c = document.getElementById('sCount');
+  c.style.display = 'flex';
+  c.textContent = n + ' rés.';
+}
+
+function hideSuggestions(){
+  document.getElementById('searchSuggestions').style.display = 'none';
+}
+
+function showSuggestions(){
+  if(curSearch.trim().length >= 2) buildSuggestions(curSearch);
+  else showHistorySuggestions();
+}
+
+// ── HISTORIQUE DE RECHERCHE ──
+function saveSearchHistory(q){
+  if(!q.trim() || q.trim().length < 2) return;
+  const h = JSON.parse(localStorage.getItem('aotc_search_history')||'[]');
+  const updated = [q, ...h.filter(x=>x!==q)].slice(0,8);
+  localStorage.setItem('aotc_search_history', JSON.stringify(updated));
+}
+
+function showHistorySuggestions(){
+  const box = document.getElementById('searchSuggestions');
+  const h = JSON.parse(localStorage.getItem('aotc_search_history')||'[]');
+  const popular = ['raccord inox','vanne DN25','joint EPDM','bride PN16','électrode 316L'];
+
+  let html = '';
+  if(h.length){
+    html += `<div style="padding:0.4rem 0.8rem;font-size:0.65rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;">Recherches récentes
+      <button onclick="clearSearchHistory()" style="float:right;background:none;border:none;color:#555;font-size:0.65rem;cursor:pointer;">Effacer</button>
+    </div>`;
+    html += h.map(q => `
+      <div class="sug-item" onclick="selectSuggestion('${q.replace(/'/g,"\\'")}');hideSuggestions()"
+           style="padding:0.55rem 1rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--grey);transition:background 0.15s;"
+           onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">
+        <span style="color:var(--grey);">🕐</span> ${q}
+      </div>`).join('');
+  }
+
+  if(!h.length){
+    html += `<div style="padding:0.4rem 0.8rem;font-size:0.65rem;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;">Recherches populaires</div>`;
+    html += popular.map(q => `
+      <div class="sug-item" onclick="selectSuggestion('${q}')"
+           style="padding:0.55rem 1rem;cursor:pointer;display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--grey);transition:background 0.15s;"
+           onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">
+        <span>🔥</span> ${q}
+      </div>`).join('');
+  }
+
+  if(html){ box.innerHTML = html; box.style.display = 'block'; }
+}
+
+function clearSearchHistory(){
+  localStorage.removeItem('aotc_search_history');
+  hideSuggestions();
+}
+
+// ── PRODUITS SIMILAIRES (si résultat vide) ──
+function getSimilarProducts(q, n=4){
+  return PRODUCTS.map(p => ({
+    p, score: fuzzyScore(buildProductIndex(p), q)
+  })).sort((a,b)=>b.score-a.score).slice(0,n).map(x=>x.p);
+}
+
+// ── RENDER AVEC PRODUITS SIMILAIRES ──
 function render(){
-  const grid=document.getElementById('pgrid');
-  const list=getFiltered();
-  document.getElementById('resultNum').textContent=list.length;
-  if(!list.length){
-    grid.innerHTML=`<div class="empty"><div class="eicon">🔍</div><h3>Aucun résultat</h3><p>Essayez un autre terme ou <button onclick="clearSearch()" style="background:none;border:none;color:var(--orange);cursor:pointer;text-decoration:underline;font-size:inherit;">effacez la recherche</button></p></div>`;
+  const grid = document.getElementById('pgrid');
+  const list = getFiltered();
+  document.getElementById('resultNum').textContent = list.length;
+
+  if(!list.length && curSearch.trim()){
+    // Proposer des produits similaires
+    const similar = getSimilarProducts(curSearch, 4);
+    const simHtml = similar.length ? `
+      <div style="margin-top:1.5rem;text-align:left;">
+        <p style="font-size:0.8rem;color:var(--gold);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">💡 Vous cherchiez peut-être...</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.6rem;">
+          ${similar.map(p=>`
+            <div onclick="goProduct(${p.id})" style="background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:0.7rem;cursor:pointer;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+              <div style="font-size:1.3rem;margin-bottom:0.3rem;">${p.icon||'🔧'}</div>
+              <div style="font-size:0.78rem;color:var(--white);margin-bottom:0.2rem;line-height:1.3;">${p.name}</div>
+              <div style="font-size:0.72rem;color:var(--orange);font-weight:700;">${fmt(p.price)} HT</div>
+            </div>`).join('')}
+        </div>
+      </div>` : '';
+
+    grid.innerHTML = `
+      <div class="empty">
+        <div class="eicon">🔍</div>
+        <h3>Aucun résultat pour "${curSearch}"</h3>
+        <p>Vérifiez l'orthographe ou <button onclick="clearSearch()" style="background:none;border:none;color:var(--orange);cursor:pointer;text-decoration:underline;font-size:inherit;">effacez la recherche</button></p>
+        <p style="margin-top:0.3rem;font-size:0.8rem;color:var(--grey);">Ou utilisez la <button onclick="openConfigurateur()" style="background:none;border:none;color:var(--orange);cursor:pointer;text-decoration:underline;font-size:inherit;">recherche guidée</button> pour une aide technique</p>
+        ${simHtml}
+      </div>`;
     return;
   }
-  const badges={new:'<span class="pbadge bnew">Nouveau</span>',pro:'<span class="pbadge bpro">Pro</span>',stock:'<span class="pbadge bstock">En stock</span>'};
-  grid.innerHTML=list.map(p=>{
-    const cartItem=cart.find(c=>c.id===p.id);
-    const inCart=!!cartItem;
-    const imgHtml = p.image && p.image.startsWith('http')
-      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;" onerror="this.parentElement.innerHTML='${p.icon||'🔧'}';">`
-      : (p.icon||'🔧');
 
-    // Note moyenne (depuis cache local si disponible)
+  if(!list.length){
+    grid.innerHTML = `<div class="empty"><div class="eicon">📦</div><h3>Catalogue en cours de chargement</h3><p>Revenez dans quelques instants.</p></div>`;
+    return;
+  }
+
+  const badges = {new:'<span class="pbadge bnew">Nouveau</span>',pro:'<span class="pbadge bpro">Pro</span>'};
+  grid.innerHTML = list.map(p => {
+    const cartItem = cart.find(c=>c.id===p.id);
+    const inCart = !!cartItem;
+    const isFav = favorites.includes(p.id);
+    const isRupture = p.en_stock === false;
+    const imgHtml = p.image && p.image.startsWith('http')
+      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;${isRupture?'filter:grayscale(0.4);':''}" onerror="this.parentElement.innerHTML='${p.icon||'🔧'}';">`
+      : (p.icon||'🔧');
     const noteHtml = p.avg_note
       ? `<div style="color:#f59e0b;font-size:0.75rem;">⭐ ${p.avg_note} <span style="color:var(--grey);">(${p.nb_avis})</span></div>`
       : `<div style="font-size:0.72rem;color:var(--grey);">Pas encore d'avis</div>`;
+    const stockBadge = isRupture
+      ? '<span class="pbadge brupture">Rupture de stock</span>'
+      : '<span class="pbadge bstock">En stock</span>';
 
-    return `<div class="pcard" onclick="goProduct(${p.id})" style="cursor:pointer;">
+    return `<div class="pcard" onclick="goProduct(${p.id})" style="cursor:pointer;${isRupture?'opacity:0.8;':''}position:relative;">
+      <button class="fav-btn ${isFav?'active':''}" data-id="${p.id}" onclick="toggleFavorite(${p.id},event)" title="${isFav?'Retirer des favoris':'Ajouter aux favoris'}">${isFav?'❤️':'🤍'}</button>
       ${badges[p.badge]||''}
       <div class="pimg" style="${p.image&&p.image.startsWith('http')?'padding:0;overflow:hidden;':''}">${imgHtml}</div>
+      <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.3rem;">${stockBadge}</div>
       <div class="pcat">${p.cat}</div>
       <div class="pname">${p.name}</div>
       ${noteHtml}
       <div class="pfoot" style="margin-top:0.7rem;">
         <div class="pprice">${fmt(p.price)}<span class="pht">HT</span><span class="punit">/ ${p.unit}</span></div>
-        <button class="abtn ${inCart?'added':''}" onclick="event.stopPropagation();addToCartQty(${p.id})" title="Ajouter au panier">${inCart?'✓':'+'}</button>
+        <button class="abtn ${inCart?'added':''} ${isRupture?'disabled':''}" onclick="event.stopPropagation();${isRupture?'toast(\'⚠️ Produit en rupture de stock\',true)':'addToCartQty('+p.id+')'}" title="${isRupture?'Rupture de stock':'Ajouter au panier'}">${isRupture?'✗':inCart?'✓':'+'}</button>
       </div>
       <button onclick="event.stopPropagation();goProduct(${p.id})" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:0.6rem;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
         Voir le produit →
@@ -875,13 +1416,16 @@ function fmt(n){return n.toFixed(2).replace('.',',')+'€';}
 
 // ── SEARCH ──
 function handleSearch(){
-  curSearch=document.getElementById('searchInput').value;
-  const hasTxt=curSearch.trim().length>0;
-  document.getElementById('sClear').style.display=hasTxt?'flex':'none';
+  curSearch = document.getElementById('searchInput').value;
+  const hasTxt = curSearch.trim().length > 0;
+  document.getElementById('sClear').style.display = hasTxt ? 'flex' : 'none';
   render();
-  const c=document.getElementById('sCount');
-  if(hasTxt){const n=getFiltered().length;c.style.display='flex';c.textContent=n+' rés.';}
-  else c.style.display='none';
+  const c = document.getElementById('sCount');
+  if(hasTxt){ const n=getFiltered().length; c.style.display='flex'; c.textContent=n+' rés.'; }
+  else c.style.display = 'none';
+  clearTimeout(suggestTimeout);
+  if(curSearch.trim().length >= 2) suggestTimeout = setTimeout(()=>buildSuggestions(curSearch), 150);
+  else{ hideSuggestions(); if(!curSearch.trim()) showHistorySuggestions(); }
 }
 function clearSearch(){
   document.getElementById('searchInput').value='';
@@ -941,7 +1485,10 @@ function changeQtyCard(id,d){
 }
 
 // ── CART ──
-function saveCart(){localStorage.setItem('aotc_cart',JSON.stringify(cart));}
+function saveCart(){
+  localStorage.setItem('aotc_cart', JSON.stringify(cart));
+  saveCartToSupabase();
+}
 function addToCart(id){
   const p=PRODUCTS.find(x=>x.id===id);
   const ex=cart.find(c=>c.id===id);
@@ -1112,8 +1659,9 @@ async function doResetPassword(email, token){
   }
 }
 function switchDash(tab){
-  ['fidelite','commandes','profil'].forEach(t => {
-    document.getElementById('dash'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab ? 'block' : 'none';
+  ['fidelite','commandes','recurrent','profil'].forEach(t => {
+    const el = document.getElementById('dash'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(el) el.style.display = t===tab ? 'block' : 'none';
     const btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
     if(btn){
       btn.style.color = t===tab ? 'var(--orange)' : 'var(--grey)';
@@ -1122,6 +1670,7 @@ function switchDash(tab){
   });
   if(tab==='profil')    loadProfil();
   if(tab==='commandes') loadOrderHistory();
+  if(tab==='recurrent') loadRecurringOrders();
 }
 
 async function loadOrderHistory(){
@@ -1150,6 +1699,7 @@ async function loadOrderHistory(){
     el.innerHTML = cmds.map(cmd => {
       const date   = new Date(cmd.created_at).toLocaleDateString('fr-FR');
       const statut = cmd.statut || 'en_attente';
+      const cmdId  = cmd.id;
       return `
         <div style="background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:1rem;margin-bottom:0.8rem;">
           <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.6rem;">
@@ -1165,23 +1715,24 @@ async function loadOrderHistory(){
               ${statusLabel[statut] || statut}
             </span>
           </div>
-          <p style="font-size:0.82rem;color:var(--grey);margin-bottom:0.4rem;">
-            🛍️ ${cmd.articles || '—'}
-          </p>
-          <p style="font-size:0.78rem;color:var(--grey);margin-bottom:0.4rem;">
-            📍 ${cmd.adresse_livraison || '—'}
-          </p>
+          <p style="font-size:0.82rem;color:var(--grey);margin-bottom:0.4rem;">🛍️ ${cmd.articles || '—'}</p>
+          <p style="font-size:0.78rem;color:var(--grey);margin-bottom:0.4rem;">📍 ${cmd.adresse_livraison || '—'}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;flex-wrap:wrap;gap:0.3rem;">
             <span style="font-size:0.9rem;font-weight:700;color:var(--orange);">
               ${cmd.total_ttc ? cmd.total_ttc.toFixed(2)+'€ TTC' : '—'}
             </span>
             <div style="display:flex;gap:0.4rem;">
-              <button onclick="reorderCmd('${cmd.articles}')" style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+              <button onclick="openReorderModal(${JSON.stringify(cmd.articles||'').replace(/'/g,'').replace(/"/g,'&quot;')}, '${cmdId}')"
+                style="background:var(--orange);border:none;color:white;padding:0.35rem 0.8rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.04em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.18s;"
+                onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
                 🔄 Recommander
               </button>
               ${cmd.stripe_payment_id ? `
-              <button onclick="contactSupport('${cmd.stripe_payment_id}')" style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;transition:all 0.18s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
-                📧 Contact SAV
+              <button onclick="contactSupport('${cmd.stripe_payment_id}')"
+                style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.35rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;transition:all 0.18s;"
+                onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'"
+                onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+                📧 SAV
               </button>` : ''}
             </div>
           </div>
@@ -1193,10 +1744,103 @@ async function loadOrderHistory(){
   }
 }
 
-function reorderCmd(articles){
-  // Fermer le modal et aller vers le catalogue
+// ── MODAL RECOMMANDE ──
+function openReorderModal(articlesStr, cmdId){
+  // Parser les articles depuis la chaîne "Produit A x2, Produit B x1"
+  const items = (articlesStr || '').split(',').map(a => a.trim()).filter(Boolean).map(a => {
+    const match = a.match(/^(.+?)\s*x(\d+)$/i);
+    return match
+      ? { nom: match[1].trim(), qty: parseInt(match[2]) }
+      : { nom: a.trim(), qty: 1 };
+  });
+
+  if(!items.length){ toast('Impossible de charger les articles.', true); return; }
+
+  // Créer le modal
+  const overlay = document.createElement('div');
+  overlay.id = 'reorderOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+  const box = document.createElement('div');
+  box.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;width:100%;max-width:400px;max-height:80vh;overflow-y:auto;';
+
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--white);">🔄 Recommander</h3>
+      <button onclick="closeReorderModal()" style="background:transparent;border:none;color:var(--grey);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:0.8rem;color:var(--grey);margin-bottom:1rem;">Modifiez les quantités si besoin puis ajoutez au panier.</p>
+    <div id="reorderItems">
+      ${items.map((item, i) => `
+        <div style="background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:0.7rem 0.8rem;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+          <span style="font-size:0.82rem;color:var(--white);flex:1;line-height:1.4;">${item.nom}</span>
+          <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0;">
+            <button onclick="reorderQty(${i},-1)" style="width:26px;height:26px;background:var(--light);border:1px solid var(--border);color:var(--white);font-size:0.9rem;cursor:pointer;border-radius:3px;line-height:1;">−</button>
+            <span id="reorderQty_${i}" style="min-width:24px;text-align:center;font-weight:700;color:var(--orange);font-size:0.9rem;">${item.qty}</span>
+            <button onclick="reorderQty(${i},1)" style="width:26px;height:26px;background:var(--light);border:1px solid var(--border);color:var(--white);font-size:0.9rem;cursor:pointer;border-radius:3px;line-height:1;">+</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+      <button onclick="closeReorderModal()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.7rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;text-transform:uppercase;cursor:pointer;border-radius:4px;">Annuler</button>
+      <button onclick="confirmReorder()" style="flex:2;background:var(--orange);border:none;color:white;padding:0.7rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;text-transform:uppercase;cursor:pointer;border-radius:4px;letter-spacing:0.04em;">🛒 Ajouter au panier</button>
+    </div>`;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  // Stocker les items dans le modal
+  overlay._items = items;
+  overlay.addEventListener('click', e => { if(e.target === overlay) closeReorderModal(); });
+}
+
+function reorderQty(index, delta){
+  const el = document.getElementById(`reorderQty_${index}`);
+  if(!el) return;
+  const overlay = document.getElementById('reorderOverlay');
+  if(!overlay) return;
+  const newQty = Math.max(1, parseInt(el.textContent) + delta);
+  el.textContent = newQty;
+  overlay._items[index].qty = newQty;
+}
+
+function confirmReorder(){
+  const overlay = document.getElementById('reorderOverlay');
+  if(!overlay) return;
+  const items = overlay._items;
+  let added = 0;
+
+  items.forEach(item => {
+    // Chercher le produit dans PRODUCTS par nom approximatif
+    const prod = PRODUCTS.find(p =>
+      p.name.toLowerCase().includes(item.nom.toLowerCase().substring(0, 15)) ||
+      item.nom.toLowerCase().includes(p.name.toLowerCase().substring(0, 15))
+    );
+
+    if(prod){
+      const existing = cart.find(c => c.id === prod.id);
+      if(existing){ existing.qty += item.qty; }
+      else { cart.push({ ...prod, qty: item.qty }); }
+      added++;
+    }
+  });
+
+  saveCart();
+  updateCartBadge();
+  closeReorderModal();
   closeAccount();
-  toast('🛒 Retrouvez vos produits dans le catalogue !');
+
+  if(added > 0){
+    toast(`✅ ${added} produit(s) ajouté(s) au panier !`);
+    setTimeout(() => openCart(), 500);
+  } else {
+    toast('⚠️ Certains produits ne sont plus disponibles au catalogue.', true);
+  }
+}
+
+function closeReorderModal(){
+  const overlay = document.getElementById('reorderOverlay');
+  if(overlay) overlay.remove();
 }
 
 function contactSupport(paymentId){
@@ -1300,13 +1944,44 @@ async function saveProfil(){
 async function deleteProfil(){
   if(!confirm('Supprimer définitivement votre compte et toutes vos données ? Cette action est irréversible.')) return;
   try {
+    // Vérifier commandes en cours
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&statut=in.(en_attente,commandé)&select=id`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+    });
+    const actives = await r.json();
+
+    if(actives.length > 0){
+      alert(`⚠️ Impossible de supprimer votre compte.\n\nVous avez ${actives.length} commande(s) en cours de traitement.\n\nAttendez la livraison de vos commandes avant de supprimer votre compte.\nPour toute question : contact@aotc.fr`);
+      return;
+    }
+
+    // Supprimer le profil
     await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
       method: 'DELETE',
       headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
     });
-    doLogout();
-    alert('Votre compte a été supprimé. Vos données ont été effacées conformément au RGPD.');
-  } catch(e){ alert('Erreur lors de la suppression : ' + e.message); }
+
+    // Déconnecter Supabase Auth
+    const token = curUser.token || localStorage.getItem('aotc_token');
+    if(token){
+      await fetch(SUPABASE_AUTH_URL + '/logout', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
+      });
+    }
+
+    localStorage.removeItem('aotc_token');
+    localStorage.removeItem('aotc_user');
+    localStorage.removeItem('aotc_cart');
+    curUser = null;
+
+    closeAccount();
+    toast('✅ Votre compte a été supprimé. Vos données ont été effacées conformément au RGPD.');
+    setTimeout(() => window.location.reload(), 2500);
+
+  } catch(e){
+    alert('Erreur lors de la suppression : ' + e.message);
+  }
 }
 
 // ── ACCOUNT ──
@@ -1351,26 +2026,11 @@ async function doForgot(){
   const ok    = document.getElementById('forgotOk');
   err.style.display = 'none';
   ok.style.display  = 'none';
-
   if(!email){ err.textContent='Entrez votre email.'; err.style.display='block'; return; }
-
-  const users = JSON.parse(localStorage.getItem('aotc_users')||'{}');
-  if(!users[email]){ err.textContent='Aucun compte trouvé avec cet email.'; err.style.display='block'; return; }
-
   try {
-    const r = await fetch('https://aotc-backend.onrender.com/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const data = await r.json();
-    if(data.success){
-      ok.style.display = 'block';
-      document.getElementById('forgotEmail').value = '';
-    } else {
-      err.textContent = data.error || "Erreur lors de l'envoi.";
-      err.style.display = 'block';
-    }
+    await sbAuthRequest('/recover', { email });
+    ok.style.display = 'block';
+    document.getElementById('forgotEmail').value = '';
   } catch(e){
     err.textContent = 'Erreur réseau. Réessayez.';
     err.style.display = 'block';
@@ -1389,7 +2049,726 @@ function showDash(){
   ['lb','ls','lg'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',LEVELS[i].name===lvl.name));
   document.getElementById('avList').innerHTML=lvl.av.map(a=>`<div class="avitem">✓ ${a}</div>`).join('');
 }
-// ── SUPABASE AUTH ──
+// ── CONFIGURATEUR EXPERT ──
+let configHistory = [];
+let configSearchHistory = '';
+
+async function openConfigurateur(){
+  // Charger l'historique des recherches réussies pour le contexte
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recherches?select=requete,keywords&order=created_at.desc&limit=50`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await r.json();
+    if(Array.isArray(data) && data.length){
+      configSearchHistory = data.slice(0,20).map(d => `"${d.requete}" → ${(d.keywords||[]).join(', ')}`).join('\n');
+    }
+  } catch(e){}
+
+  document.getElementById('configOverlay').style.display = 'block';
+  const modal = document.getElementById('configModal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('configInput')?.focus(), 300);
+}
+
+function closeConfigurateur(){
+  document.getElementById('configOverlay').style.display = 'none';
+  document.getElementById('configModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function resetConfigurateur(){
+  configHistory = [];
+  document.getElementById('configMessages').innerHTML = `
+    <div class="config-msg config-bot">
+      <div class="config-bubble">
+        👋 Nouvelle recherche. Décrivez votre besoin ou choisissez un domaine :<br><br>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;">
+          <button onclick="configQuickStart('Tuyauterie industrielle')" class="config-chip">🔧 Tuyauterie industrielle</button>
+          <button onclick="configQuickStart('Chaudronnerie')" class="config-chip">⚙️ Chaudronnerie</button>
+          <button onclick="configQuickStart('Robinetterie')" class="config-chip">🚰 Robinetterie</button>
+          <button onclick="configQuickStart('Plomberie')" class="config-chip">🔩 Plomberie</button>
+          <button onclick="configQuickStart('Soudage')" class="config-chip">🔥 Soudage</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('configResults').style.display = 'none';
+  document.getElementById('configInput').value = '';
+}
+
+function configQuickStart(secteur){
+  document.getElementById('configInput').value = secteur;
+  sendConfigMsg();
+}
+
+function addConfigMsg(content, isUser){
+  const el = document.getElementById('configMessages');
+  const div = document.createElement('div');
+  div.className = `config-msg ${isUser ? 'config-user' : 'config-bot'}`;
+  div.innerHTML = `<div class="config-bubble">${content.replace(/\n/g,'<br>')}</div>`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function showTyping(){
+  const el = document.getElementById('configMessages');
+  const div = document.createElement('div');
+  div.className = 'config-msg config-bot';
+  div.id = 'configTyping';
+  div.innerHTML = `<div class="config-bubble config-typing"><span></span><span></span><span></span></div>`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function hideTyping(){
+  document.getElementById('configTyping')?.remove();
+}
+
+async function sendConfigMsg(){
+  const input = document.getElementById('configInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+
+  const btn = document.getElementById('configSendBtn');
+  btn.disabled = true;
+  input.value = '';
+
+  addConfigMsg(msg, true);
+  configHistory.push({ role: 'user', content: msg });
+
+  showTyping();
+
+  try {
+    // Extraire un échantillon du catalogue actuel
+    const catalogSample = PRODUCTS.slice(0,15).map(p => `${p.name} (${p.cat}) — ${p.price}€`).join('\n');
+
+    const r = await fetch(`${BACKEND_URL}/configurateur`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: configHistory,
+        catalogSample,
+        searchHistory: configSearchHistory
+      })
+    });
+
+    const data = await r.json();
+    hideTyping();
+
+    if(!data.success) throw new Error(data.error);
+
+    configHistory.push({ role: 'assistant', content: data.reply });
+    addConfigMsg(data.reply, false);
+
+    // Si l'IA a trouvé des mots-clés — rechercher dans le catalogue
+    if(data.keywords && data.keywords.length){
+      await searchFromKeywords(data.keywords, msg);
+      // Sauvegarder la recherche pour l'apprentissage
+      fetch(`${BACKEND_URL}/save-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requete: msg, keywords: data.keywords })
+      }).catch(()=>{});
+    }
+
+  } catch(e){
+    hideTyping();
+    addConfigMsg('❌ Erreur de connexion. Réessayez dans quelques instants.', false);
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+async function searchFromKeywords(keywords, originalQuery){
+  const resultsEl = document.getElementById('configResults');
+  const listEl    = document.getElementById('configProductList');
+
+  // Chercher dans le catalogue local d'abord
+  const results = PRODUCTS.filter(p => {
+    const text = `${p.name} ${p.cat} ${p.desc||''} ${(p.tags||[]).join(' ')}`.toLowerCase();
+    return keywords.some(k => text.includes(k.toLowerCase()));
+  }).slice(0, 5);
+
+  if(!results.length){
+    listEl.innerHTML = `<p style="font-size:0.8rem;color:var(--grey);padding:0.5rem 0;">Aucun produit trouvé dans le catalogue actuel pour ces critères.</p>`;
+    resultsEl.style.display = 'block';
+    return;
+  }
+
+  listEl.innerHTML = results.map(p => `
+    <div style="background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:0.6rem 0.8rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem;cursor:pointer;"
+         onclick="configAddToCart(${p.id},'${originalQuery.replace(/'/g,'')}')">
+      <div style="flex:1;">
+        <p style="font-size:0.82rem;color:var(--white);margin-bottom:0.1rem;">${p.name}</p>
+        <p style="font-size:0.72rem;color:var(--grey);">${p.cat} — ${fmt(p.price)} HT</p>
+      </div>
+      <button style="background:var(--orange);border:none;color:white;padding:0.3rem 0.6rem;font-size:0.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;border-radius:3px;cursor:pointer;white-space:nowrap;">
+        + Panier
+      </button>
+    </div>`).join('');
+
+  resultsEl.style.display = 'block';
+}
+
+function configAddToCart(productId, query){
+  const prod = PRODUCTS.find(p => p.id === productId);
+  if(!prod) return;
+  const existing = cart.find(c => c.id === prod.id);
+  if(existing) existing.qty++;
+  else cart.push({...prod, qty: 1});
+  saveCart();
+  updateCartBadge();
+  toast(`✅ ${prod.name} ajouté au panier !`);
+
+  // Sauvegarder le produit choisi pour l'apprentissage
+  fetch(`${BACKEND_URL}/save-search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requete: query, keywords: [], produit_choisi: prod.id })
+  }).catch(()=>{});
+}
+// ── FAVORIS ──
+let favorites = JSON.parse(localStorage.getItem('aotc_favorites') || '[]');
+
+function toggleFavorite(id, e){
+  e.stopPropagation();
+  const idx = favorites.indexOf(id);
+  if(idx === -1){ favorites.push(id); toast('❤️ Ajouté aux favoris'); }
+  else { favorites.splice(idx, 1); toast('🗑️ Retiré des favoris'); }
+  localStorage.setItem('aotc_favorites', JSON.stringify(favorites));
+  // Mettre à jour le bouton
+  const btn = document.querySelector(`.fav-btn[data-id="${id}"]`);
+  if(btn){ btn.classList.toggle('active', favorites.includes(id)); btn.textContent = favorites.includes(id) ? '❤️' : '🤍'; }
+  // Sauvegarder dans Supabase si connecté
+  if(curUser){
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      method:'PATCH', headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
+      body:JSON.stringify({ favoris: JSON.stringify(favorites) })
+    }).catch(()=>{});
+  }
+}
+
+async function loadFavorites(){
+  if(!curUser) return;
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=favoris`, {
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${token}`}
+    });
+    const data = await r.json();
+    if(data[0]?.favoris){
+      favorites = JSON.parse(data[0].favoris);
+      localStorage.setItem('aotc_favorites', JSON.stringify(favorites));
+    }
+  } catch(e){}
+}
+
+// ── FILTRES AVANCÉS ──
+let advFilters = { matiere:'', pn:'', cert:'', stock:'' };
+
+function toggleAdvFilters(){
+  const el = document.getElementById('advFilters');
+  el.classList.toggle('open');
+  const btn = document.getElementById('advFilterBtn');
+  btn.style.borderColor = el.classList.contains('open') ? 'var(--orange)' : 'var(--border)';
+  btn.style.color = el.classList.contains('open') ? 'var(--orange)' : '';
+}
+
+function applyAdvFilters(){
+  advFilters.matiere = document.getElementById('fMatiere').value;
+  advFilters.pn      = document.getElementById('fPN').value;
+  advFilters.cert    = document.getElementById('fCert').value;
+  advFilters.stock   = document.getElementById('fStock').value;
+
+  // Badge compteur
+  const count = [advFilters.matiere, advFilters.pn, advFilters.cert, advFilters.stock].filter(Boolean).length;
+  const badge = document.getElementById('advFilterCount');
+  if(count > 0){ badge.textContent = count; badge.style.display = 'inline'; }
+  else badge.style.display = 'none';
+
+  render();
+}
+
+function clearAdvFilters(){
+  ['fMatiere','fPN','fCert','fStock'].forEach(id => document.getElementById(id).value = '');
+  advFilters = { matiere:'', pn:'', cert:'', stock:'' };
+  document.getElementById('advFilterCount').style.display = 'none';
+  render();
+}
+
+// ── RECHERCHE VOCALE ──
+let voiceRecognition = null;
+
+function startVoiceSearch(){
+  const btn = document.getElementById('voiceBtn');
+  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
+    toast('⚠️ Recherche vocale non supportée sur ce navigateur.', true); return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  voiceRecognition = new SR();
+  voiceRecognition.lang = 'fr-FR';
+  voiceRecognition.interimResults = false;
+  voiceRecognition.maxAlternatives = 1;
+
+  voiceRecognition.onstart = () => { btn.textContent = '🔴'; btn.style.color = '#e84545'; toast('🎤 Parlez maintenant...'); };
+  voiceRecognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('searchInput').value = transcript;
+    curSearch = transcript;
+    saveSearchHistory(transcript);
+    handleSearch();
+    toast(`🎤 "${transcript}"`);
+  };
+  voiceRecognition.onerror = () => { toast('⚠️ Reconnaissance vocale échouée.', true); };
+  voiceRecognition.onend = () => { btn.textContent = '🎤'; btn.style.color = ''; };
+  voiceRecognition.start();
+}
+
+// ── STOCK ──
+function getStockBadge(p){
+  if(p.en_stock === false) return '<span class="pbadge brupture">Rupture</span>';
+  if(p.badge === 'stock' || p.en_stock === true) return '<span class="pbadge bstock">En stock</span>';
+  return '';
+}
+
+// ── TRI PAR PERTINENCE (mieux notés en premier) ──
+function sortByRelevance(list){
+  return [...list].sort((a,b) => {
+    const scoreA = (a.avg_note||0) * (a.nb_avis||0);
+    const scoreB = (b.avg_note||0) * (b.nb_avis||0);
+    if(scoreB !== scoreA) return scoreB - scoreA;
+    if(a.en_stock !== b.en_stock) return b.en_stock ? 1 : -1;
+    return 0;
+  });
+}
+const TOUR_STEPS = [
+  { target:'configBtn', title:'🔍 Recherche guidée', text:'Vous cherchez un produit technique précis ? Notre assistant expert vous pose des questions progressives pour trouver exactement ce dont vous avez besoin — DN, PN, matière, norme...' },
+  { target:null, title:'🔧 Filtres par catégorie', text:'Filtrez le catalogue par famille de produits : Raccords, Robinetterie, Boulonnerie, Soudage... Ou utilisez la barre de recherche pour trouver une référence précise.' },
+  { target:'cartBadge', title:'🛒 Remises volume automatiques', text:'Commandez en quantité et bénéficiez de remises automatiques :\n• 6 à 20 unités → -3%\n• 21 à 50 unités → -6%\n• 51+ unités → -10%' },
+  { target:'accountBtn', title:'👤 Votre espace pro', text:'Créez un compte pour accéder à votre historique, programmer des commandes récurrentes, cumuler des points fidélité et sauvegarder votre profil.' },
+  { target:'offresBtn', title:'🏷️ Offres & Promotions', text:'Consultez nos offres quand vous voulez. Un badge rouge apparaît si de nouvelles offres sont disponibles. Aucun email commercial — vous restez maître de votre boîte mail.' },
+];
+let tourStep = 0;
+
+function startTour(){
+  if(localStorage.getItem('aotc_tour_done')) return;
+  tourStep = 0;
+  showTourStep();
+}
+
+function showTourStep(){
+  const step = TOUR_STEPS[tourStep];
+  const card  = document.getElementById('tourCard');
+  const over  = document.getElementById('tourOverlay');
+  const hl    = document.getElementById('tourHighlight');
+
+  document.getElementById('tourStep').textContent  = `Étape ${tourStep+1} / ${TOUR_STEPS.length}`;
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourText').textContent  = step.text;
+  document.getElementById('tourNextBtn').textContent = tourStep === TOUR_STEPS.length-1 ? 'Terminer ✓' : 'Suivant →';
+  document.getElementById('tourDots').innerHTML = TOUR_STEPS.map((_,i) => `<div class="tour-dot ${i===tourStep?'active':''}"></div>`).join('');
+
+  if(step.target){
+    const el = document.getElementById(step.target);
+    if(el){
+      const r = el.getBoundingClientRect(), p = 8;
+      hl.style.cssText = `position:fixed;top:${r.top-p}px;left:${r.left-p}px;width:${r.width+p*2}px;height:${r.height+p*2}px;border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,0.72);z-index:2000;pointer-events:none;`;
+      const cW=300,cH=200;
+      let top=r.bottom+12, left=r.left+r.width/2-cW/2;
+      if(left<10)left=10;
+      if(left+cW>window.innerWidth-10)left=window.innerWidth-cW-10;
+      if(top+cH>window.innerHeight-10)top=r.top-cH-12;
+      card.style.cssText=`display:block;top:${top}px;left:${left}px;width:${cW}px;`;
+    }
+  } else {
+    hl.style.cssText='position:fixed;width:0;height:0;box-shadow:0 0 0 9999px rgba(0,0,0,0.72);top:50%;left:50%;z-index:2000;';
+    card.style.cssText='display:block;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;';
+  }
+  over.style.display='block';
+}
+
+function tourNext(){
+  tourStep++;
+  if(tourStep>=TOUR_STEPS.length) endTour();
+  else showTourStep();
+}
+
+function endTour(){
+  document.getElementById('tourOverlay').style.display='none';
+  document.getElementById('tourCard').style.display='none';
+  localStorage.setItem('aotc_tour_done','1');
+  toast('✅ Bienvenue sur AOTC ! Bonne navigation.');
+}
+
+function replayTour(){
+  localStorage.removeItem('aotc_tour_done');
+  tourStep=0;
+  startTour();
+}
+
+setTimeout(()=>{ if(!localStorage.getItem('aotc_tour_done')) startTour(); },1500);
+
+async function loadOffres(){
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/offres?actif=eq.true&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const offres = await r.json();
+    if(!Array.isArray(offres)) return;
+
+    // Récupérer les offres déjà vues (stockées localement)
+    const vues = JSON.parse(localStorage.getItem('aotc_offres_vues') || '[]');
+    const nonVues = offres.filter(o => !vues.includes(o.id));
+
+    // Mettre à jour le badge
+    const badge = document.getElementById('offresBadge');
+    if(badge){
+      if(nonVues.length > 0){
+        badge.textContent = nonVues.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Rendre les offres
+    const el = document.getElementById('offresItems');
+    if(!el) return;
+
+    if(!offres.length){
+      el.innerHTML = `
+        <div style="text-align:center;padding:2rem 1rem;color:var(--grey);">
+          <p style="font-size:2rem;margin-bottom:0.5rem;">🏷️</p>
+          <p>Aucune offre en cours.</p>
+          <p style="font-size:0.78rem;margin-top:0.3rem;">Revenez bientôt !</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = offres.map(o => {
+      const isNew = !vues.includes(o.id);
+      const expire = o.date_fin ? new Date(o.date_fin).toLocaleDateString('fr-FR') : null;
+      const typeColor = { promo:'var(--orange)', code:'var(--green)', nouveaute:'var(--gold)', info:'var(--grey)' }[o.type] || 'var(--orange)';
+      const typeLabel = { promo:'🔥 Promotion', code:'🎟️ Code promo', nouveaute:'✨ Nouveauté', info:'ℹ️ Info' }[o.type] || '🏷️ Offre';
+
+      return `
+        <div style="padding:1rem;border-bottom:1px solid var(--border);position:relative;${isNew?'background:rgba(232,82,26,0.04);':''}"
+             id="offre_${o.id}">
+          ${isNew ? `<span style="position:absolute;top:0.8rem;right:0.8rem;background:#e84545;color:white;font-size:0.6rem;font-weight:700;padding:0.15rem 0.4rem;border-radius:3px;">NEW</span>` : ''}
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+            <span style="font-size:0.7rem;font-weight:700;color:${typeColor};letter-spacing:0.08em;text-transform:uppercase;">${typeLabel}</span>
+            ${expire ? `<span style="font-size:0.68rem;color:var(--grey);">jusqu'au ${expire}</span>` : ''}
+          </div>
+          <p style="font-weight:700;color:var(--white);margin-bottom:0.3rem;font-size:0.92rem;">${o.titre}</p>
+          <p style="font-size:0.82rem;color:var(--grey);margin-bottom:${o.code ? '0.6rem' : '0'};">${o.description}</p>
+          ${o.code ? `
+            <div style="background:var(--steel);border:1px dashed var(--orange);border-radius:4px;padding:0.5rem 0.8rem;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;color:var(--orange);letter-spacing:0.1em;">${o.code}</span>
+              <button onclick="copyCode('${o.code}')" style="background:var(--orange);border:none;color:white;padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;">
+                📋 Copier
+              </button>
+            </div>` : ''}
+        </div>`;
+    }).join('');
+
+    // Marquer toutes comme vues
+    const toutesVues = [...new Set([...vues, ...offres.map(o => o.id)])];
+    localStorage.setItem('aotc_offres_vues', JSON.stringify(toutesVues));
+
+  } catch(e){ console.warn('Erreur chargement offres:', e.message); }
+}
+
+function copyCode(code){
+  navigator.clipboard.writeText(code).then(() => toast(`✅ Code "${code}" copié !`)).catch(() => toast('Code : ' + code));
+}
+
+function openOffres(){
+  loadOffres();
+  // Masquer le badge immédiatement au clic
+  const badge = document.getElementById('offresBadge');
+  if(badge) badge.style.display = 'none';
+  document.getElementById('offresOverlay').style.display = 'block';
+  document.getElementById('offresDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOffres(){
+  document.getElementById('offresOverlay').style.display = 'none';
+  document.getElementById('offresDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+const FREQ_LABELS = { weekly:'Toutes les semaines', monthly:'Tous les mois', bimonthly:'Tous les 2 mois' };
+const FREQ_DAYS   = { weekly:7, monthly:30, bimonthly:60 };
+
+async function loadRecurringOrders(){
+  if(!curUser) return;
+  const el = document.getElementById('recurringList');
+  el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:1rem;">Chargement...</p>';
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?client_email=eq.${curUser.email}&order=created_at.desc`, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`}
+    });
+    const orders = await r.json();
+
+    if(!orders.length){
+      el.innerHTML = `
+        <div style="text-align:center;padding:1.5rem 0;color:var(--grey);">
+          <p style="font-size:2rem;margin-bottom:0.5rem;">🔁</p>
+          <p style="font-size:0.85rem;">Aucune commande récurrente configurée.</p>
+          <p style="font-size:0.78rem;margin-top:0.3rem;">Programmez vos réapprovisionnements pour ne jamais manquer de stock !</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = orders.map(o => {
+      const articles = typeof o.articles === 'string' ? JSON.parse(o.articles) : o.articles;
+      const prochaine = new Date(o.prochaine_date).toLocaleDateString('fr-FR');
+      const total = articles.reduce((s, a) => s + (a.prix_ht||0) * (a.qty||1), 0);
+      return `
+        <div style="background:var(--steel);border:1px solid var(--border);border-radius:6px;padding:1rem;margin-bottom:0.8rem;${!o.actif?'opacity:0.6;':''}">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:0.6rem;">
+            <div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--white);">
+                ${FREQ_LABELS[o.frequence] || o.frequence}
+              </span>
+              <span style="display:inline-block;margin-left:0.5rem;font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:3px;${o.actif ? 'background:rgba(42,157,92,0.2);color:var(--green);border:1px solid rgba(42,157,92,0.3);' : 'background:var(--light);color:var(--grey);border:1px solid var(--border);'}">
+                ${o.actif ? '● Actif' : '⏸ Pausé'}
+              </span>
+            </div>
+            <span style="font-size:0.78rem;color:var(--gold);">📅 ${prochaine}</span>
+          </div>
+          <div style="margin-bottom:0.6rem;">
+            ${articles.map(a => `
+              <div style="font-size:0.8rem;color:var(--grey);padding:0.2rem 0;">
+                • ${a.nom} — <strong style="color:var(--white);">x${a.qty}</strong>
+                ${a.prix_ht ? `<span style="color:var(--orange);">(${(a.prix_ht*a.qty).toFixed(2)}€ HT)</span>` : ''}
+              </div>`).join('')}
+          </div>
+          ${total > 0 ? `<p style="font-size:0.82rem;color:var(--orange);font-weight:700;margin-bottom:0.6rem;">Total estimé : ${total.toFixed(2)}€ HT</p>` : ''}
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+            <button onclick="toggleRecurring('${o.id}', ${o.actif})"
+              style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;"
+              onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+              ${o.actif ? '⏸ Mettre en pause' : '▶ Réactiver'}
+            </button>
+            <button onclick="editRecurring('${o.id}')"
+              style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;"
+              onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+              ✏️ Modifier
+            </button>
+            <button onclick="commanderRecurring(${JSON.stringify(articles).replace(/"/g,'&quot;')})"
+              style="background:var(--green);border:none;color:white;padding:0.3rem 0.7rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.72rem;cursor:pointer;border-radius:3px;"
+              onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+              🛒 Commander maintenant
+            </button>
+            <button onclick="deleteRecurring('${o.id}')"
+              style="background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.3rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.72rem;cursor:pointer;border-radius:3px;"
+              onmouseover="this.style.borderColor='#e84545';this.style.color='#e84545'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+              🗑️
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e){
+    el.innerHTML = `<p style="text-align:center;color:#e84545;padding:1rem;">Erreur : ${e.message}</p>`;
+  }
+}
+
+function openNewRecurring(){
+  // Ouvrir modal de création avec le panier actuel ou produits vides
+  const hasCart = cart.length > 0;
+  const items = hasCart ? cart.map(c => ({ nom:c.name, qty:c.qty, prix_ht:c.price })) : [];
+
+  const overlay = document.createElement('div');
+  overlay.id = 'recurringModal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+
+  overlay.innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.1rem;text-transform:uppercase;color:var(--white);">🔁 Nouvelle commande récurrente</h3>
+        <button onclick="document.getElementById('recurringModal').remove()" style="background:transparent;border:none;color:var(--grey);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+
+      <label style="display:block;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Fréquence de commande</label>
+      <select id="newRecFreq" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;margin-bottom:1rem;">
+        <option value="monthly">Tous les mois</option>
+        <option value="weekly">Toutes les semaines</option>
+        <option value="bimonthly">Tous les 2 mois</option>
+      </select>
+
+      <label style="display:block;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">Première commande le</label>
+      <input type="date" id="newRecDate" value="${new Date(Date.now()+7*24*60*60*1000).toISOString().split('T')[0]}"
+        style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;margin-bottom:1rem;">
+
+      <label style="display:block;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.3rem;">📧 Email de rappel avant commande</label>
+      <select id="newRecRappel" style="width:100%;background:var(--steel);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.8rem;font-family:'Barlow',sans-serif;font-size:0.88rem;border-radius:4px;margin-bottom:0.4rem;">
+        <option value="none">Pas de rappel par email</option>
+        <option value="1" selected>1 jour avant</option>
+        <option value="3">3 jours avant</option>
+        <option value="7">1 semaine avant</option>
+      </select>
+      <p style="font-size:0.72rem;color:var(--grey);margin-bottom:1rem;">Vous recevrez un email de rappel pour confirmer ou modifier votre commande.</p>
+
+      <label style="display:block;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:0.5rem;">Produits</label>
+      <div id="newRecItems">
+        ${items.map((item, i) => `
+          <div style="background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:0.6rem 0.8rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;">
+            <span style="flex:1;font-size:0.8rem;color:var(--white);">${item.nom}</span>
+            <button onclick="adjNewRecQty(${i},-1)" style="width:24px;height:24px;background:var(--light);border:1px solid var(--border);color:var(--white);cursor:pointer;border-radius:3px;">−</button>
+            <span id="nrq_${i}" style="min-width:22px;text-align:center;font-weight:700;color:var(--orange);font-size:0.88rem;">${item.qty}</span>
+            <button onclick="adjNewRecQty(${i},1)" style="width:24px;height:24px;background:var(--light);border:1px solid var(--border);color:var(--white);cursor:pointer;border-radius:3px;">+</button>
+            <button onclick="removeNewRecItem(${i})" style="width:24px;height:24px;background:transparent;border:1px solid var(--border);color:#e84545;cursor:pointer;border-radius:3px;font-size:0.8rem;">✕</button>
+          </div>`).join('')}
+      </div>
+
+      <button onclick="addNewRecItem()" style="width:100%;background:transparent;border:1px dashed var(--border);color:var(--grey);padding:0.6rem;font-family:'Barlow',sans-serif;font-size:0.82rem;cursor:pointer;border-radius:4px;margin-top:0.3rem;margin-bottom:1rem;"
+        onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--grey)'">
+        ➕ Ajouter un produit
+      </button>
+
+      <div style="display:flex;gap:0.5rem;">
+        <button onclick="document.getElementById('recurringModal').remove()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--grey);padding:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;text-transform:uppercase;cursor:pointer;border-radius:4px;">Annuler</button>
+        <button onclick="saveNewRecurring()" style="flex:2;background:var(--orange);border:none;color:white;padding:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;text-transform:uppercase;cursor:pointer;border-radius:4px;">✅ Enregistrer</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  overlay._items = items;
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+}
+
+function adjNewRecQty(i, delta){
+  const el = document.getElementById(`nrq_${i}`);
+  const overlay = document.getElementById('recurringModal');
+  if(!el || !overlay) return;
+  const newQty = Math.max(1, parseInt(el.textContent) + delta);
+  el.textContent = newQty;
+  overlay._items[i].qty = newQty;
+}
+
+function removeNewRecItem(i){
+  const overlay = document.getElementById('recurringModal');
+  if(!overlay) return;
+  overlay._items.splice(i, 1);
+  refreshNewRecItems();
+}
+
+function refreshNewRecItems(){
+  const overlay = document.getElementById('recurringModal');
+  if(!overlay) return;
+  const items = overlay._items;
+  document.getElementById('newRecItems').innerHTML = items.map((item, i) => `
+    <div style="background:var(--steel);border:1px solid var(--border);border-radius:4px;padding:0.6rem 0.8rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.5rem;">
+      <span style="flex:1;font-size:0.8rem;color:var(--white);">${item.nom}</span>
+      <button onclick="adjNewRecQty(${i},-1)" style="width:24px;height:24px;background:var(--light);border:1px solid var(--border);color:var(--white);cursor:pointer;border-radius:3px;">−</button>
+      <span id="nrq_${i}" style="min-width:22px;text-align:center;font-weight:700;color:var(--orange);font-size:0.88rem;">${item.qty}</span>
+      <button onclick="adjNewRecQty(${i},1)" style="width:24px;height:24px;background:var(--light);border:1px solid var(--border);color:var(--white);cursor:pointer;border-radius:3px;">+</button>
+      <button onclick="removeNewRecItem(${i})" style="width:24px;height:24px;background:transparent;border:1px solid var(--border);color:#e84545;cursor:pointer;border-radius:3px;font-size:0.8rem;">✕</button>
+    </div>`).join('');
+}
+
+function addNewRecItem(){
+  // Ouvrir mini sélecteur de produits du catalogue
+  const overlay = document.getElementById('recurringModal');
+  if(!overlay) return;
+  const nom = prompt('Nom du produit à ajouter :');
+  if(!nom || !nom.trim()) return;
+  const qty = parseInt(prompt('Quantité :') || '1') || 1;
+  const prod = PRODUCTS.find(p => p.name.toLowerCase().includes(nom.toLowerCase()));
+  overlay._items.push({ nom: prod ? prod.name : nom.trim(), qty, prix_ht: prod ? prod.price : 0 });
+  refreshNewRecItems();
+}
+
+async function saveNewRecurring(){
+  const overlay = document.getElementById('recurringModal');
+  if(!overlay || !curUser) return;
+  const items = overlay._items;
+  if(!items.length){ toast('Ajoutez au moins un produit.', true); return; }
+  const freq   = document.getElementById('newRecFreq').value;
+  const date   = document.getElementById('newRecDate').value;
+  const rappel = document.getElementById('newRecRappel').value;
+  if(!date){ toast('Choisissez une date de première commande.', true); return; }
+
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ client_email: curUser.email, articles: items, frequence: freq, prochaine_date: date, rappel_jours: rappel === 'none' ? null : parseInt(rappel), actif: true })
+    });
+    if(r.ok){
+      overlay.remove();
+      toast('✅ Commande récurrente enregistrée !');
+      loadRecurringOrders();
+    } else throw new Error('Erreur sauvegarde');
+  } catch(e){ toast('Erreur : ' + e.message, true); }
+}
+
+async function toggleRecurring(id, actif){
+  if(!curUser) return;
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actif: !actif })
+    });
+    toast(actif ? '⏸ Commande mise en pause' : '▶ Commande réactivée');
+    loadRecurringOrders();
+  } catch(e){ toast('Erreur : ' + e.message, true); }
+}
+
+async function deleteRecurring(id){
+  if(!confirm('Supprimer cette commande récurrente ?')) return;
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
+    });
+    toast('🗑️ Commande récurrente supprimée');
+    loadRecurringOrders();
+  } catch(e){ toast('Erreur : ' + e.message, true); }
+}
+
+function editRecurring(id){
+  toast('✏️ Supprimez et recréez la commande pour modifier. (Bientôt : édition en place)');
+}
+
+function commanderRecurring(articles){
+  // Ajouter directement au panier
+  let added = 0;
+  articles.forEach(item => {
+    const prod = PRODUCTS.find(p =>
+      p.name.toLowerCase().includes((item.nom||'').toLowerCase().substring(0,15)) ||
+      (item.nom||'').toLowerCase().includes(p.name.toLowerCase().substring(0,15))
+    );
+    if(prod){
+      const existing = cart.find(c => c.id === prod.id);
+      if(existing) existing.qty += item.qty;
+      else cart.push({...prod, qty: item.qty});
+      added++;
+    }
+  });
+  saveCart();
+  updateCartBadge();
+  closeAccount();
+  if(added > 0){
+    toast(`✅ ${added} produit(s) ajouté(s) au panier !`);
+    setTimeout(() => openCart(), 500);
+  } else {
+    toast('⚠️ Produits introuvables dans le catalogue actuel.', true);
+  }
+}
 const SUPABASE_AUTH_URL = SUPABASE_URL + '/auth/v1';
 
 async function sbAuthRequest(endpoint, body){
@@ -1483,8 +2862,11 @@ async function doLogin(){
 
     const token = data.access_token;
     localStorage.setItem('aotc_token', token);
+    if(data.refresh_token) localStorage.setItem('aotc_refresh_token', data.refresh_token);
     err.style.display = 'none';
     await loadUserProfile(data.user, token);
+    await loadCartFromSupabase();
+    await loadFavorites();
     showDash();
 
   } catch(e){
@@ -1514,20 +2896,42 @@ async function doResend(){
   }
 }
 
+function checkPassMatch(){
+  const p1  = document.getElementById('regPass').value;
+  const p2  = document.getElementById('regPass2').value;
+  const msg = document.getElementById('passMatchMsg');
+  if(!p2){ msg.style.display='none'; return; }
+  if(p1===p2){
+    msg.textContent = '✅ Mots de passe identiques';
+    msg.style.color = 'var(--green)';
+    msg.style.display = 'block';
+    document.getElementById('regPass2').style.borderColor = 'var(--green)';
+  } else {
+    msg.textContent = '❌ Les mots de passe ne correspondent pas';
+    msg.style.color = '#e84545';
+    msg.style.display = 'block';
+    document.getElementById('regPass2').style.borderColor = '#e84545';
+  }
+}
+
 async function doRegister(){
   const pr  = document.getElementById('regPrenom').value.trim();
   const no  = document.getElementById('regNom').value.trim();
   const em  = document.getElementById('regEmail').value.trim();
   const pw  = document.getElementById('regPass').value;
+  const pw2 = document.getElementById('regPass2').value;
   const en  = document.getElementById('regEnt').value.trim();
   const err = document.getElementById('regErr');
 
-  if(!pr||!no||!em||!pw){ err.textContent='Remplissez tous les champs obligatoires.'; err.style.display='block'; return; }
+  if(!pr||!no||!em||!pw||!pw2){ err.textContent='Remplissez tous les champs obligatoires.'; err.style.display='block'; return; }
   if(pw.length<8){ err.textContent='Mot de passe trop court (min. 8 caractères).'; err.style.display='block'; return; }
-  if(!/[A-Z]/.test(pw)||!/[0-9]/.test(pw)){ err.textContent='Le mot de passe doit contenir une majuscule et un chiffre.'; err.style.display='block'; return; }
+  if(!/[A-Z]/.test(pw)){ err.textContent='Le mot de passe doit contenir au moins une majuscule.'; err.style.display='block'; return; }
+  if(!/[0-9]/.test(pw) && !/[^a-zA-Z0-9]/.test(pw)){ err.textContent='Le mot de passe doit contenir au moins un chiffre ou un caractère spécial (!@#$...).'; err.style.display='block'; return; }
+  if(pw !== pw2){ err.textContent='Les mots de passe ne correspondent pas.'; err.style.display='block'; document.getElementById('regPass2').focus(); return; }
 
   const btn = document.querySelector('#paneRegister .bfull');
   if(btn){ btn.disabled=true; btn.textContent='Création...'; }
+  err.style.display='none';
 
   try {
     const data = await sbAuthRequest('/signup', {
@@ -1542,7 +2946,6 @@ async function doRegister(){
       return;
     }
 
-    // Créer le profil dans la table clients
     await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1550,13 +2953,13 @@ async function doRegister(){
     });
 
     err.style.display = 'none';
-    // Afficher message de confirmation email
     document.getElementById('paneRegister').innerHTML = `
       <div style="text-align:center;padding:1.5rem 0;">
         <div style="font-size:3rem;margin-bottom:1rem;">📧</div>
         <h3 style="color:var(--green);margin-bottom:0.5rem;">Compte créé !</h3>
         <p style="color:var(--grey);font-size:0.85rem;">Un email de confirmation a été envoyé à <strong style="color:var(--white);">${em}</strong>.</p>
         <p style="color:var(--grey);font-size:0.82rem;margin-top:0.5rem;">Cliquez sur le lien dans l'email pour activer votre compte.</p>
+        <p style="color:var(--grey);font-size:0.78rem;margin-top:0.3rem;">Vérifiez aussi vos spams.</p>
         <button onclick="showTab('login')" style="margin-top:1rem;background:var(--orange);border:none;color:white;padding:0.7rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;border-radius:4px;cursor:pointer;">← Retour à la connexion</button>
       </div>`;
 
@@ -1609,7 +3012,59 @@ function updateAccBtn(){
   else{ l.textContent='Mon compte'; b.classList.remove('gold'); }
 }
 
-// ── STRIPE PAIEMENT ──
+// ── REFRESH TOKEN AUTO ──
+async function refreshToken(){
+  const token = localStorage.getItem('aotc_token');
+  if(!token || !curUser) return;
+  try {
+    const r = await fetch(SUPABASE_AUTH_URL + '/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: localStorage.getItem('aotc_refresh_token') || '' })
+    });
+    const data = await r.json();
+    if(data.access_token){
+      localStorage.setItem('aotc_token', data.access_token);
+      if(data.refresh_token) localStorage.setItem('aotc_refresh_token', data.refresh_token);
+      curUser.token = data.access_token;
+    }
+  } catch(e){ console.warn('Refresh token échoué:', e.message); }
+}
+// Rafraîchir le token toutes les 50 minutes (expire après 1h)
+setInterval(refreshToken, 50 * 60 * 1000);
+
+// ── SAUVEGARDE PANIER SUPABASE ──
+async function saveCartToSupabase(){
+  if(!curUser) return;
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ panier: JSON.stringify(cart) })
+    });
+  } catch(e){ console.warn('Erreur sauvegarde panier:', e.message); }
+}
+
+async function loadCartFromSupabase(){
+  if(!curUser) return;
+  try {
+    const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=panier`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
+    });
+    const data = await r.json();
+    if(data[0]?.panier){
+      const savedCart = JSON.parse(data[0].panier);
+      if(savedCart && savedCart.length > 0 && cart.length === 0){
+        cart = savedCart;
+        localStorage.setItem('aotc_cart', JSON.stringify(cart));
+        updateCartBadge();
+        toast('🛒 Votre panier a été restauré !');
+      }
+    }
+  } catch(e){ console.warn('Erreur chargement panier:', e.message); }
+}
 const STRIPE_PK = 'pk_test_51TU33pEXJM7LGecZb8rymMLykBt3ufcTf6F46oFVNXYoGOuV9802J0PuJdUDjaSJdQrqfUqNqXzk2loGyhPshP2t00FqSQlkQK';
 const BACKEND_URL = 'https://aotc-backend.onrender.com';
 let stripe = null, cardElement = null;
@@ -1755,6 +3210,10 @@ function closeCheckout(){
 async function processPayment(){
   if(!stripe||!cardElement){alert('Stripe non chargé, réessayez dans 2 secondes.');return;}
 
+  // Protection double clic
+  const payBtn = document.getElementById('payBtn');
+  if(payBtn && payBtn.disabled) return;
+
   // Vérifier CGV
   const cgvCheck = document.getElementById('cgvCheck');
   if(cgvCheck && !cgvCheck.checked){
@@ -1775,14 +3234,15 @@ async function processPayment(){
   const instructions= get('payInstructions');
 
   const setErr = msg => { const el=document.getElementById('card-errors'); if(el) el.textContent=msg; };
-  const setBtn = (txt,dis) => { const b=document.getElementById('payBtn'); if(b){b.disabled=dis;b.innerHTML=txt;} };
+  const setBtn = (txt,dis) => { if(payBtn){payBtn.disabled=dis;payBtn.innerHTML=txt;} };
 
-  // Validation
+  // Validation complète
   if(!nom||!email){ setErr('Veuillez remplir votre nom et email.'); return; }
-  if(!adresse||!cp||!ville){ setErr('Veuillez remplir votre adresse de livraison complète.'); return; }
-  if(cp.length!==5||isNaN(cp)){ setErr('Code postal invalide (5 chiffres).'); return; }
+  if(!adresse){ setErr('⚠️ L\'adresse de livraison est obligatoire.'); document.getElementById('payAdresse')?.focus(); return; }
+  if(!cp||cp.length!==5||isNaN(cp)){ setErr('⚠️ Code postal invalide (5 chiffres requis).'); document.getElementById('payCP')?.focus(); return; }
+  if(!ville){ setErr('⚠️ La ville de livraison est obligatoire.'); document.getElementById('payVille')?.focus(); return; }
+  if(!tel){ setErr('⚠️ Le numéro de téléphone est obligatoire pour le suivi de livraison.'); document.getElementById('payTel')?.focus(); return; }
 
-  const amountLabel = document.getElementById('payAmount')?.textContent || '';
   setBtn('⏳ Traitement en cours…', true);
   setErr('');
 
@@ -2061,7 +3521,13 @@ window.addEventListener('DOMContentLoaded', function(){
   if(localStorage.getItem('aotc_cookies')) document.getElementById('cookieBanner').style.display='none';
   render();
   loadProducts();
+  loadOffres();
   initAuth();
+
+  // Fermer suggestions au clic en dehors
+  document.addEventListener('click', e => {
+    if(!e.target.closest('.search-wrap')) hideSuggestions();
+  });
 });
 </script>
 </body>

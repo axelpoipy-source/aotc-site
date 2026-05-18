@@ -118,6 +118,7 @@ textarea { resize:vertical; }
     <button class="tab" onclick="tab('avis')">⭐ Avis</button>
     <button class="tab" onclick="tab('commandes')">📋 Commandes</button>
     <button class="tab" onclick="tab('newsletter')">📨 Newsletter</button>
+    <button class="tab" onclick="tab('offres')">🏷️ Offres</button>
     <button class="tab" onclick="tab('liens')">🔗 Liens</button>
   </div>
 
@@ -241,7 +242,13 @@ textarea { resize:vertical; }
   <div class="page" id="p-produits">
     <div class="card">
       <h3>📦 Mes produits</h3>
-      <input type="text" id="search-prod" placeholder="Rechercher..." oninput="filterProd()" style="margin-bottom:0.8rem;">
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.8rem;align-items:center;">
+        <input type="text" id="search-prod" placeholder="Rechercher un produit..." oninput="filterProd()" style="flex:1;min-width:150px;margin:0;">
+        <button class="btn-small" onclick="filterByStock('all')" id="stockAll" style="background:#333;border-color:#444;">Tous</button>
+        <button class="btn-small" onclick="filterByStock('stock')" id="stockOk" style="background:rgba(42,157,92,0.2);border-color:#2a9d5c;color:#2a9d5c;">✅ En stock</button>
+        <button class="btn-small" onclick="filterByStock('rupture')" id="stockRup" style="background:rgba(232,82,26,0.1);border-color:#e84545;color:#e84545;">⚠️ Ruptures</button>
+      </div>
+      <div id="stock-summary" style="font-size:0.78rem;color:#7a8099;margin-bottom:0.8rem;padding:0.5rem 0.8rem;background:#1a1f2e;border-radius:4px;display:flex;gap:1rem;flex-wrap:wrap;"></div>
       <div id="prod-list"><p style="color:#7a8099;text-align:center;padding:1rem;">Chargement...</p></div>
     </div>
   </div>
@@ -316,6 +323,46 @@ textarea { resize:vertical; }
     <div class="card" style="margin-top:1rem;">
       <h3>📊 Historique des newsletters</h3>
       <div id="nl-historique"><p style="color:#7a8099;font-size:0.82rem;">Aucune newsletter envoyée pour l'instant.</p></div>
+    </div>
+  </div>
+
+  <!-- OFFRES & PROMOTIONS -->
+  <div class="page" id="p-offres">
+    <div class="card">
+      <h3>🏷️ Créer une offre / promotion</h3>
+      <p style="color:#7a8099;font-size:0.82rem;margin-bottom:1rem;">
+        Les offres apparaissent sur le site avec un badge rouge pour les clients. Aucun email n'est envoyé — le client consulte quand il le souhaite.
+      </p>
+
+      <label>Type d'offre</label>
+      <select id="off-type" style="width:100%;background:#1a1f2e;border:1px solid #333;color:#f0ede8;padding:0.6rem;border-radius:4px;margin-bottom:0.8rem;font-family:inherit;">
+        <option value="promo">🔥 Promotion (réduction sur produits)</option>
+        <option value="code">🎟️ Code promo</option>
+        <option value="nouveaute">✨ Nouveauté catalogue</option>
+        <option value="info">ℹ️ Information importante</option>
+      </select>
+
+      <label>Titre *</label>
+      <input type="text" id="off-titre" placeholder="Ex: -10% sur tous les raccords inox">
+
+      <label style="margin-top:0.8rem;">Description *</label>
+      <textarea id="off-desc" rows="3" placeholder="Ex: Profitez de 10% de réduction sur toute la gamme raccords inox 316L jusqu'au 31 mai."></textarea>
+
+      <label style="margin-top:0.8rem;">Code promo (optionnel)</label>
+      <input type="text" id="off-code" placeholder="Ex: AOTC10 — laisser vide si pas de code" style="text-transform:uppercase;">
+
+      <label style="margin-top:0.8rem;">Date d'expiration (optionnel)</label>
+      <input type="date" id="off-expiry">
+
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+        <button class="btn-green" onclick="saveOffre()">✅ Publier l'offre</button>
+      </div>
+      <p id="off-msg" style="display:none;margin-top:0.5rem;font-size:0.82rem;"></p>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3>📋 Offres actives</h3>
+      <div id="off-list"><p style="color:#7a8099;font-size:0.82rem;">Chargement...</p></div>
     </div>
   </div>
 
@@ -428,9 +475,71 @@ function tab(id){
   });
   if(id === 'produits') loadProduits();
   if(id === 'newsletter') loadNewsletterStats();
+  if(id === 'offres') loadOffresAdmin();
 }
 
 // ── NEWSLETTER ──
+// ── OFFRES ADMIN ──
+async function loadOffresAdmin(){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/offres?order=created_at.desc`, { headers: sbH() });
+    const offres = await r.json();
+    const el = document.getElementById('off-list');
+    if(!offres.length){ el.innerHTML = '<p style="color:#7a8099;font-size:0.82rem;">Aucune offre créée.</p>'; return; }
+    el.innerHTML = offres.map(o => `
+      <div style="background:#1a1f2e;border:1px solid #333;border-radius:4px;padding:0.8rem;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:start;gap:0.5rem;">
+        <div style="flex:1;">
+          <span style="font-size:0.7rem;color:${o.actif?'#2a9d5c':'#7a8099'};font-weight:700;">${o.actif?'● ACTIVE':'● INACTIVE'}</span>
+          <p style="font-weight:600;color:#f0ede8;margin:0.2rem 0;">${o.titre}</p>
+          <p style="font-size:0.78rem;color:#7a8099;">${o.description}</p>
+          ${o.code?`<span style="font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:#e8521a;font-weight:700;">${o.code}</span>`:''}
+          ${o.date_fin?`<p style="font-size:0.72rem;color:#7a8099;margin-top:0.2rem;">Expire le ${new Date(o.date_fin).toLocaleDateString('fr-FR')}</p>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <button onclick="toggleOffre('${o.id}',${o.actif})" style="background:transparent;border:1px solid #444;color:#7a8099;padding:0.25rem 0.6rem;font-size:0.72rem;cursor:pointer;border-radius:3px;">
+            ${o.actif?'⏸ Désactiver':'▶ Activer'}
+          </button>
+          <button onclick="deleteOffre('${o.id}')" style="background:transparent;border:1px solid #444;color:#e84545;padding:0.25rem 0.6rem;font-size:0.72rem;cursor:pointer;border-radius:3px;">🗑️</button>
+        </div>
+      </div>`).join('');
+  } catch(e){ toast('Erreur offres', true); }
+}
+
+async function saveOffre(){
+  const titre  = document.getElementById('off-titre').value.trim();
+  const desc   = document.getElementById('off-desc').value.trim();
+  const type   = document.getElementById('off-type').value;
+  const code   = document.getElementById('off-code').value.trim().toUpperCase() || null;
+  const expiry = document.getElementById('off-expiry').value || null;
+  if(!titre||!desc){ toast('Titre et description obligatoires.', true); return; }
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/offres`, {
+      method: 'POST',
+      headers: { ...sbH(), 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ titre, description: desc, type, code, date_fin: expiry, actif: true })
+    });
+    if(r.ok){
+      toast('✅ Offre publiée !');
+      ['off-titre','off-desc','off-code','off-expiry'].forEach(id => document.getElementById(id).value = '');
+      loadOffresAdmin();
+    } else throw new Error('Erreur');
+  } catch(e){ toast('Erreur : '+e.message, true); }
+}
+
+async function toggleOffre(id, actif){
+  await fetch(`${SB_URL}/rest/v1/offres?id=eq.${id}`, {
+    method:'PATCH', headers:{...sbH(),'Content-Type':'application/json'}, body:JSON.stringify({actif:!actif})
+  });
+  loadOffresAdmin();
+}
+
+async function deleteOffre(id){
+  if(!confirm('Supprimer cette offre ?')) return;
+  await fetch(`${SB_URL}/rest/v1/offres?id=eq.${id}`, { method:'DELETE', headers:sbH() });
+  toast('🗑️ Offre supprimée');
+  loadOffresAdmin();
+}
+
 async function loadNewsletterStats(){
   try {
     const r = await fetch(`${SB_URL}/rest/v1/clients?newsletter=eq.true&select=email,prenom,nom`, { headers: sbH() });
@@ -642,7 +751,7 @@ function toast(msg, err=false){
 }
 
 // ── SUPABASE ──
-const sbH = () => ({'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json'});
+// sbH défini plus haut
 
 async function sbGet(){
   const r = await fetch(`${SB_URL}/rest/v1/produits?select=*&order=id.desc`, {headers: sbH()});
@@ -667,7 +776,7 @@ async function loadProduits(){
   try {
     const d = await sbGet();
     allProds = d;
-    renderProds(d);
+    applyProdFilters();
   } catch(e){
     document.getElementById('prod-list').innerHTML = '<p style="color:#e84545;text-align:center;padding:1rem;">Erreur de chargement</p>';
   }
@@ -678,24 +787,89 @@ function renderProds(d){
     document.getElementById('prod-list').innerHTML = '<p style="color:#7a8099;text-align:center;padding:1rem;">Aucun produit</p>';
     return;
   }
-  document.getElementById('prod-list').innerHTML = d.map(p=>`
-    <div class="prod-item">
+  document.getElementById('prod-list').innerHTML = d.map(p => {
+    const enStock = p.en_stock !== false;
+    return `
+    <div class="prod-item" style="border-left:3px solid ${enStock?'#2a9d5c':'#e84545'};">
       ${p.image_url && p.image_url.startsWith('http')
         ? `<img src="${p.image_url}" class="prod-img" onerror="this.outerHTML='<div class=prod-img>🔧</div>'">`
         : `<div class="prod-img">🔧</div>`}
-      <div class="prod-info">
+      <div class="prod-info" style="flex:1;">
         <div class="prod-name">${p.nom}</div>
         <div class="prod-price">${p.prix_ht ? p.prix_ht.toFixed(2)+'€ HT' : '—'}</div>
         <div class="prod-cat">${p.categorie||'—'} · ${p.actif ? '✅ Actif' : '❌ Inactif'}</div>
       </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin:0 0.5rem;">
+        <span style="font-size:0.65rem;color:${enStock?'#2a9d5c':'#e84545'};font-weight:700;letter-spacing:0.05em;">
+          ${enStock ? '● STOCK' : '● RUPTURE'}
+        </span>
+        <label style="position:relative;display:inline-block;width:42px;height:22px;cursor:pointer;" title="${enStock?'Cliquer pour marquer en rupture':'Cliquer pour marquer en stock'}">
+          <input type="checkbox" ${enStock?'checked':''} onchange="toggleStock(${p.id},this.checked)"
+            style="opacity:0;width:0;height:0;position:absolute;">
+          <span style="position:absolute;inset:0;background:${enStock?'#2a9d5c':'#333'};border-radius:22px;transition:0.2s;border:1px solid ${enStock?'#2a9d5c':'#555'};">
+            <span style="position:absolute;top:2px;left:${enStock?'22':'2'}px;width:16px;height:16px;background:white;border-radius:50%;transition:0.2s;"></span>
+          </span>
+        </label>
+      </div>
       <button class="btn-del" onclick="delProd(${p.id})">🗑️</button>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
+}
+
+async function toggleStock(id, enStock){
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/produits?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...sbH(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ en_stock: enStock })
+    });
+    if(r.ok){
+      toast(enStock ? '✅ Produit marqué en stock' : '⚠️ Produit marqué en rupture');
+      // Mettre à jour le cache local
+      const prod = allProds.find(p => p.id === id);
+      if(prod) prod.en_stock = enStock;
+      renderProds(allProds.filter(p => {
+        const q = document.getElementById('search-prod').value.toLowerCase();
+        return !q || (p.nom||'').toLowerCase().includes(q) || (p.categorie||'').toLowerCase().includes(q);
+      }));
+    } else throw new Error('Erreur');
+  } catch(e){ toast('Erreur : ' + e.message, true); }
+}
+
+let stockFilter = 'all';
+
+function filterByStock(mode){
+  stockFilter = mode;
+  ['all','stock','rupture'].forEach(m => {
+    const btn = document.getElementById(`stock${m==='all'?'All':m==='stock'?'Ok':'Rup'}`);
+    if(btn) btn.style.opacity = m === mode ? '1' : '0.5';
+  });
+  applyProdFilters();
 }
 
 function filterProd(){
-  const q = document.getElementById('search-prod').value.toLowerCase();
-  renderProds(allProds.filter(p => (p.nom||'').toLowerCase().includes(q) || (p.categorie||'').toLowerCase().includes(q)));
+  applyProdFilters();
+}
+
+function applyProdFilters(){
+  const q = (document.getElementById('search-prod').value||'').toLowerCase();
+  let filtered = allProds.filter(p =>
+    !q || (p.nom||'').toLowerCase().includes(q) || (p.categorie||'').toLowerCase().includes(q)
+  );
+  if(stockFilter === 'stock') filtered = filtered.filter(p => p.en_stock !== false);
+  if(stockFilter === 'rupture') filtered = filtered.filter(p => p.en_stock === false);
+
+  // Résumé stock
+  const total = allProds.length;
+  const enStock = allProds.filter(p => p.en_stock !== false).length;
+  const rupture = allProds.filter(p => p.en_stock === false).length;
+  const summary = document.getElementById('stock-summary');
+  if(summary) summary.innerHTML = `
+    <span>📦 <strong style="color:#f0ede8;">${total}</strong> produits total</span>
+    <span>✅ <strong style="color:#2a9d5c;">${enStock}</strong> en stock</span>
+    <span>⚠️ <strong style="color:#e84545;">${rupture}</strong> en rupture</span>`;
+
+  renderProds(filtered);
 }
 
 async function delProd(id){
