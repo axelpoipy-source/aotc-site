@@ -1061,16 +1061,14 @@ let PRODUCTS = [...PRODUCTS_FALLBACK];
 // Charger les produits depuis Supabase
 async function loadProducts(){
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc`, {
+    // Double authentification pour compatibilité nouvelle clé Supabase
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc&apikey=${SUPABASE_KEY}`, {
       headers: {
         'apikey': SUPABASE_KEY,
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${SUPABASE_KEY}`
       }
     });
-    if(!res.ok){
-      const errText = await res.text();
-      throw new Error('Erreur Supabase: ' + errText);
-    }
+    if(!res.ok) throw new Error('Supabase ' + res.status);
     const data = await res.json();
     if(data && data.length > 0){
       PRODUCTS = data.map(p => ({
@@ -1752,7 +1750,7 @@ async function loadOrderHistory(){
   const el = document.getElementById('cmdList');
   el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:1.5rem;">Chargement...</p>';
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&order=created_at.desc`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&order=created_at.desc&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY}
     });
     const cmds = await r.json();
@@ -1927,7 +1925,7 @@ async function loadProfil(){
   if(!curUser) return;
   const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`}
     });
     const data = await r.json();
@@ -1968,20 +1966,20 @@ async function saveProfil(){
   const msg = document.getElementById('prof-save-msg');
   try {
     // Vérifier si profil existe déjà
-    const check = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+    const check = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY}
     });
     const existing = await check.json();
 
     let r;
     if(existing.length > 0){
-      r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
         method: 'PATCH',
         headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
     } else {
-      r = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/clients?apikey=${SUPABASE_KEY}`, {
         method: 'POST',
         headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
         body: JSON.stringify(data)
@@ -2019,7 +2017,7 @@ async function deleteProfil(){
   if(!confirm('Supprimer définitivement votre compte et toutes vos données ? Cette action est irréversible.')) return;
   try {
     // Vérifier commandes en cours
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&statut=in.(en_attente,commandé)&select=id`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&statut=in.(en_attente,commandé)&select=id&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY}
     });
     const actives = await r.json();
@@ -2030,7 +2028,7 @@ async function deleteProfil(){
     }
 
     // Supprimer le profil
-    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
       method: 'DELETE',
       headers: {'apikey': SUPABASE_KEY}
     });
@@ -2130,7 +2128,7 @@ let configSearchHistory = '';
 async function openConfigurateur(){
   // Charger l'historique des recherches réussies pour le contexte
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/recherches?select=requete,keywords&order=created_at.desc&limit=50`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recherches?select=requete,keywords&order=created_at.desc&limit=50&apikey=${SUPABASE_KEY}`, {
       headers: { 'apikey': SUPABASE_KEY }
     });
     const data = await r.json();
@@ -2318,7 +2316,7 @@ function toggleFavorite(id, e){
   // Sauvegarder dans Supabase si connecté
   if(curUser){
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+    fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
       method:'PATCH', headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body:JSON.stringify({ favoris: JSON.stringify(favorites) })
     }).catch(()=>{});
@@ -2329,7 +2327,7 @@ async function loadFavorites(){
   if(!curUser) return;
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=favoris`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=favoris&apikey=${SUPABASE_KEY}`, {
       headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${token}`}
     });
     const data = await r.json();
@@ -2487,7 +2485,7 @@ setTimeout(()=>{ if(!localStorage.getItem('aotc_tour_done')) startTour(); },1500
 
 async function loadOffres(){
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/offres?actif=eq.true&order=created_at.desc`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/offres?actif=eq.true&order=created_at.desc&apikey=${SUPABASE_KEY}`, {
       headers: { 'apikey': SUPABASE_KEY }
     });
     const offres = await r.json();
@@ -2583,7 +2581,7 @@ async function loadRecurringOrders(){
   el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:1rem;">Chargement...</p>';
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?client_email=eq.${curUser.email}&order=created_at.desc`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?client_email=eq.${curUser.email}&order=created_at.desc&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`}
     });
     const orders = await r.json();
@@ -2774,7 +2772,7 @@ async function saveNewRecurring(){
 
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?apikey=${SUPABASE_KEY}`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ client_email: curUser.email, articles: items, frequence: freq, prochaine_date: date, rappel_jours: rappel === 'none' ? null : parseInt(rappel), actif: true })
@@ -2791,7 +2789,7 @@ async function toggleRecurring(id, actif){
   if(!curUser) return;
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}&apikey=${SUPABASE_KEY}`, {
       method: 'PATCH',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ actif: !actif })
@@ -2805,7 +2803,7 @@ async function deleteRecurring(id){
   if(!confirm('Supprimer cette commande récurrente ?')) return;
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/recurring_orders?id=eq.${id}&apikey=${SUPABASE_KEY}`, {
       method: 'DELETE',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
     });
@@ -2873,7 +2871,7 @@ async function initAuth(){
 
 async function loadUserProfile(authUser, token){
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${authUser.email}`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${authUser.email}&apikey=${SUPABASE_KEY}`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
     });
     const data = await r.json();
@@ -3020,7 +3018,7 @@ async function doRegister(){
       return;
     }
 
-    await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/clients?apikey=${SUPABASE_KEY}`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ email: em, prenom: pr, nom: no, entreprise: en, points: 50, rgpd_accepte: true, rgpd_date: new Date().toISOString() })
@@ -3112,7 +3110,7 @@ async function saveCartToSupabase(){
   if(!curUser) return;
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
       method: 'PATCH',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ panier: JSON.stringify(cart) })
@@ -3124,7 +3122,7 @@ async function loadCartFromSupabase(){
   if(!curUser) return;
   try {
     const token = curUser.token || localStorage.getItem('aotc_token') || SUPABASE_KEY;
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=panier`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}&select=panier&apikey=${SUPABASE_KEY}`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}` }
     });
     const data = await r.json();
@@ -3416,7 +3414,7 @@ async function loadAvis(produitId){
   const body = document.getElementById('avisBody');
 
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${produitId}&approuve=eq.true&order=created_at.desc`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${produitId}&approuve=eq.true&order=created_at.desc&apikey=${SUPABASE_KEY}`, {
       headers: {'apikey': SUPABASE_KEY}
     });
     const avis = await r.json();
@@ -3538,13 +3536,13 @@ async function submitAvis(){
 
     let r;
     if(isModifAvis){
-      r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${currentAvisProduit}&client_email=eq.${curUser.email}`, {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${currentAvisProduit}&client_email=eq.${curUser.email}&apikey=${SUPABASE_KEY}`, {
         method: 'PATCH',
         headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'},
         body: JSON.stringify({note: currentNote, commentaire: comment||null, points_accordes: pts, updated_at: new Date().toISOString()})
       });
     } else {
-      r = await fetch(`${SUPABASE_URL}/rest/v1/avis`, {
+      r = await fetch(`${SUPABASE_URL}/rest/v1/avis?apikey=${SUPABASE_KEY}`, {
         method: 'POST',
         headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
         body: JSON.stringify(data)
