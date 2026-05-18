@@ -1041,7 +1041,7 @@ footer{background:#0f1219;padding:2.5rem 2rem;border-top:1px solid var(--border)
 <script>
 // ── SUPABASE ──
 const SUPABASE_URL = 'https://fwtpyncsrggpamlggiwi.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dHB5bmNzcmdncGFtbGdnaXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzY2MDIsImV4cCI6MjA5Mzg1MjYwMn0.EYUlGpdABDxDJ1Ck5d6wObZax5sjGlpCRh_LKQmPUQ4';
+const SUPABASE_KEY = 'sb_publishable_1XFoc1m1gBfkADRwtTBovA_5SsDkCDY';
 
 // Déclaration globale curUser — disponible partout
 let curUser = JSON.parse(localStorage.getItem('aotc_user') || 'null');
@@ -1064,31 +1064,39 @@ async function loadProducts(){
     const res = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc`, {
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
+        'Content-Type': 'application/json'
       }
     });
-    if(!res.ok) throw new Error('Erreur Supabase');
+    if(!res.ok){
+      const errText = await res.text();
+      throw new Error('Erreur Supabase: ' + errText);
+    }
     const data = await res.json();
     if(data && data.length > 0){
       PRODUCTS = data.map(p => ({
-        id:    p.id,
-        cat:   p.categorie  || 'Divers',
-        name:  p.nom,
-        ref:   p.reference  || '',
-        dn:    '',
-        price: p.prix_ht    || 0,
-        unit:  p.unite      || 'unité',
-        badge: p.badge      || 'stock',
-        icon:  p.image_url  || '🔧',
-        image: p.image_url  || null,
-        desc:  p.description|| '',
-        tags:  p.tags ? p.tags.split(',').map(t=>t.trim()) : [],
-        lien:  p.lien_aliexpress || null
+        id:       p.id,
+        cat:      p.categorie   || 'Divers',
+        name:     p.nom,
+        ref:      p.reference   || '',
+        dn:       '',
+        price:    p.prix_ht     || 0,
+        unit:     p.unite       || 'unité',
+        badge:    p.badge       || 'stock',
+        icon:     p.image_url   || '🔧',
+        image:    p.image_url   || null,
+        desc:     p.description || '',
+        tags:     p.tags ? p.tags.split(',').map(t=>t.trim()) : [],
+        en_stock: p.en_stock !== false,
+        matiere:  p.matiere     || '',
+        pression_max: p.pression_max || null,
+        certifications: p.certifications || '',
+        lien:     p.lien_aliexpress || null
       }));
+      console.log('✅ Produits chargés:', PRODUCTS.length);
     }
     render();
   } catch(e) {
-    console.warn('Supabase non disponible, produits de démonstration affichés.', e);
+    console.warn('Erreur chargement produits:', e.message);
     render();
   }
 }
@@ -1745,7 +1753,7 @@ async function loadOrderHistory(){
   el.innerHTML = '<p style="text-align:center;color:var(--grey);padding:1.5rem;">Chargement...</p>';
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&order=created_at.desc`, {
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY}
     });
     const cmds = await r.json();
 
@@ -1961,7 +1969,7 @@ async function saveProfil(){
   try {
     // Vérifier si profil existe déjà
     const check = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY}
     });
     const existing = await check.json();
 
@@ -1969,13 +1977,13 @@ async function saveProfil(){
     if(existing.length > 0){
       r = await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
         method: 'PATCH',
-        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json'},
+        headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
     } else {
       r = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
         method: 'POST',
-        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+        headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
         body: JSON.stringify(data)
       });
     }
@@ -2012,7 +2020,7 @@ async function deleteProfil(){
   try {
     // Vérifier commandes en cours
     const r = await fetch(`${SUPABASE_URL}/rest/v1/commandes?client_email=eq.${curUser.email}&statut=in.(en_attente,commandé)&select=id`, {
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY}
     });
     const actives = await r.json();
 
@@ -2024,7 +2032,7 @@ async function deleteProfil(){
     // Supprimer le profil
     await fetch(`${SUPABASE_URL}/rest/v1/clients?email=eq.${curUser.email}`, {
       method: 'DELETE',
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY}
     });
 
     // Déconnecter Supabase Auth
@@ -2123,7 +2131,7 @@ async function openConfigurateur(){
   // Charger l'historique des recherches réussies pour le contexte
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/recherches?select=requete,keywords&order=created_at.desc&limit=50`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      headers: { 'apikey': SUPABASE_KEY }
     });
     const data = await r.json();
     if(Array.isArray(data) && data.length){
@@ -2480,7 +2488,7 @@ setTimeout(()=>{ if(!localStorage.getItem('aotc_tour_done')) startTour(); },1500
 async function loadOffres(){
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/offres?actif=eq.true&order=created_at.desc`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      headers: { 'apikey': SUPABASE_KEY }
     });
     const offres = await r.json();
     if(!Array.isArray(offres)) return;
@@ -3014,7 +3022,7 @@ async function doRegister(){
 
     await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ email: em, prenom: pr, nom: no, entreprise: en, points: 50, rgpd_accepte: true, rgpd_date: new Date().toISOString() })
     });
 
@@ -3409,7 +3417,7 @@ async function loadAvis(produitId){
 
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${produitId}&approuve=eq.true&order=created_at.desc`, {
-      headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`}
+      headers: {'apikey': SUPABASE_KEY}
     });
     const avis = await r.json();
 
@@ -3532,13 +3540,13 @@ async function submitAvis(){
     if(isModifAvis){
       r = await fetch(`${SUPABASE_URL}/rest/v1/avis?produit_id=eq.${currentAvisProduit}&client_email=eq.${curUser.email}`, {
         method: 'PATCH',
-        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json'},
+        headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'},
         body: JSON.stringify({note: currentNote, commentaire: comment||null, points_accordes: pts, updated_at: new Date().toISOString()})
       });
     } else {
       r = await fetch(`${SUPABASE_URL}/rest/v1/avis`, {
         method: 'POST',
-        headers: {'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+        headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
         body: JSON.stringify(data)
       });
     }
