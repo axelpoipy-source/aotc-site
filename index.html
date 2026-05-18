@@ -1469,6 +1469,18 @@ async function doLogin(){
       return;
     }
 
+    // Vérification manuelle email confirmé
+    if(!data.user.email_confirmed_at){
+      notConfirmed.style.display = 'block';
+      document.getElementById('resendEmail').value = em;
+      // Déconnecter immédiatement
+      await fetch(SUPABASE_AUTH_URL + '/logout', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${data.access_token}` }
+      });
+      return;
+    }
+
     const token = data.access_token;
     localStorage.setItem('aotc_token', token);
     err.style.display = 'none';
