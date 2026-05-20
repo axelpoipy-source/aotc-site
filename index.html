@@ -1060,37 +1060,140 @@ let PRODUCTS = [...PRODUCTS_FALLBACK];
 
 // Charger les produits depuis Supabase
 async function loadProducts(){
+  const grid = document.getElementById('pgrid');
+  const debugLog = [];
+  const log = (msg, type='info') => {
+    const time = new Date().toLocaleTimeString('fr-FR');
+    debugLog.push({time, msg, type});
+    console.log(`[${time}] ${type.toUpperCase()}: ${msg}`);
+  };
+
+  const showDebug = (error) => {
+    const colors = { info:'#60a5fa', success:'#2a9d5c', warn:'#f59e0b', error:'#e84545' };
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:1.2rem;font-family:monospace;font-size:0.78rem;line-height:1.7;">
+        <div style="color:#e84545;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.8rem;letter-spacing:0.05em;">
+          🔧 DIAGNOSTIC CHARGEMENT PRODUITS
+        </div>
+        ${debugLog.map(l => `
+          <div style="margin-bottom:0.3rem;color:${colors[l.type]||'#7a8099'};">
+            <span style="opacity:0.6;">[${l.time}]</span> ${l.msg}
+          </div>
+        `).join('')}
+        ${error ? `
+          <div style="margin-top:1rem;padding:0.8rem;background:rgba(232,69,69,0.1);border-left:3px solid #e84545;border-radius:4px;">
+            <strong style="color:#e84545;">ERREUR DÉTECTÉE :</strong><br>
+            <code style="color:#f0ede8;word-break:break-all;">${error}</code>
+          </div>
+        ` : ''}
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);color:#7a8099;font-size:0.72rem;">
+          <strong>Variables en cours :</strong><br>
+          SUPABASE_URL = ${SUPABASE_URL}<br>
+          SUPABASE_KEY = ${SUPABASE_KEY ? SUPABASE_KEY.substring(0,30)+'...' : '❌ VIDE'}<br>
+          User-Agent = ${navigator.userAgent.substring(0,60)}...<br>
+          Origin = ${window.location.origin}
+        </div>
+        <button onclick="loadProducts()" style="margin-top:1rem;background:var(--orange);border:none;color:white;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.05em;">
+          🔄 RÉESSAYER
+        </button>
+      </div>`;
+  };
+
   try {
-    // Appel direct Supabase avec apikey en URL — méthode qui fonctionne depuis navigateur
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc&apikey=${SUPABASE_KEY}`);
-    if(!res.ok) throw new Error('Supabase ' + res.status);
-    const data = await res.json();
-    if(data && Array.isArray(data) && data.length > 0){
-      PRODUCTS = data.map(p => ({
-        id:       p.id,
-        cat:      p.categorie   || 'Divers',
-        name:     p.nom,
-        ref:      p.reference   || '',
-        dn:       '',
-        price:    p.prix_ht     || 0,
-        unit:     p.unite       || 'unité',
-        badge:    p.badge       || 'stock',
-        icon:     p.image_url   || '🔧',
-        image:    p.image_url   || null,
-        desc:     p.description || '',
-        tags:     p.tags ? p.tags.split(',').map(t=>t.trim()) : [],
-        en_stock: p.en_stock !== false,
-        matiere:  p.matiere     || '',
-        pression_max: p.pression_max || null,
-        certifications: p.certifications || '',
-        lien:     p.lien_aliexpress || null
-      }));
-      console.log('✅ Produits chargés:', PRODUCTS.length);
+    log('Démarrage du chargement des produits', 'info');
+
+    // Vérification des variables
+    if(!SUPABASE_URL){ log('SUPABASE_URL est vide ou non défini', 'error'); showDebug('SUPABASE_URL manquant'); return; }
+    if(!SUPABASE_KEY){ log('SUPABASE_KEY est vide ou non défini', 'error'); showDebug('SUPABASE_KEY manquant'); return; }
+    log(`URL Supabase : ${SUPABASE_URL}`, 'info');
+    log(`Clé : ${SUPABASE_KEY.substring(0,25)}...`, 'info');
+
+    const url = `${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc&apikey=${SUPABASE_KEY}`;
+    log('Construction de la requête...', 'info');
+    log(`URL complète : ${url.substring(0,80)}...`, 'info');
+
+    log('Envoi de la requête HTTP...', 'info');
+    const startTime = Date.now();
+    let res;
+    try {
+      res = await fetch(url);
+    } catch(networkError){
+      log(`Erreur réseau : ${networkError.message}`, 'error');
+      log('Causes possibles : pas de connexion internet, CORS bloqué, DNS', 'warn');
+      showDebug(`Erreur réseau : ${networkError.message}`);
+      return;
     }
+    const elapsed = Date.now() - startTime;
+    log(`Réponse reçue en ${elapsed}ms`, 'success');
+    log(`Code HTTP : ${res.status} ${res.statusText}`, res.ok ? 'success' : 'error');
+
+    if(!res.ok){
+      let errText = '';
+      try { errText = await res.text(); } catch(e){ errText = 'impossible de lire la réponse'; }
+      log(`Corps de la réponse : ${errText.substring(0,200)}`, 'error');
+
+      if(res.status === 401) log('→ Clé API invalide ou expirée', 'warn');
+      else if(res.status === 403) log('→ Accès interdit (RLS ou allowlist)', 'warn');
+      else if(res.status === 404) log('→ Table produits introuvable', 'warn');
+      else if(res.status >= 500) log('→ Erreur serveur Supabase', 'warn');
+
+      showDebug(`HTTP ${res.status} - ${errText.substring(0,150)}`);
+      return;
+    }
+
+    log('Parsing JSON de la réponse...', 'info');
+    let data;
+    try {
+      data = await res.json();
+    } catch(jsonError){
+      log(`Erreur parsing JSON : ${jsonError.message}`, 'error');
+      showDebug(`JSON invalide : ${jsonError.message}`);
+      return;
+    }
+
+    if(!Array.isArray(data)){
+      log(`Réponse inattendue (pas un tableau) : ${JSON.stringify(data).substring(0,200)}`, 'error');
+      showDebug('Format de réponse invalide');
+      return;
+    }
+
+    log(`${data.length} produits reçus de Supabase`, 'success');
+
+    if(data.length === 0){
+      log('La table produits est vide ou aucun produit actif', 'warn');
+      showDebug('Aucun produit dans la base de données');
+      return;
+    }
+
+    log('Conversion des produits...', 'info');
+    PRODUCTS = data.map(p => ({
+      id:       p.id,
+      cat:      p.categorie   || 'Divers',
+      name:     p.nom,
+      ref:      p.reference   || '',
+      dn:       '',
+      price:    p.prix_ht     || 0,
+      unit:     p.unite       || 'unité',
+      badge:    p.badge       || 'stock',
+      icon:     p.image_url   || '🔧',
+      image:    p.image_url   || null,
+      desc:     p.description || '',
+      tags:     p.tags ? p.tags.split(',').map(t=>t.trim()) : [],
+      en_stock: p.en_stock !== false,
+      matiere:  p.matiere     || '',
+      pression_max: p.pression_max || null,
+      certifications: p.certifications || '',
+      lien:     p.lien_aliexpress || null
+    }));
+    log(`${PRODUCTS.length} produits transformés et prêts à l'affichage`, 'success');
+
+    log('Appel de render()...', 'info');
     render();
+    log('✅ Chargement terminé avec succès', 'success');
   } catch(e) {
-    console.warn('Erreur chargement produits:', e.message);
-    render();
+    log(`Erreur inattendue : ${e.message}`, 'error');
+    log(`Stack : ${e.stack ? e.stack.substring(0,200) : 'non disponible'}`, 'error');
+    showDebug(e.message + (e.stack ? '\n\n' + e.stack.substring(0,300) : ''));
   }
 }
 
