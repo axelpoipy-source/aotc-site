@@ -1059,6 +1059,76 @@ const PRODUCTS_FALLBACK = [
 let PRODUCTS = [...PRODUCTS_FALLBACK];
 
 // Charger les produits depuis Supabase
+// ── DIAGNOSTIC SUPABASE ──
+async function testSupabase(){
+  const results = document.getElementById('testResults');
+  const log = [];
+  const add = (msg, color='#7a8099') => {
+    log.push(`<div style="color:${color};margin:0.3rem 0;">${msg}</div>`);
+    results.innerHTML = log.join('');
+  };
+
+  add('🔄 Démarrage des tests...', '#60a5fa');
+
+  // Test 1 : Variables
+  add(`<strong>Test 1 — Variables :</strong>`, '#f0ede8');
+  if(!SUPABASE_URL){ add('❌ SUPABASE_URL est vide', '#e84545'); return; }
+  if(!SUPABASE_KEY){ add('❌ SUPABASE_KEY est vide', '#e84545'); return; }
+  add(`✅ Variables présentes`, '#2a9d5c');
+
+  // Test 2 : Connexion
+  add(`<strong>Test 2 — Connexion réseau :</strong>`, '#f0ede8');
+  try {
+    const t1 = Date.now();
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/produits?limit=1&apikey=${SUPABASE_KEY}`);
+    const ms = Date.now() - t1;
+    add(`📡 Réponse en ${ms}ms — HTTP ${r.status}`, r.ok ? '#2a9d5c' : '#e84545');
+
+    if(!r.ok){
+      const txt = await r.text();
+      add(`Corps : <code style="background:rgba(0,0,0,0.3);padding:0.2rem 0.4rem;border-radius:3px;">${txt.substring(0,200)}</code>`, '#e84545');
+      if(r.status === 401) add('→ Clé invalide ou expirée', '#f59e0b');
+      if(r.status === 403) add('→ Accès refusé (RLS, allowlist ou CORS)', '#f59e0b');
+      if(r.status === 404) add('→ Table introuvable', '#f59e0b');
+      return;
+    }
+
+    const data = await r.json();
+    add(`✅ ${data.length} produit(s) reçu(s)`, '#2a9d5c');
+    if(data.length > 0){
+      add(`<strong>Premier produit :</strong> ${data[0].nom || '?'}`, '#f0ede8');
+      add(`<strong>Champs disponibles :</strong> ${Object.keys(data[0]).join(', ')}`, '#7a8099');
+    }
+
+    // Test 3 : Récupération complète
+    add(`<strong>Test 3 — Récupération complète :</strong>`, '#f0ede8');
+    const t2 = Date.now();
+    const r2 = await fetch(`${SUPABASE_URL}/rest/v1/produits?actif=eq.true&order=id.asc&apikey=${SUPABASE_KEY}`);
+    const ms2 = Date.now() - t2;
+    if(!r2.ok){ add(`❌ HTTP ${r2.status}`, '#e84545'); return; }
+    const all = await r2.json();
+    add(`✅ ${all.length} produits actifs en ${ms2}ms`, '#2a9d5c');
+
+    // Test 4 : Forcer le chargement
+    if(all.length > 0){
+      add(`<strong>Test 4 — Chargement forcé :</strong>`, '#f0ede8');
+      PRODUCTS = all.map(p => ({
+        id:p.id, cat:p.categorie||'Divers', name:p.nom, ref:p.reference||'', dn:'',
+        price:p.prix_ht||0, unit:p.unite||'unité', badge:p.badge||'stock',
+        icon:p.image_url||'🔧', image:p.image_url||null, desc:p.description||'',
+        tags:p.tags?p.tags.split(',').map(t=>t.trim()):[], en_stock:p.en_stock!==false,
+        matiere:p.matiere||'', pression_max:p.pression_max||null,
+        certifications:p.certifications||'', lien:p.lien_aliexpress||null
+      }));
+      add(`✅ ${PRODUCTS.length} produits chargés en mémoire`, '#2a9d5c');
+      add(`<button onclick="render()" style="background:#2a9d5c;border:none;color:white;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-top:0.5rem;">✅ AFFICHER LES PRODUITS</button>`, '#2a9d5c');
+    }
+  } catch(e){
+    add(`❌ Erreur réseau : ${e.message}`, '#e84545');
+    add(`→ Cause probable : CORS, pas de connexion, ou DNS bloqué`, '#f59e0b');
+  }
+}
+
 async function loadProducts(){
   const grid = document.getElementById('pgrid');
   const debugLog = [];
@@ -1544,7 +1614,25 @@ function render(){
   }
 
   if(!list.length){
-    grid.innerHTML = `<div class="empty"><div class="eicon">📦</div><h3>Catalogue en cours de chargement</h3><p>Revenez dans quelques instants.</p></div>`;
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;background:var(--mid);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:left;font-family:monospace;font-size:0.78rem;line-height:1.7;">
+        <div style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:0.8rem;letter-spacing:0.05em;">
+          🔧 DIAGNOSTIC CATALOGUE
+        </div>
+        <div style="color:#f59e0b;margin-bottom:0.5rem;">⚠️ Aucun produit chargé en mémoire</div>
+        <div style="color:#7a8099;margin-bottom:1rem;">PRODUCTS.length = <strong style="color:#f0ede8;">${PRODUCTS.length}</strong></div>
+        <div style="background:rgba(0,0,0,0.3);padding:0.8rem;border-radius:4px;margin-bottom:0.8rem;">
+          <strong style="color:#60a5fa;">Variables actuelles :</strong><br>
+          <span style="color:#7a8099;">SUPABASE_URL =</span> <span style="color:#f0ede8;">${SUPABASE_URL || '❌ vide'}</span><br>
+          <span style="color:#7a8099;">SUPABASE_KEY =</span> <span style="color:#f0ede8;">${SUPABASE_KEY ? SUPABASE_KEY.substring(0,40)+'...' : '❌ vide'}</span><br>
+          <span style="color:#7a8099;">Filtre actuel :</span> <span style="color:#f0ede8;">${curFilter}</span><br>
+          <span style="color:#7a8099;">Recherche :</span> <span style="color:#f0ede8;">"${curSearch}"</span>
+        </div>
+        <button onclick="testSupabase()" style="background:var(--orange);border:none;color:white;padding:0.6rem 1.2rem;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.05em;font-size:0.85rem;">
+          🧪 TESTER LA CONNEXION SUPABASE
+        </button>
+        <div id="testResults" style="margin-top:1rem;"></div>
+      </div>`;
     return;
   }
 
